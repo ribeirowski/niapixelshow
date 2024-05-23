@@ -4,20 +4,20 @@ I want to ser capaz de pagar os meus pedidos
 So that eu possa confirmar o meu pedido e receber o produto que desejo
 
 Scenario: Gerar qrcode para pagamento via PIX
-Given um usuário com login “user1” e senha “user1234”
+Given um usuário com login “thiago” e senha “Thiago1234”
 And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
 And está na página “Pagamento”
 When seleciona a opção “pagar”
 Then é gerado um “qrcode” para pagamento no valor de “50,00” reais
-And é mostrado para o usuário “user1”
+And é mostrado para o usuário “thiago”
 
 Scenario: Gerar código copia e cola para pagamento via PIX
-Given um usuário com login “user1” e senha “user1234”
+Given um usuário com login “thiago” e senha “Thiago1234”
 And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
 And está na página “Pagamento”
 When seleciona a opção “pagar”
 Then é gerado um “código copia e cola” para pagamento no valor de “50,00” reais
-And é mostrado para o usuário “user1”
+And é mostrado para o usuário “thiago”
 
 Scenario: Enviar email de confirmação do pagamento
 Given um usuário com email “user1@gmail.com”
@@ -44,7 +44,7 @@ Then eu posso ver uma mensagem de erro informando que o pagamento não teve o va
 And eu recebo um reembolso de “40,00” reais
 
 Scenario: Exceder o tempo de pagamento sem efetuar o pagamento
-Given um usuário com login “user1” e senha “user1234”
+Given um usuário com login “thiago” e senha “Thiago1234”
 And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
 And está na página “Pagamento”
 And o tempo limite de pagamento é “30” minutos
@@ -54,7 +54,7 @@ Then é retornada uma mensagem informando que foi excedido o tempo de pagamento
 And o pedido é cancelado
 
 Scenario: Exceder o tempo de pagamento e efetuar o pagamento
-Given um usuário com login “user1” e senha “user1234”
+Given um usuário com login “thiago” e senha “Thiago1234”
 And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
 And está na página “Pagamento”
 And o tempo limite de pagamento é “30” minutos
