@@ -44,4 +44,4 @@ Given que o fornecedor submete um formulário de cadastro de produto
 When o sistema recebe os dados do produto com o campo "Preço" negativo
 Then o sistema valida que o campo "Preço" possui um valor positivo
 And o sistema detecta o erro de valor negativo no campo "Preço"
-Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
+Então o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
