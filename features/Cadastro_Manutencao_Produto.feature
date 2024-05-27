@@ -32,12 +32,12 @@ And desativar o produto que desejo
 Then eu devo ver uma mensagem de confirmação "Produto desativado com sucesso"
 And  o produto com nome ‘Camisa Nova’, descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa" deve desaparecer na lista de produtos
 
-Cenário de Serviço: Cadastro do Produto Mal-Sucedido
+Cenário de Serviço: Cadastro do Produto com Campo Não Preenchido
 Given que o fornecedor submete um formulário de cadastro de produto
 When o sistema recebe os dados do produto
 Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
 And o sistema verifica que o campo "Preço" não está preenchido 
-Then o sistema retorna uma mensagem de erro detalhando o problemas encontrado
+Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
 
 Cenário de Serviço: Cadastro do Produto com Preço Negativo
 Given que o fornecedor submete um formulário de cadastro de produto
