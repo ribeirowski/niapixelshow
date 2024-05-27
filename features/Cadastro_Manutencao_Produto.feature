@@ -35,6 +35,6 @@ And  o produto com nome ‘Camisa Nova’, descrição "Algodão", preço "R$100
 Cenário de Serviço: Cadastro do Produto Mal-Sucedido
 Given que o fornecedor submete um formulário de cadastro de produto
 When o sistema recebe os dados do produto
-Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
-And o sistema verifica que houve qualquer erro nos dados
-Then o sistema retorna uma mensagem de erro detalhando os problemas encontrados
+Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
+And o sistema verifica que o campo "Preço" não está preenchido 
+Then o sistema retorna uma mensagem de erro detalhando o problemas encontrado
