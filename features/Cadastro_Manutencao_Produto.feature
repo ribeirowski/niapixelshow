@@ -38,3 +38,10 @@ When o sistema recebe os dados do produto
 Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
 And o sistema verifica que o campo "Preço" não está preenchido 
 Then o sistema retorna uma mensagem de erro detalhando o problemas encontrado
+
+Cenário de Serviço: Cadastro do Produto com Preço Negativo
+Given que o fornecedor submete um formulário de cadastro de produto
+When o sistema recebe os dados do produto com o campo "Preço" negativo
+Then o sistema valida que o campo "Preço" possui um valor positivo
+And o sistema detecta o erro de valor negativo no campo "Preço"
+Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
