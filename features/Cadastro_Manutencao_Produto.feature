@@ -31,3 +31,10 @@ When eu acessar a página "Lista de Produtos"
 And desativar o produto que desejo 
 Then eu devo ver uma mensagem de confirmação "Produto desativado com sucesso"
 And  o produto com nome ‘Camisa Nova’, descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa" deve desaparecer na lista de produtos
+
+Cenário de Serviço: Cadastro do Produto Mal-Sucedido
+Given que o fornecedor submete um formulário de cadastro de produto
+When o sistema recebe os dados do produto
+Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
+And o sistema verifica que houve qualquer erro nos dados
+Then o sistema retorna uma mensagem de erro detalhando os problemas encontrados
