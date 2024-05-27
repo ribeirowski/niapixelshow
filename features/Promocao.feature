@@ -48,3 +48,4 @@ And preencher o campo "data de início" com "01/01/2025", o campo "data de térm
      e o campo "quantidade mínima" com "1"
 Then devo ver a mensagem de erro "Porcentagem deve ser um valor entre 0 e 100"
 And não devo ver a promoção "Promoção de Ano Novo" na lista de promoções
+And não devo ver a mensagem "Promoção cadastrada com sucesso"
