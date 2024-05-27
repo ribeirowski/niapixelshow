@@ -43,6 +43,6 @@ Scenario: Cliente finaliza a compra dos pedidos no carrinho
         When ele confirma os detalhes do pedido    
         And ele fornece as informações de pagamento válidas     
         And ele seleciona a opção "pagar"
-        Then ele pode ver uma tela de confirmação de pedido     
+        Then ele pode ver uma tela de confirmação de pedidoo 
         And ele pode ver um resumo do pedido com um número de confirmação    
         And o status do pedido é atualizado para "processando"     	
