@@ -44,11 +44,8 @@ Given que o fornecedor submete um formulário de cadastro de produto
 When o sistema recebe os dados do produto com o campo "Preço" negativo
 Then o sistema valida que o campo "Preço" possui um valor positivo
 And o sistema detecta o erro de valor negativo no campo "Preço"
-<<<<<<< HEAD
 Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
 Then o sistema registra o erro no log para auditoria
-=======
-Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
 
 Cenário de Serviço: Cadastro do Produto Bem-Sucedido
 Given que o fornecedor submete um formulário de cadastro de produto
@@ -56,4 +53,3 @@ When o sistema recebe os dados do produto
 Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
 And o sistema verifica que todos os dados estão válidos
 Then o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
->>>>>>> dev
