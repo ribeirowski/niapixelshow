@@ -11,7 +11,6 @@ And preencher o campo "data de início" com "01/01/2025", o campo "data de térm
      o campo "descrição" com "Promoção de Ano Novo", o campo "porcentagem" com "10", o campo "produto" com "Camisa Cin"
      e o campo "quantidade mínima" com "1"
 Then devo ver a mensagem "Promoção cadastrada com sucesso" e a promoção "Promoção de Ano Novo" na lista de promoções
-
 Scenario: Excluir Promoção
 Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
 And estou na página "promoções"
