@@ -62,3 +62,6 @@ And preencher o campo "data de início" com "01/01/2025", o campo "data de térm
      e o campo "quantidade mínima" com "0"
 Then devo ver a mensagem de erro "Quantidade mínima deve ser maior que 0"
 And não devo ver a promoção "Promoção de Ano Novo" na lista de promoções
+
+
+ggggg
