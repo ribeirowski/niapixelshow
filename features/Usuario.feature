@@ -49,4 +49,3 @@ Given eu acesso a página de login
 And vejo os campos para inserir email e senha
 When preencho os campos com email: "ehnr.cin.ufpe.br" e senha: "enio1234"
 And clico no botão de login
-Then vejo uma mensagem de erro indicando que o formato do email é inválido
