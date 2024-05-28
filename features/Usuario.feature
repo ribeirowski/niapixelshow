@@ -29,7 +29,7 @@ And os outros campos permanecem preenchidos com as informações válidas que in
 
 Scenario: Email já cadastrado durante o cadastro
 Given eu acesso a página de cadastro de usuário
-And um usuário com o email "exemplo@email.com" já está cadastrado no sistema
+And um usuário com o email "ehnr@cin.ufpe.br" já está cadastrado no sistema
 And vejo os campos para inserir nome, email, senha e telefone
 When preencho todos os campos obrigatórios com nome: "Enio Henrique", email: "ehnr@cin.ufpe.br", senha: "enio1234" e telefone: "8199564057"
 And clico no botão de cadastrar
@@ -38,7 +38,7 @@ And os outros campos permanecem preenchidos com as informações válidas que in
 
 Scenario: Login com sucesso
 Given eu acesso a página de login
-And um usuário com o email "exemplo@email.com" e senha: "enio1234" já está cadastrado no sistema
+And um usuário com o email "ehnr@cin.ufpe.br" e senha: "enio1234" já está cadastrado no sistema
 And vejo os campos para inserir email e senha
 When preencho os campos com email: "ehnr@cin.ufpe.br" e senha: "enio1234"
 And clico no botão de login
@@ -50,3 +50,11 @@ And vejo os campos para inserir email e senha
 When preencho os campos com email: "ehnr.cin.ufpe.br" e senha: "enio1234"
 And clico no botão de login
 Then vejo uma mensagem de erro indicando que o formato do email é inválido
+
+Scenario: Senha incorreta durante o login
+Given eu acesso a página de login
+And um usuário com o email "ehnr@cin.ufpe.br" e senha: "enio1234" já está cadastrado no sistema
+And vejo os campos para inserir email e senha
+When preencho os campos com email: "ehnr@cin.ufpe.br" e senha: "enio4321"
+And clico no botão de login
+Then vejo uma mensagem de erro indicando que a senha está incorreta
