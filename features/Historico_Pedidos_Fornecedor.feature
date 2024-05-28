@@ -11,4 +11,5 @@ When eu acessar a página "Histórico de Pedidos"
 Then eu devo ver uma lista de pedidos com as seguintes informações data da compra “25/08/2024”, valor pago “R$100,00”, quantidade de produtos “1”, status do pedido “enviado”.
 
 "Modificação questão 13"
-"Modificação 1" 
+"Modificação 1"
+"Modificação 2" 
