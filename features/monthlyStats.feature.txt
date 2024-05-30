@@ -1,3 +1,0 @@
-As a administrator
-I want to see monthly stats like revenue and products sold
-So that I can make informed decisions when administrating my web store
