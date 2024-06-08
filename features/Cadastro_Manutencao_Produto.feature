@@ -70,14 +70,14 @@ Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode 
 Then o sistema registra o erro no log para auditoria
 
 Cenário de Serviço: Atualização do Produto Bem-Sucedida
-Given que o administrador submete um formulário de atualização de produto
+Given que o forncedor submete um formulário de atualização de produto
 When o sistema recebe os dados do produto
 Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
 And o sistema verifica que todos os dados estão válidos
 Then o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso
 
 Cenário de Serviço: Exclusão de Produto Bem-Sucedida
-Given que o administrador submete um pedido de exclusão de produto
+Given que o fornecedor submete um pedido de exclusão de produto
 When o sistema recebe o ID do produto a ser excluído
 Then o sistema verifica que o produto existe
 And o sistema remove o produto do banco de dados
