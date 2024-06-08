@@ -50,6 +50,7 @@ class ProductController {
         }
     }
 
+    //DEACTIVATE METHOD
     async deactivate(req: Request, res: Response, next: NextFunction) {
         try {
             const { name } = req.params;
