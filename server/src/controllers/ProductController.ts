@@ -73,6 +73,29 @@ class ProductController {
         }
     }
 
+     //DELET METHOD
+     static async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { name } = req.params;
+
+            // Verifica se o produto existe no Firestore
+            const q = firestoreDB.collection('products').where('name', '==', name);
+            const querySnapshot = await q.get();
+            if (querySnapshot.empty) {
+                return res.status(404).json({ message: 'Produto não encontrado' });
+            }
+            const productDoc = querySnapshot.docs[0];
+
+            // Exclui o produto no Firestore
+            await productDoc.ref.delete();
+
+            res.status(200).json({ message: 'Produto excluído com sucesso' });
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
 }
 
 const productController = new ProductController();
