@@ -74,7 +74,7 @@ class ProductController {
     }
 
      //DELET METHOD
-     static async delete(req: Request, res: Response, next: NextFunction) {
+     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { name } = req.params;
 

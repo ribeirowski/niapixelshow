@@ -8,6 +8,7 @@ ProductRouter.route('/')
 
 ProductRouter.route('/:name')
     .put(ProductController.update)//Rota para atualizar um produto
-    .patch(ProductController.deactivate);//Rota para desativar um produto
+    .patch(ProductController.deactivate)//Rota para desativar um produto
+    .delete(ProductController.delete);//Rota para deletar um produto
 
 export default ProductRouter;
