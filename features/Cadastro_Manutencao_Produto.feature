@@ -7,7 +7,7 @@ Cenário de GUI: Inserir Novo Produto
 Given que estou logado como "nathy", com senha "nia12345"
 And sou um administrador
 When eu acessar a página "Cadastro de Produto"
-And preencher os campos  nome ‘Camisa Nova’, descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa"
+And preencher os campos  nome "Camisa Nova", descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa"
 And seleciono a opção "Salvar"
 Then eu devo ver uma mensagem de confirmação "Produto cadastrado com sucesso"
 And o novo produto com nome "Camisa Nova", descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa" deve aparecer na lista de produtos cadastrados
