@@ -54,3 +54,9 @@ Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e 
 And o sistema verifica que todos os dados estão válidos
 Then o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
 
+Cenário de Serviço: Atualização do Produto com Campo Não Preenchido
+Given que o administrador submete um formulário de atualização de produto
+When o sistema recebe os dados do produto
+Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
+And o sistema verifica que o campo "Descrição" não está preenchido
+Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
