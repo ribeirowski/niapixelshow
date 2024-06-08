@@ -7,6 +7,7 @@ ProductRouter.route('/')
     .post(ProductController.create);//Rota para criar um novo produto
 
 ProductRouter.route('/:name')
-    .put(ProductController.update);//Rota para atualizar um produto
+    .put(ProductController.update)//Rota para atualizar um produto
+    .patch(ProductController.deactivate);//Rota para desativar um produto
 
 export default ProductRouter;
