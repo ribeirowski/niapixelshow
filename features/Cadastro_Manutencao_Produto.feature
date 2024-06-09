@@ -84,13 +84,13 @@ And o sistema remove o produto do banco de dados
 Then o sistema retorna uma mensagem de confirmação de exclusão
 
 Cenário de Serviço: Leitura de Todos os Produtos com Filtro
-Given que o administrador solicita a lista de todos os produtos
+Given que o fornecedor solicita a lista de todos os produtos
 When o sistema recebe a solicitação com filtros aplicados
 Then o sistema aplica os filtros categoria, preço
 And o sistema retorna a lista de produtos que correspondem aos filtros
 
 Cenário de Serviço: Leitura de Produto Específico Bem-Sucedida
-Given que o administrador solicita os detalhes de um produto específico
+Given que o fornecedor solicita os detalhes de um produto específico
 When o sistema recebe o ID do produto
 Then o sistema verifica que o produto existe
 And o sistema retorna os detalhes do produto solicitado
