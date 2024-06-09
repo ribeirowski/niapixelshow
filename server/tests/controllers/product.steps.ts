@@ -24,40 +24,38 @@ defineFeature(feature, (test) => {
   let response: supertest.Response;
 
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
-    given('que o ProductRepository não possui um produto com o nome "Camisa Nova"', async () => {
-      const products = await firestoreDB.collection('products').where('name', '==', 'Camisa Nova').get();
+    given('que o banco de dados de produto está vazio', async () => {
+      const products = await firestoreDB.collection('products').get();
       const batch = firestoreDB.batch();
       products.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     });
 
-    when('uma requisição POST é enviada para "/product" com o corpo da requisição em JSON:', async (docString) => {
-      const productData = JSON.parse(docString);
+    when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: 'Disponível',
+        category: 'Camisas'
+      };
       response = await request.post('/product').send(productData);
     });
 
-    then('o status da resposta deve ser "201"', () => {
+    then('o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {
       expect(response.status).toBe(201);
     });
 
-    and('o JSON da resposta deve conter o nome "Camisa Nova"', () => {
+    and('o sistema verifica que todos os dados estão válidos', () => {
       expect(response.body.product.name).toBe('Camisa Nova');
-    });
-
-    and('o JSON da resposta deve conter a descrição "Algodão"', () => {
       expect(response.body.product.description).toBe('Algodão');
-    });
-
-    and('o JSON da resposta deve conter o preço 50', () => {
       expect(response.body.product.price).toBe(50);
-    });
-
-    and('o JSON da resposta deve conter o status "Disponível"', () => {
       expect(response.body.product.status).toBe('Disponível');
+      expect(response.body.product.category).toBe('Camisas');
     });
 
-    and('o JSON da resposta deve conter a categoria "Camisas"', () => {
-      expect(response.body.product.category).toBe('Camisas');
+    then('o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso', () => {
+      expect(response.body.message).toBe('Produto cadastrado com sucesso');
     });
   });
 });
