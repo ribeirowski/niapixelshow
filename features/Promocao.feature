@@ -1,6 +1,6 @@
 As an "administrador"
 I want to cadastrar, editar and excluir promoções
-So that I can offer discounts to customers
+So that eu possa criar promoções para os clientes
 
 Scenario: Cadastro de Promoção
 Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
