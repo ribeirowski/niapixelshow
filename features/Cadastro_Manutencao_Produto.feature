@@ -32,65 +32,67 @@ And desativar o produto que desejo
 Then eu devo ver uma mensagem de confirmação "Produto desativado com sucesso"
 And  o produto com nome "Camisa Nova", descrição "Algodão", preço "R$100,00", status "Disponível" e categoria "Camisa" deve desaparecer na lista de produtos
 ----------
+Funcionalidade: Cadastro e Manutenção do Produto
+
 Cenário de Serviço: Cadastro do Produto com Campo Não Preenchido
-Given que o fornecedor submete um formulário de cadastro de produto
-When o sistema recebe os dados do produto
-Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
-And o sistema verifica que o campo "Preço" não está preenchido 
+Given que o banco de dado de produto está vazio
+When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "", status "Disponível", categoria "Camisas"
+Then o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
+And o sistema verifica que o campo "preço" não está preenchido 
 Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
 
 Cenário de Serviço: Cadastro do Produto com Preço Negativo
-Given que o fornecedor submete um formulário de cadastro de produto
-When o sistema recebe os dados do produto com o campo "Preço" negativo
-Then o sistema valida que o campo "Preço" possui um valor positivo
-And o sistema detecta o erro de valor negativo no campo "Preço"
-Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
+Given que o banco de dado de produto está vazio
+When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"
+Then o sistema valida que o campo "preço" possui um valor positivo
+And o sistema detecta o erro de valor negativo no campo "preço"
+Then o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
 Then o sistema registra o erro no log para auditoria
 
 Cenário de Serviço: Cadastro do Produto Bem-Sucedido
-Given que o fornecedor submete um formulário de cadastro de produto
-When o sistema recebe os dados do produto
-Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
+Given que o banco de dado de produto está vazio
+When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
+Then o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
 And o sistema verifica que todos os dados estão válidos
 Then o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
 
 Cenário de Serviço: Atualização do Produto com Campo Não Preenchido
-Given que o fornecedor submete um formulário de atualização de produto
-When o sistema recebe os dados do produto
-Then o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
-And o sistema verifica que o campo "Descrição" não está preenchido
+Given que o produto com ID "123" existe no banco de dado de produto
+When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "", preço "50", status "Disponível", categoria "Camisas"
+Then o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
+And o sistema verifica que o campo "descrição" não está preenchido
 Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
 
 Cenário de Serviço: Atualização do Produto com Preço Negativo
-Given que o fornecedor submete um formulário de atualização de produto
-When o sistema recebe os dados do produto com o campo "Preço" negativo
-Then o sistema valida que o campo "Preço" possui um valor positivo
-And o sistema detecta o erro de valor negativo no campo "Preço"
-Then o sistema retorna uma mensagem de erro informando que o "Preço" não pode ser negativo
+Given que o produto com ID "123" existe no banco de dado de produto
+When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"
+Then o sistema valida que o campo "preço" possui um valor positivo
+And o sistema detecta o erro de valor negativo no campo "preço"
+Then o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
 Then o sistema registra o erro no log para auditoria
 
 Cenário de Serviço: Atualização do Produto Bem-Sucedida
-Given que o forncedor submete um formulário de atualização de produto
-When o sistema recebe os dados do produto
-Then o sistema valida que os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos
+Given que o produto com ID "123" existe no banco de dado de produto
+When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
+Then o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
 And o sistema verifica que todos os dados estão válidos
 Then o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso
 
 Cenário de Serviço: Exclusão de Produto Bem-Sucedida
-Given que o fornecedor submete um pedido de exclusão de produto
-When o sistema recebe o ID do produto a ser excluído
+Given que o produto com ID "123" existe no banco de dado de produto
+When o fornecedor submete um pedido de exclusão de produto
 Then o sistema verifica que o produto existe
 And o sistema remove o produto do banco de dados
 Then o sistema retorna uma mensagem de confirmação de exclusão
 
 Cenário de Serviço: Leitura de Todos os Produtos com Filtro
-Given que o fornecedor solicita a lista de todos os produtos
-When o sistema recebe a solicitação com filtros aplicados
-Then o sistema aplica os filtros categoria, preço
+Given que existem vários produtos no banco de dado de produto
+When o fornecedor solicita a lista de todos os produtos com filtros "categoria": "Camisas" e "preço"
+Then o sistema aplica os filtros "categoria": "Camisas" e "preço"
 And o sistema retorna a lista de produtos que correspondem aos filtros
 
 Cenário de Serviço: Leitura de Produto Específico Bem-Sucedida
-Given que o fornecedor solicita os detalhes de um produto específico
-When o sistema recebe o ID do produto
+Given que o produto com ID "123" existe no banco de dado de produto
+When o fornecedor solicita os detalhes de um produto específico
 Then o sistema verifica que o produto existe
-And o sistema retorna os detalhes do produto solicitado
+And o sistema retorna os detalhes do produto solicitado com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
