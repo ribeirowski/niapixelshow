@@ -1,3 +1,4 @@
+Feature: Promoção
 As an "administrador"
 I want to cadastrar, editar and excluir promoções
 So that eu possa criar promoções para os clientes
