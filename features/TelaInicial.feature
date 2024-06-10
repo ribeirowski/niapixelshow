@@ -56,3 +56,29 @@ Given que acesso a página inicial como "nathy", com a senha "admin123"
 When seleciono "Admin"
 Then devo ser redirecionado para a página "Admin"
 
+Scenario: acessar a página "produtos"
+Given que acesso a página inicial como "visitante"
+When seleciono "Produtos"
+Then devo ser redirecionado para a página "Produtos"
+
+Scenario: acessar a página "promoções"
+Given que acesso a página inicial como "visitante"
+When seleciono "Promoções"
+Then devo ser redirecionado para a página "Promoções"
+
+Scenario: pesquisar um produto cadastrado
+Given que acesso a página inicial como "visitante"
+When pesquiso por um produto "camisa" na barra de pesquisa
+And existe um produto cadastrado com o nome "camisa"
+Then devo ver o produto "camisa" na lista de produtos
+And ver outras opções de produtos relacionados
+
+Scenario: pesquisar um produto não cadastrado
+Given que acesso a página inicial como "visitante"
+When pesquiso por um produto "camisa" na barra de pesquisa
+And não existe um produto cadastrado com o nome "camisa"
+Then devo ver uma mensagem de erro "Produto não encontrado"
+And ver outras opções de produtos relacionados
+
+
+
