@@ -96,6 +96,20 @@ class ProductController {
         }
     }
 
+    //READALL METHOD
+    async readAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            // Obtém todos os produtos do Firestore
+            const querySnapshot = await firestoreDB.collection('products').get();
+            const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            res.status(200).json(products);
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
 }
 
 const productController = new ProductController();
