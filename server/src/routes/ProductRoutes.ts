@@ -8,6 +8,7 @@ ProductRouter.route('/')
     .get(ProductController.readAll);//Rota para pegar todos os produtos cadastrados
 
 ProductRouter.route('/:name')
+    .get(ProductController.read)//Rota para pegar um produto pelo nome
     .put(ProductController.update)//Rota para atualizar um produto
     .patch(ProductController.deactivate)//Rota para desativar um produto
     .delete(ProductController.delete);//Rota para deletar um produto
