@@ -5,7 +5,7 @@ import { firestoreDB } from '../../src/services/firebaseAdmin';
 
 const feature = loadFeature('tests/features/product.feature');
 
-beforeAll(async () => {
+/*beforeAll(async () => {
   const products = await firestoreDB.collection('products').get();
   const batch = firestoreDB.batch();
   products.forEach(doc => batch.delete(doc.ref));
@@ -17,13 +17,14 @@ afterAll(async () => {
   const batch = firestoreDB.batch();
   products.forEach(doc => batch.delete(doc.ref));
   await batch.commit();
-});
+});*/
 
 defineFeature(feature, (test) => {
   let request = supertest(app);
   let response: supertest.Response;
 
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
       const batch = firestoreDB.batch();
