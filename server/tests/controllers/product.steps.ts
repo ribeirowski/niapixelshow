@@ -59,4 +59,36 @@ defineFeature(feature, (test) => {
       expect(response.body.message).toBe('Produto cadastrado com sucesso');
     });
   });
+
+  //TEST #2 - CREATION WITH MISSING FIELD
+  test('Cadastro do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o fornecedor submete um formulário de cadastro de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        status: 'Disponível',
+        category: 'Camisas'
+        // Note que o campo "preço" está faltando
+      };
+      response = await request.post('/api/products').send(productData);
+    });
+
+    when('o sistema recebe os dados do produto', () => {
+      // A requisição POST já foi enviada no given step
+    });
+
+    then('o sistema valida se os campos "Nome", "Descrição", "Preço", "Status" e "Categoria" estão preenchidos', () => {
+      expect(response.status).toBe(400);
+    });
+
+    and('o sistema verifica que o campo "Preço" não está preenchido', () => {
+      expect(response.body.message).toContain('Preço é um campo obrigatório');
+    });
+
+    then('o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos', () => {
+      expect(response.body.message).toBe('Todos os campos devem ser preenchidos');
+    });
+  });  
 });
