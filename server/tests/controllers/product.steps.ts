@@ -2,22 +2,9 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { HttpException } from '../../src/middlewares';
 
 const feature = loadFeature('tests/features/product.feature');
-
-/*beforeAll(async () => {
-  const products = await firestoreDB.collection('products').get();
-  const batch = firestoreDB.batch();
-  products.forEach(doc => batch.delete(doc.ref));
-  await batch.commit();
-});
-
-afterAll(async () => {
-  const products = await firestoreDB.collection('products').get();
-  const batch = firestoreDB.batch();
-  products.forEach(doc => batch.delete(doc.ref));
-  await batch.commit();
-});*/
 
 defineFeature(feature, (test) => {
   let request = supertest(app);
@@ -61,5 +48,33 @@ defineFeature(feature, (test) => {
   });
 
   //TEST #2 - CREATION WITH MISSING FIELD
-  
+  test('Cadastro do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o banco de dados de produto está vazio', async () => {
+      const products = await firestoreDB.collection('products').get();
+      const batch = firestoreDB.batch();
+      products.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    });
+
+    when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "", status "Disponível", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        status: 'Disponível',
+        category: 'Camisas'
+      };
+      response = await request.post('/product').send(productData);
+    });
+
+    then('o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {
+      expect(response.status).toBe(400);
+    });
+
+
+    and('o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos', () => {
+      expect(response.body.message).toBe('Todos os campos devem ser preenchidos');
+    });
+  });
 });

@@ -11,5 +11,4 @@ Feature: Cadastro e Manutenção do Produto
     Given que o banco de dados de produto está vazio
     When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "", status "Disponível", categoria "Camisas"
     Then o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
-    And o sistema verifica que o campo "preço" não está preenchido 
-    Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
+    And o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos

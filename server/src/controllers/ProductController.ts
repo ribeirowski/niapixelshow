@@ -2,14 +2,20 @@ import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Product, UpdateProduct } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
+import { HttpException } from '../middlewares';
 
 class ProductController {
 
     //CREATE METHOD
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const productData = Product.parse(req.body);
+            const { name, description, price, status, category } = req.body;
 
+            // Verifica se todos os campos estão preenchidos
+            if (!name || !description || !price || !status || !category) {
+                throw new HttpException(400, "Todos os campos devem ser preenchidos");
+            }
+            const productData = Product.parse(req.body);
             // Verifica se já existe um produto com o mesmo nome
             const existsProductWithName = await firestoreDB.collection('products').where('name', '==', productData.name).get();
             if (!existsProductWithName.empty) {
@@ -21,8 +27,9 @@ class ProductController {
 
             res.status(201).json({ message: 'Produto cadastrado com sucesso', id: productRef.id, product: productData });
             return next();
-        } catch (error) {
-            return next(error);
+        } catch (HttpException) {
+            res.status(400).json({ message:"Todos os campos devem ser preenchidos"});
+            return next(HttpException);
         }
     }
 
@@ -73,8 +80,8 @@ class ProductController {
         }
     }
 
-     //DELET METHOD
-     async delete(req: Request, res: Response, next: NextFunction) {
+    //DELET METHOD
+    async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { name } = req.params;
 
