@@ -42,24 +42,3 @@ And estou na página “Pagamento”
 When eu efetuo o pagamento de ”40,00” reais
 Then eu posso ver uma mensagem de erro informando que o pagamento não teve o valor correto
 And eu recebo um reembolso de “40,00” reais
-
-Scenario: Exceder o tempo de pagamento sem efetuar o pagamento
-Given um usuário com login “thiago” e senha “Thiago1234”
-And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
-And está na página “Pagamento”
-And o tempo limite de pagamento é “30” minutos
-When seleciona a opção “pagar”
-And demorou mais de “30” minutos para efetuar o pagamento
-Then é retornada uma mensagem informando que foi excedido o tempo de pagamento
-And o pedido é cancelado
-
-Scenario: Exceder o tempo de pagamento e efetuar o pagamento
-Given um usuário com login “thiago” e senha “Thiago1234”
-And fez o pedido “Camisa CIN” na cor “Vermelha” na quantidade “2” com preço “50,00” reais
-And está na página “Pagamento”
-And o tempo limite de pagamento é “30” minutos
-When seleciona a opção “pagar”
-And demorou mais de “30” minutos para efetuar o pagamento
-Then é retornada uma mensagem informando que foi excedido o tempo de pagamento
-And o pedido é cancelado
-And é emitido um reembolso no valor de “50,00” reais
