@@ -12,3 +12,5 @@ export const Promotion = z.object({
     active: z.boolean().default(false),
     product_id: z.string({ message: 'O id do produto não pode ser vazio' }),
     })
+
+export const UpdatePromotion = Promotion.partial();
