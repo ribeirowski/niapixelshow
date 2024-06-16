@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { adminAuth, firestoreDB } from '../services/firebaseAdmin';
-import { auth } from '../services/firebase';
 import { Cart, UpdateCart } from '@DTOs';
 import { hash } from 'bcryptjs';
 
@@ -64,6 +63,7 @@ class CartController {
                 }
                 return item;
             });
+
             await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
 
             res.status(200).json({ message: 'Item updated successfully' });

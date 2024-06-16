@@ -1,10 +1,15 @@
 import {z} from 'zod';
-import {User} from './User';
+import {Product} from './Product';
+
+const CartItem = Product.extend({ 
+  quantity: z.number().int().positive({ message: 'A quantidade deve ser um número positivo' }),
+  size: z.string().nonempty({ message: 'O tamanho não pode ser vazio' }),
+});
 
 export const Cart = z.object({
   cart_id: z.string(),
   user_id: z.string(),
-  items: z.array(User), 
+  items: z.array(CartItem), 
   price: z.number(),
 });
 
