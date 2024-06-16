@@ -185,5 +185,39 @@ defineFeature(feature, (test) => {
     });
   });
 
+  test('Atualização do Produto com Preço Negativo', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o produto com ID "123" existe no banco de dados de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      await firestoreDB.collection('products').doc('123').set(productData);
+    });
+
+    when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: -50,
+        status: true,
+        category: 'Camisas'
+      };
+      response = await request.put('/product/123').send(productData);
+    });
+
+    then('o sistema valida que o campo "preço" possui um valor positivo', () => {
+      expect(response.status).toBe(400); // Espera que a resposta tenha um status 400 para erro
+    });
+
+    and('o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo', () => {
+      expect(response.body.message).toBe('O preço deve ser um número positivo');
+    });
+  });
+
 
 });

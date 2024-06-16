@@ -30,3 +30,9 @@ Feature: Cadastro e Manutenção do Produto
   When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "", preço "50", status "Disponível", categoria "Camisas"
   Then o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
   And o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
+
+ Scenario: Atualização do Produto com Preço Negativo
+  Given que o produto com ID "123" existe no banco de dados de produto
+  When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"
+  Then o sistema valida que o campo "preço" possui um valor positivo
+  And o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
