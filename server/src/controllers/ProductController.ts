@@ -43,6 +43,11 @@ class ProductController {
             const productId = req.params.id;
             const productData = UpdateProduct.parse(req.body);
 
+            // Verifica se todos os campos estão preenchidos
+            if (!productData.name || !productData.description || !productData.price || !productData.status || !productData.category) {
+                throw new HttpException(400, "Todos os campos devem ser preenchidos");
+            }
+
             // Verifica se o produto existe no Firestore
             const productdoc = await firestoreDB.collection('products').doc(productId).get();
             if (!productdoc.exists) {

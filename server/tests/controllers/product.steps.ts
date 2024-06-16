@@ -85,8 +85,8 @@ defineFeature(feature, (test) => {
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
       const batch = firestoreDB.batch();
-      /*products.forEach(doc => batch.delete(doc.ref));
-      await batch.commit();*/
+      products.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
     });
 
     when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"', async () => {
@@ -109,6 +109,7 @@ defineFeature(feature, (test) => {
     });
   });
 
+  //TEST #4 - SUCCESS UPDATE 
   test('Atualização do Produto Bem-Sucedida', ({ given, when, then, and }) => {
     jest.setTimeout(15000);
 
@@ -149,5 +150,40 @@ defineFeature(feature, (test) => {
       expect(response.body.message).toBe('Produto atualizado com sucesso');
     });
   });
+
+  //TEST #5 - UPDATE WITH MISSING FIELD
+  test('Atualização do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o produto com ID "123" existe no banco de dados de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      await firestoreDB.collection('products').doc('123').set(productData);
+    });
+
+    when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "", preço "50", status "Disponível", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      response = await request.put('/product/123').send(productData);
+    });
+
+    then('o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {
+      expect(response.status).toBe(400); // Espera que a resposta tenha um status 400 para erro
+    });
+
+    and('o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos', () => {
+      expect(response.body.message).toBe('Todos os campos devem ser preenchidos');
+    });
+  });
+
 
 });
