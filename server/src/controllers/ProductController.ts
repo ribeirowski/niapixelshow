@@ -4,6 +4,7 @@ import { Product, UpdateProduct } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
 import { HttpException } from '../middlewares';
 
+
 class ProductController {
 
     //CREATE METHOD
@@ -19,7 +20,7 @@ class ProductController {
             // Verifica se já existe um produto com o mesmo nome
             const existsProductWithName = await firestoreDB.collection('products').where('name', '==', productData.name).get();
             if (!existsProductWithName.empty) {
-                return res.status(400).json({ message: 'Product with this name already exists' });
+                throw new HttpException(400, "Produto com esse nome já existe");
             }
 
             // Adiciona o novo produto ao Firestore
@@ -27,9 +28,8 @@ class ProductController {
 
             res.status(201).json({ message: 'Produto cadastrado com sucesso', id: productRef.id, product: productData });
             return next();
-        } catch (HttpException) {
-            res.status(400).json({ message:"Todos os campos devem ser preenchidos"});
-            return next(HttpException);
+        } catch (error) {
+            return next(error);
         }
     }
 
@@ -43,7 +43,7 @@ class ProductController {
             const q = firestoreDB.collection('products').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
+                throw new HttpException(404, "Produto não encontrado");
             }
             const productDoc = querySnapshot.docs[0];
 
@@ -52,7 +52,7 @@ class ProductController {
 
             res.status(200).json({ message: 'Produto atualizado com sucesso', product: { ...productDoc.data(), ...productData } });
             return next();
-        } catch (error) {
+        }  catch (error) {
             return next(error);
         }
     }
@@ -66,7 +66,7 @@ class ProductController {
             const q = firestoreDB.collection('products').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
+                throw new HttpException(404, "Produto não encontrado");
             }
             const productDoc = querySnapshot.docs[0];
 
@@ -89,7 +89,7 @@ class ProductController {
             const q = firestoreDB.collection('products').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
+                throw new HttpException(404, "Produto não encontrado");
             }
             const productDoc = querySnapshot.docs[0];
 
