@@ -67,20 +67,17 @@ class ProductController {
     //DEACTIVATE METHOD
     async deactivate(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
-            // Atualiza o status do produto para 'Indisponível'
-            await productDoc.ref.update({ status: false });
+            // Exclui o produto no Firestore
+            await firestoreDB.collection('products').doc(productId).update({ status: false });
 
-            res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productDoc.data(), status: 'Indisponível' } });
+            res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productdoc.data(), status: 'Indisponível' } });
             return next();
         } catch (error) {
             return next(error);
@@ -90,18 +87,15 @@ class ProductController {
     //DELET METHOD
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
             // Exclui o produto no Firestore
-            await productDoc.ref.delete();
+            await firestoreDB.collection('products').doc(productId).delete();
 
             res.status(200).json({ message: 'Produto excluído com sucesso' });
             return next();

@@ -219,5 +219,32 @@ defineFeature(feature, (test) => {
     });
   });
 
+  test('Exclusão de Produto Bem-Sucedida', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
 
+    given('que o produto com ID "123" existe no banco de dados de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      await firestoreDB.collection('products').doc('123').set(productData);
+    });
+
+    when('o fornecedor submete um pedido de exclusão de produto', async () => {
+      response = await request.delete('/product/123').send();
+    });
+
+    then('o sistema verifica se o produto existe', async () => {
+      const productdoc = await firestoreDB.collection('products').doc('123').get();
+      expect(productdoc.exists).toBe(false);
+    });
+
+    and('o sistema remove o produto do banco de dados e retorna uma mensagem de confirmação de exclusão', async () => {
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBe('Produto excluído com sucesso');
+    });
+  });
 });
