@@ -21,13 +21,6 @@ And estou na página "Pagamento"
 When seleciona a opção "pagar"
 Then eu posso ver um "código copia e cola" para efetuar o pagamento
 
-Scenario: Enviar email de confirmação do pagamento
-Given um usuário com email "thiagojgcosta@gmail.com"
-And fez o pedido "Camisa CIN" na cor "Vermelha" na quantidade "2" com preço "50,00" reais
-And está na página "Pagamento"
-When o pagamento é confirmado
-Then é enviado um email para "thiagojgcosta@gmail.com" informando que a compra de "Camisa CIN" no valor de "50,00" reais foi confirmada
-
 Scenario: Receber email de confirmação de pagamento
 Given eu estou logado como "Usuário" com email "thiagojgcosta@gmail.com"
 And eu selecionei "Camisa CIN" em quantidade "2" na cor "Vermelha"
