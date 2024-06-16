@@ -16,6 +16,10 @@ class ProductController {
             if (!name || !description || !price || !status || !category) {
                 throw new HttpException(400, "Todos os campos devem ser preenchidos");
             }
+            // Verifica se o preço é um número positivo
+            if (price <= 0) {
+                throw new Error('O preço deve ser um número positivo');
+            }
             const productData = Product.parse(req.body);
             // Verifica se já existe um produto com o mesmo nome
             const existsProductWithName = await firestoreDB.collection('products').where('name', '==', productData.name).get();

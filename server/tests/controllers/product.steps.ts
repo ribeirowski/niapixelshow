@@ -24,7 +24,7 @@ defineFeature(feature, (test) => {
         name: 'Camisa Nova',
         description: 'Algodão',
         price: 50,
-        status: 'Disponível',
+        status: true,
         category: 'Camisas'
       };
       response = await request.post('/product').send(productData);
@@ -38,7 +38,7 @@ defineFeature(feature, (test) => {
       expect(response.body.product.name).toBe('Camisa Nova');
       expect(response.body.product.description).toBe('Algodão');
       expect(response.body.product.price).toBe(50);
-      expect(response.body.product.status).toBe('Disponível');
+      expect(response.body.product.status).toBe(true);
       expect(response.body.product.category).toBe('Camisas');
     });
 
@@ -62,7 +62,7 @@ defineFeature(feature, (test) => {
       const productData = {
         name: 'Camisa Nova',
         description: 'Algodão',
-        status: 'Disponível',
+        status: true,
         category: 'Camisas'
       };
       response = await request.post('/product').send(productData);
@@ -77,4 +77,36 @@ defineFeature(feature, (test) => {
       expect(response.body.message).toBe('Todos os campos devem ser preenchidos');
     });
   });
+
+  //TEST #3 - CREATION WITH NEAGTIVE PRICE
+  test('Cadastro do Produto com Preço Negativo', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o banco de dados de produto está vazio', async () => {
+      const products = await firestoreDB.collection('products').get();
+      const batch = firestoreDB.batch();
+      products.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    });
+
+    when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: -50, // Preço negativo para testar a validação
+        status: true,
+        category: 'Camisas'
+      };
+      response = await request.post('/product').send(productData);
+    });
+
+    then('o sistema valida que o campo "preço" possui um valor positivo', () => {
+      expect(response.status).toBe(500); // Espera que a resposta tenha um status 400
+    });
+
+    and('o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo', () => {
+      expect(response.body.message).toBe('O preço deve ser um número positivo');
+    });
+  });
+
 });
