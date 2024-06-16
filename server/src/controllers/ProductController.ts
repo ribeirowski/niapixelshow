@@ -71,7 +71,7 @@ class ProductController {
             const productDoc = querySnapshot.docs[0];
 
             // Atualiza o status do produto para 'Indisponível'
-            await productDoc.ref.update({ status: 'Indisponível' });
+            await productDoc.ref.update({ status: false });
 
             res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productDoc.data(), status: 'Indisponível' } });
             return next();
