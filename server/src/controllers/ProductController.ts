@@ -40,22 +40,20 @@ class ProductController {
     //UPDATE METHOD
     async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
             const productData = UpdateProduct.parse(req.body);
 
             // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
-            // Atualiza o produto no Firestore
-            await productDoc.ref.update(productData);
+             // Atualiza as informações do produto no Firestore
+             await firestoreDB.collection('products').doc(productId).update(productData);
 
-            res.status(200).json({ message: 'Produto atualizado com sucesso', product: { ...productDoc.data(), ...productData } });
-            return next();
+             res.status(200).json({ message: 'Produto atualizado com sucesso', product: { id: productId, ...productData } });
+             return next();
         }  catch (error) {
             return next(error);
         }

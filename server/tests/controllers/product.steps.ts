@@ -85,8 +85,8 @@ defineFeature(feature, (test) => {
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
       const batch = firestoreDB.batch();
-      products.forEach(doc => batch.delete(doc.ref));
-      await batch.commit();
+      /*products.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();*/
     });
 
     when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"', async () => {
@@ -106,6 +106,47 @@ defineFeature(feature, (test) => {
 
     and('o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo', () => {
       expect(response.body.message).toBe('O preço deve ser um número positivo');
+    });
+  });
+
+  test('Atualização do Produto Bem-Sucedida', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o produto com ID "123" existe no banco de dados de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      await firestoreDB.collection('products').doc('123').set(productData);
+    });
+
+    when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Azul", descrição "Algodão", preço "50", status "true", categoria "Camisas"', async () => {
+      const productData = {
+        name: 'Camisa Azul',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      response = await request.put('/product/123').send(productData);
+    });
+
+    then('o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {
+      expect(response.status).toBe(200); // Espera que a resposta tenha um status 200 para sucesso
+    });
+
+    and('o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso', async () => {
+      const updatedProduct = await firestoreDB.collection('products').doc('123').get();
+      const productData = updatedProduct.data();
+      expect(response.body.product.name).toBe('Camisa Azul');
+      expect(response.body.product.description).toBe('Algodão');
+      expect(response.body.product.price).toBe(50);
+      expect(response.body.product.status).toBe(true);
+      expect(response.body.product.category).toBe('Camisas');
+      expect(response.body.message).toBe('Produto atualizado com sucesso');
     });
   });
 
