@@ -1,24 +1,27 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { HttpException } from './index';
+import HttpException from './httpException'; // Ajuste conforme o caminho da importação
 
 const errorHandler = (
-  error: HttpException,
+  error: HttpException | ZodError | Error,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  if (!error) return next();
-
-  res.locals.status = error.status || 500;
-  res.locals.message = error.message || 'Algo deu errado.';
+  let status = 500;
+  let message = 'Algo deu errado.';
 
   if (error instanceof ZodError) {
-    res.locals.status = 400;
-    res.locals.message = error.issues[0].message;
+    status = 400;
+    message = error.errors.map(e => e.message).join(', ');
+  } else if (error instanceof HttpException) {
+    status = error.status;
+    message = error.message;
+  } else if (error instanceof Error) {
+    message = error.message;
   }
 
-  return next();
+  res.status(status).json({ message });
 };
 
 export default errorHandler;
