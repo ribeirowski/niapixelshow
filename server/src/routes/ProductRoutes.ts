@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ProductController } from '../controllers';
+import { errorHandler } from '../middlewares';
 
 const ProductRouter = Router();
 

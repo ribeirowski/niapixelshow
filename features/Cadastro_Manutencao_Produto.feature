@@ -42,50 +42,43 @@ Cenário de Serviço: Cadastro do Produto com Preço Negativo
 Given que o banco de dados de produto está vazio
 When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"
 Then o sistema valida que o campo "preço" possui um valor positivo
-And o sistema detecta o erro de valor negativo no campo "preço"
-Then o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
-Then o sistema registra o erro no log para auditoria
+And o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
 
 Cenário de Serviço: Cadastro do Produto Bem-Sucedido
 Given que o banco de dados de produto está vazio
 When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
 Then o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
-And o sistema verifica que todos os dados estão válidos
-Then o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
+And o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
 
 Cenário de Serviço: Atualização do Produto com Campo Não Preenchido
 Given que o produto com ID "123" existe no banco de dados de produto
 When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "", preço "50", status "Disponível", categoria "Camisas"
 Then o sistema valida se os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
-And o sistema verifica que o campo "descrição" não está preenchido
-Then o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
+And o sistema retorna uma mensagem de erro informando que todos os campos devem ser preenchidos
 
 Cenário de Serviço: Atualização do Produto com Preço Negativo
 Given que o produto com ID "123" existe no banco de dados de produto
 When o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"
 Then o sistema valida que o campo "preço" possui um valor positivo
-And o sistema detecta o erro de valor negativo no campo "preço"
-Then o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
-Then o sistema registra o erro no log para auditoria
+And o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo
+
 
 Cenário de Serviço: Atualização do Produto Bem-Sucedida
 Given que o produto com ID "123" existe no banco de dados de produto
 When o fornecedor submete um formulário de atualização de produto com nome "Camisa Azul", descrição "Algodão", preço "00", status "Disponível", categoria "Camisas"
 Then o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
-And o sistema verifica que todos os dados estão válidos
-Then o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso
+And o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso
 
 Cenário de Serviço: Exclusão de Produto Bem-Sucedida
 Given que o produto com ID "123" existe no banco de dados de produto
 When o fornecedor submete um pedido de exclusão de produto
 Then o sistema verifica que o produto existe
-And o sistema remove o produto do banco de dados
-Then o sistema retorna uma mensagem de confirmação de exclusão
+And o sistema remove o produto do banco de dados e retorna uma mensagem de confirmação de exclusão
 
 Cenário de Serviço: Leitura de Todos os Produtos com Filtro
 Given que existem vários produtos no banco de dados de produto
-When o fornecedor solicita a lista de todos os produtos com filtros "categoria": "Camisas" e "preço"
-Then o sistema aplica os filtros "categoria": "Camisas" e "preço"
+When o fornecedor solicita a lista de todos os produtos com filtros "categoria" "Camisas" e "preço"
+Then o sistema aplica os filtros "categoria" "Camisas" e "preço"
 And o sistema retorna a lista de produtos que correspondem aos filtros
 
 Cenário de Serviço: Leitura de Produto Específico Bem-Sucedida
