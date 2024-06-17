@@ -247,4 +247,41 @@ defineFeature(feature, (test) => {
       expect(response.body.message).toBe('Produto excluído com sucesso');
     });
   });
+
+  test('Leitura de Produto Específico Bem-Sucedida', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
+
+    given('que o produto com ID "123" existe no banco de dados de produto', async () => {
+      const productData = {
+        name: 'Camisa Nova',
+        description: 'Algodão',
+        price: 50,
+        status: true,
+        category: 'Camisas'
+      };
+      await firestoreDB.collection('products').doc('123').set(productData);
+
+      const productDoc = await firestoreDB.collection('products').doc('123').get();
+      expect(productDoc.exists).toBe(true);
+    });
+
+    when('o fornecedor solicita os detalhes de um produto específico', async () => {
+      response = await request.get('/product/123').send();
+    });
+
+    then('o sistema verifica que o produto existe', async () => {
+      const productDoc = await firestoreDB.collection('products').doc('123').get();
+      expect(productDoc.exists).toBe(true);
+    });
+
+    and('o sistema retorna os detalhes do produto solicitado com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"', async () => {
+      expect(response.status).toBe(200);
+      expect(response.body.product).toBeDefined();
+      expect(response.body.product.name).toBe('Camisa Nova');
+      expect(response.body.product.description).toBe('Algodão');
+      expect(response.body.product.price).toBe(50);
+      expect(response.body.product.status).toBe(true);
+      expect(response.body.product.category).toBe('Camisas');
+    });
+  });
 });

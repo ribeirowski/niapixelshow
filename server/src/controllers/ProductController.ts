@@ -121,17 +121,16 @@ class ProductController {
     //READ METHOD
     async read(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore baseado no nome
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 return res.status(404).json({ message: 'Produto não encontrado' });
             }
-            const productDoc = querySnapshot.docs[0];
 
-            res.status(200).json({ id: productDoc.id, ...productDoc.data() });
+            const productData = productdoc.data();
+
+            res.status(200).json({ product: productData });
             return next();
         } catch (error) {
             return next(error);

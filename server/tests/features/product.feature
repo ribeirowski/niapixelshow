@@ -42,3 +42,9 @@ Feature: Cadastro e Manutenção do Produto
   When o fornecedor submete um pedido de exclusão de produto
   Then o sistema verifica se o produto existe
   And o sistema remove o produto do banco de dados e retorna uma mensagem de confirmação de exclusão
+
+ Scenario: Leitura de Produto Específico Bem-Sucedida
+  Given que o produto com ID "123" existe no banco de dados de produto
+  When o fornecedor solicita os detalhes de um produto específico
+  Then o sistema verifica que o produto existe
+  And o sistema retorna os detalhes do produto solicitado com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
