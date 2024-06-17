@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuth, firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
-import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
-import { HttpException } from '../middlewares';
+import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder } from 'src/DTOs/Order';
 
 class OrderController{
@@ -13,7 +11,7 @@ class OrderController{
 
             // Verifica se todos os campos estão preenchidos
             if (!email || !item || !description || !qtd || !price || !status || !date || !addr) {
-                throw new HttpException(400, "Todos os campos devem ser preenchidos");
+                return res.status(400).json({ message: 'Todos os campos devem ser preenchidos' });
             }
             const orderData = Order.parse(req.body);
             // Adiciona o novo produto ao Firestore
