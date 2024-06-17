@@ -23,5 +23,5 @@ Feature: Histórico de pedidos do Usuário
         Examples:
         FILTRO       |   CRITERIO
         Item         |   Camisa CIN
-        Criado em    |   14/05/2024
+        Data         |   14/05/2024
         Preço        |   Acima de R$ 30,00
