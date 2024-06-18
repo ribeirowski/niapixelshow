@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
-import { Order, UpdateOrder } from '../DTOs';
+import { Order, UpdateOrder, Product, UpdateProduct } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
 
 class OrderController{
@@ -65,16 +65,40 @@ class OrderController{
     //GET STATS METHOD
     async getStats(req: Request, res: Response, next: NextFunction) {
         try {
+            // Get all products or paid orders
             const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").get();
+            const allProducts = await firestoreDB.collection('products').get();
             const orders = allOrders.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+            const products = allProducts.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            // Establish stats to be sent
             var totalValue = 0;
-            orders.forEach(element => {
-                totalValue = totalValue + Order.parse(element).price;
+            var mostSold = 'none';
+            var productAmount = [0];
+            var productValue = [0];
+            var index = 0;
+            products.forEach(product => {
+                if(index != 0) {
+                    productAmount.push(0);
+                    productValue.push(0);
+                    index = index + 1;
+                }
+                const productVar = Product.parse(product);
+                orders.forEach(element => {
+                    const orderVar = Order.parse(element);
+                    if(productVar.name == orderVar.item) {
+                        totalValue = totalValue + orderVar.price;
+                        productAmount[index] = productAmount[index] + orderVar.qtd;
+                        productValue[index] = productValue[index] + orderVar.price;
+                    }
+                })
             })
-            res.status(200).json(totalValue);
+            res.status(200).json({ totalValue, productAmount, productValue });
             return next();
         } catch(error) {
             return next(error);
