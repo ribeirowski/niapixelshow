@@ -8,7 +8,7 @@ ProductRouter.route('/')
     .post(ProductController.create)//Rota para criar um novo produto
     .get(ProductController.readAll);//Rota para pegar todos os produtos cadastrados
 
-ProductRouter.route('/:name')
+ProductRouter.route('/:id')
     .get(ProductController.read)//Rota para pegar um produto pelo nome
     .put(ProductController.update)//Rota para atualizar um produto
     .patch(ProductController.deactivate)//Rota para desativar um produto
