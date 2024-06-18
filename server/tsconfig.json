@@ -35,10 +35,12 @@
       "@database": [
         "./src/database"
       ],
-    }
+    },
+    "types": ["node", "jest"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "tests/**/*",
   ],
   "exclude": [
     "tests"
