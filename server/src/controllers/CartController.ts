@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin';
-import { Cart, CartItem } from '@DTOs';
+import { Cart, CartItem, UpdateCartItem } from '../DTOs';
 import { hash } from 'bcryptjs';
-import { UpdateCartItem } from 'src/DTOs/Cart';
 
 class CartController {
     async get(req: Request, res: Response, next: NextFunction) {
