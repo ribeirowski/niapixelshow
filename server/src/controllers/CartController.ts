@@ -1,38 +1,57 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuth, firestoreDB } from '../services/firebaseAdmin';
-import { Cart, UpdateCart } from '@DTOs';
+import { firestoreDB } from '../services/firebaseAdmin';
+import { Cart, CartItem } from '@DTOs';
 import { hash } from 'bcryptjs';
 
 class CartController {
-    async create(req: Request, res: Response, next: NextFunction) {
+    async get(req: Request, res: Response, next: NextFunction) {
         try {
-            const cartData = Cart.parse(req.body);
+            const userId = req.params.id;
 
-            // Salva as informações do carrinho no Firestore
-            await firestoreDB.collection('carts').doc(cartData.user_id).set(cartData);
+            const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
+            if (!cartDoc.exists) {
+                return res.status(404).json({ message: 'Cart not found' });
+            }
 
-            res.status(201).json({ message: 'Cart created successfully' });
+            const cartData = cartDoc.data();
+            if (!cartData) {
+                return res.status(404).json({ message: 'Cart data not found' });
+            }
+
+            res.status(200).json(cartData);
             return next();
         } catch (error) {
             return next(error);
         }
     }
 
-    async update(req: Request, res: Response, next: NextFunction) {
+    async add_item(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.id;
-            const cartData = UpdateCart.parse(req.body);
+            const itemData = CartItem.parse(req.body);
 
             // Verifica se o carrinho existe
             const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
             if (!cartDoc.exists) {
-                return res.status(404).json({ message: 'Cart not found' });
+                const cartData = { user_id: userId, items: [itemData], price: itemData.price*itemData.quantity };
+                await firestoreDB.collection('carts').doc(userId).set(cartData);
+                res.status(201).json({ message: 'Cart created successfully' });
+                return next();
             }
 
-            // Atualiza as informações do carrinho no Firestore
-            await firestoreDB.collection('carts').doc(userId).update(cartData);
+            // Adiciona o item ao carrinho
+            const cartData = cartDoc.data();
+            if (!cartData) {
+                return res.status(404).json({ message: 'Cart data not found' });
+            }
 
-            res.status(200).json({ message: 'Cart updated successfully' });
+            const updatedItems = [...cartData.items, itemData];
+            await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
+
+            const cartPrice = updatedItems.reduce((acc: number, item: any) => acc + item.price*item.quantity, 0);
+            await firestoreDB.collection('carts').doc(userId).update({ price: cartPrice });
+
+            res.status(200).json({ message: 'Item added successfully' });
             return next();
         } catch (error) {
             return next(error);
@@ -43,13 +62,10 @@ class CartController {
         try {
             const userId = req.params.id;
             const itemId = req.params.item_id;
-            const itemData = Cart.parse(req.body);
+            const itemData = CartItem.parse(req.body);
 
             // Verifica se o carrinho existe
             const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
-            if (!cartDoc.exists) {
-                return res.status(404).json({ message: 'Cart not found' });
-            }
 
             // Atualiza o item do carrinho
             const cartData = cartDoc.data();
@@ -66,27 +82,10 @@ class CartController {
 
             await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
 
+            const cartPrice = updatedItems.reduce((acc: number, item: any) => acc + item.price*item.quantity, 0);
+            await firestoreDB.collection('carts').doc(userId).update({ price: cartPrice });
+
             res.status(200).json({ message: 'Item updated successfully' });
-            return next();
-        } catch (error) {
-            return next(error);
-        }
-    }
-
-    async delete(req: Request, res: Response, next: NextFunction) {
-        try {
-            const userId = req.params.id;
-
-            // Verifica se o carrinho existe
-            const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
-            if (!cartDoc.exists) {
-                return res.status(404).json({ message: 'Cart not found' });
-            }
-
-            // Deleta o carrinho do Firestore
-            await firestoreDB.collection('carts').doc(userId).delete();
-
-            res.status(200).json({ message: 'Cart deleted successfully' });
             return next();
         } catch (error) {
             return next(error);
@@ -98,24 +97,36 @@ class CartController {
             const userId = req.params.id;
             const itemId = req.params.item_id;
 
-            // Verifica se o carrinho existe
             const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
-            if (!cartDoc.exists) {
-                return res.status(404).json({ message: 'Cart not found' });
-            }
 
-            // Deleta o item do carrinho
+            // Remove o item do carrinho
             const cartData = cartDoc.data();
             if (!cartData) {
                 return res.status(404).json({ message: 'Cart data not found' });
             }
 
             const updatedItems = cartData.items.filter((item: any) => item.id !== itemId);
+
             await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
+
+            const cartPrice = updatedItems.reduce((acc: number, item: any) => acc + item.price*item.quantity, 0);
+            await firestoreDB.collection('carts').doc(userId).update({ price: cartPrice });
 
             res.status(200).json({ message: 'Item deleted successfully' });
             return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
 
+    async delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+
+            await firestoreDB.collection('carts').doc(userId).delete();
+
+            res.status(200).json({ message: 'Cart deleted successfully' });
+            return next();
         } catch (error) {
             return next(error);
         }

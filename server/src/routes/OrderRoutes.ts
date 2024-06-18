@@ -8,3 +8,5 @@ OrderRouter.route('/')
 
 OrderRouter.route('/:id')
     .patch(OrderController.update); // Rota para atualizar um pedido por ID
+
+export default OrderRouter;
