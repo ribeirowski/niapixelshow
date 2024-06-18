@@ -12,6 +12,13 @@ defineFeature(feature, (test)=>{
     let response: supertest.Response;
     jest.setTimeout(15000);
 
+    beforeEach(async () => {
+        const order = await firestoreDB.collection('orders').get();
+        const batch = firestoreDB.batch();
+        order.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+    });
+    
     test('Marcar o pedido como pago ao confirmar pagamento', ({given, when, then}) => {
         given(/^o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)" cadastrado$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             const orderData = {
