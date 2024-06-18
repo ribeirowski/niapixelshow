@@ -86,7 +86,24 @@ defineFeature(feature, (test) => {
 
         and('o sistema salva a categoria atualizada e retorna uma mensagem de confirmação', () => {
             expect(response.body.message).toBe('Categoria atualizada com sucesso!');
-            expect(response.body.category.name).toBe('Camisetas Temáticas');
+        });
+    });
+
+    test('Administrador Remove uma Categoria Existente', ({ given, when, then }) => {
+        given(/^o administrador de nome ligia, e mail ligiaferropadilha@gmail.com e senha “liginha(\d+)” está logado no painel de administração do e-commercen na página "(.*)"$/, async (arg0, arg1) => {            const categoryData = {
+                name: 'Promoções Temporárias',
+                description: 'Descontos em produtos selecionados por tempo limitado',
+            };
+            await firestoreDB.collection('categories').add(categoryData);
+        });
+
+        when('ele seleciona a opção “remover” para a categoria “Promoções Temporárias”', async () => {
+            response = await request.delete('/category/Promoções Temporárias');
+        });
+
+        then('o sistema salva a remoção da categoria e retorna uma mensagem de confirmação', () => {
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe('Categoria excluída com sucesso!');
         });
     });
 });

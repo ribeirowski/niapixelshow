@@ -18,3 +18,8 @@ Feature: Cadastro e Manutenção da Categoria
         When ele seleciona a opção “editar” para a categoria “Camisetas Personalizadas” e altera seu nome para "Camisetas Temáticas"
         Then o sistema verifica se o novo nome é válido
         And o sistema salva a categoria atualizada e retorna uma mensagem de confirmação
+    
+    Scenario: Administrador Remove uma Categoria Existente 
+        Given o administrador de nome ligia, e mail ligiaferropadilha@gmail.com e senha “liginha123” está logado no painel de administração do e-commercen na página "Gerenciamento de Categorias"
+        When ele seleciona a opção “remover” para a categoria “Promoções Temporárias”
+        Then o sistema salva a remoção da categoria e retorna uma mensagem de confirmação
