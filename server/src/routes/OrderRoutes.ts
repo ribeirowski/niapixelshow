@@ -23,4 +23,7 @@ OrderRouter.route('/:id')
     .patch(OrderController.update) // Rota para atualizar um pedido por ID
     .delete(OrderController.delete); // Rota para deletar um pedido por ID
 
+OrderRouter.route('/filter/:filtro')
+    .get(OrderController.filterAll)
+
 export default OrderRouter;

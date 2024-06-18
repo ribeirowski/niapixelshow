@@ -6,7 +6,6 @@ Feature: Carrinho
         Then o banco de dados cria um novo carrinho com user_id "5" e o produto de item_id "1"
         And o preço total do carrinho de user_id "5" é atualizado para o valor do produto de item_id "1"
 
-    Scenario: Adicionar um produto ao carrinho com produtos
         Given o banco de dados possui um carrinho com user_id "6" e o produto de item_id "1" com nome "Camisa Cin 50 anos", descrição "Esta é uma camisa que representa os 50 anos do Centro de informática", preço "50", status "true", categoria "Camisas", quantidade "4" e tamanho "P"
         When o produto com item_id "2", nome "Camisa Cin Rosa", descrição "Esta é uma camisa", preço "50", status "true", categoria "Camisas", quantidade "4" e tamanho "P" é adicionado ao carrinho pelo usuário de user_id "6"
         Then o banco de dados adiciona o produto de item_id "2" ao carrinho de user_id "6" 
