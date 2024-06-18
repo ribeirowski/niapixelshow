@@ -1,5 +1,15 @@
 import { User, UpdateUser } from './User';
-import { Product, UpdateProduct } from './Product';
 import { Category, UpdateCategory } from './Category';
+import { Promotion, UpdatePromotion } from './Promotion';
+import { Product, UpdateProduct} from './Product';
+import { Order, UpdateOrder} from './Order';
 
-export { User, UpdateUser, Product, UpdateProduct, Category, UpdateCategory };
+export { 
+    User,
+    UpdateUser,
+    Product,
+    UpdateProduct, Order, UpdateOrder,
+    Promotion,
+    UpdatePromotion,
+    Category, UpdateCategory
+};

@@ -32,7 +32,7 @@ And os outros campos permanecem preenchidos com as informações válidas que in
 Scenario: Telefone inválido durante o cadastro 
 Given eu acesso a página de cadastro de usuário 
 And vejo os campos para inserir nome, email, senha e telefone 
-When preencho todos os campos obrigatórios com nome: "Enio Henrique", email: "ehnr.cin.ufpe.br", senha: "enio1234" e telefone: "819935640578"
+When preencho todos os campos obrigatórios com nome: "Enio Henrique", email: "ehnr.cin.ufpe.br", senha: "enio1234" e telefone: "81993564057c"
 And clico no botão de cadastrar 
 Then vejo uma mensagem de erro indicando que o formato do telefone é inválido 
 And o campo de telefone é destacado com uma mensagem de erro 
@@ -98,3 +98,11 @@ When deixo ambos os campos em branco
 And clico no botão de login 
 Then vejo uma mensagem de erro indicando que os campos não podem estar vazios
 And os campos de email e senha são destacados com uma mensagem de erro
+
+Scenario: Logout com sucesso
+Given eu estou logado na minha conta
+And estou na página de perfil do usuário
+When clico no botão de logout
+Then sou deslogado do sistema
+And sou redirecionado para a página de login
+And vejo uma mensagem indicando que o logout foi realizado com sucesso
