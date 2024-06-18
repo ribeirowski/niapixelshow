@@ -1,5 +1,7 @@
 import UserController from './UserController';
 import CartController from './CartController';
 import OrderController from './OrderController';
+import AuthController from './AuthController';
+import ProductController from './ProductController';
 
-export { UserController, CartController, OrderController };
+export { UserController, AuthController, ProductController, OrderController, CartController};
