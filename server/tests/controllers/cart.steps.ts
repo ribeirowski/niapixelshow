@@ -131,6 +131,7 @@ defineFeature(feature, (test)=>{
         And o banco de dados edita o valor do campo de quantidade do produto de item_id para "2" */
     test ('Editar um produto do carrinho', ({given, when, then, and}) => {
         given('o banco de dados possui um carrinho com user_id "10" e o produto de item_id "1" com nome "Camisa Cin 50 anos", descrição "Esta é uma camisa que representa os 50 anos do Centro de informática", preço "50", status "true", categoria "Camisas", quantidade "4" e tamanho "P"', async () => {
+            response = await request.delete(`/cart/10`);
             const orderData = {
                 item_id: "1",
                 name: "Camisa Cin 50 anos",
@@ -147,10 +148,11 @@ defineFeature(feature, (test)=>{
             response = await request.put(`/cart/10/${arg0}`).send({size: arg1});
         });
         and(/^a quantidade do produto de item_id "(.*)" é editado para "(.*)"$/, async (arg0, arg1) => {
-            response = await request.put(`/cart/10/${arg0}`).send({quantity: arg1});
+            response = await request.put(`/cart/10/${arg0}`).send({quantity: parseInt(arg1)});
         });
         then(/^o banco de dados edita o valor do campo tamanho do produto de item_id "(.*)" para "(.*)"$/, async (arg0, arg1) => {
             response = await request.get(`/cart/10`);
+            console.log(response.body)
             expect(response.body.items[0].size).toBe(arg1);
         });
         and(/^o banco de dados edita o valor do campo de quantidade do produto de item_id para "(.*)"$/, async (arg0) => {
