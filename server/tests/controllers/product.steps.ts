@@ -3,7 +3,6 @@ import supertest from 'supertest';
 import app from '../../src/app';
 import { firestoreDB } from '../../src/services/firebaseAdmin';
 import { HttpException } from '../../src/middlewares';
-import {expect} from 'expect'
 
 const feature = loadFeature('tests/features/product.feature');
 
@@ -12,6 +11,7 @@ defineFeature(feature, (test) => {
   let response: supertest.Response;
 
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
       const batch = firestoreDB.batch();
@@ -49,6 +49,7 @@ defineFeature(feature, (test) => {
 
   //TEST #2 - CREATION WITH MISSING FIELD
   test('Cadastro do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
+    jest.setTimeout(15000);
 
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
