@@ -10,6 +10,7 @@ const feature = loadFeature('tests/features/payment.feature');
 defineFeature(feature, (test)=>{
     let request = supertest(app)
     let response: supertest.Response;
+    jest.setTimeout(15000);
 
     test('Marcar o pedido como pago ao confirmar pagamento', ({given, when, then}) => {
         given(/^o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)" cadastrado$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {

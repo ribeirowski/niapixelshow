@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
+import { request } from 'http';
 
 class OrderController{
 
@@ -51,13 +52,18 @@ class OrderController{
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
             const allOrders = await firestoreDB.collection('orders').get();
-            const orders = allOrders.docs.map(doc => ({
+            if(allOrders.empty){
+                res.status(426).json({ message: 'Nenhum pedido encontrado' })
+            }
+            else{
+                const orders = allOrders.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
-            }));
-            res.status(200).json(orders); // Apenas uma resposta aqui
+                }));
+                res.status(200).json(orders); // Apenas uma resposta aqui}
+            }
             return next();
-        } catch (error) {
+        }catch (error) {
             return next(error);
         }
     }
@@ -86,6 +92,37 @@ class OrderController{
             res.status(200).json({ message: 'order deleted successfully' });
             return next();
         } catch (error) {
+            return next(error);
+        }
+    }
+
+    //FILTER ALL METHOD
+    async filterAll(req: Request, res: Response, next: NextFunction){
+        try {
+            const atribute = req.params.filtro;
+            const {func, filter} = req.body
+            if(func === 'Acima de'){
+                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filter).get();
+            }
+            else if(func === 'Abaixo de'){
+                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filter).get();
+            }
+            else{
+                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filter).get();
+            }
+            
+            if(allOrders.empty){
+                res.status(426).json({ message: 'Nenhum pedido encontrado' })
+            }
+            else{
+                const orders = allOrders.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+                }));
+                res.status(200).json(orders); // Apenas uma resposta aqui}
+            }
+            return next();
+        }catch (error) {
             return next(error);
         }
     }
