@@ -63,6 +63,22 @@ class OrderController{
         }
     }
 
+    //GET STATS METHOD
+    async getStats(req: Request, res: Response, next: NextFunction) {
+        try {
+            const allOrders = await firestoreDB.collection('orders').where("status", "==", "pago").get();
+            var totalSales = 0;
+            allOrders.forEach(element => {
+                const currentOrder = Order.parse(element);
+                totalSales = totalSales + currentOrder.price;
+            });
+            res.status(200).json(totalSales);
+            return next();
+        } catch(error) {
+            return next(error);
+        }
+    }
+
     //READ METHOD
     async read(req: Request, res: Response, next: NextFunction) {
         try {
