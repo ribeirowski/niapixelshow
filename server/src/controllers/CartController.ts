@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin';
 import { Cart, CartItem } from '@DTOs';
 import { hash } from 'bcryptjs';
+import { UpdateCartItem } from 'src/DTOs/Cart';
 
 class CartController {
     async get(req: Request, res: Response, next: NextFunction) {
@@ -62,7 +63,7 @@ class CartController {
         try {
             const userId = req.params.id;
             const itemId = req.params.item_id;
-            const itemData = CartItem.parse(req.body);
+            const itemData = UpdateCartItem.parse(req.body);
 
             // Verifica se o carrinho existe
             const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
@@ -74,8 +75,17 @@ class CartController {
             }
 
             const updatedItems = cartData.items.map((item: any) => {
-                if (item.id === itemId) {
-                    return itemData;
+                if (item.item_id === itemId) {
+                    if(!itemData.quantity){
+                        item.size = itemData.size;
+                    }
+                    if(!itemData.size){
+                        item.quantity = itemData.quantity;
+                    }
+                    else{
+                        item.size = itemData.size;
+                        item.quantity = itemData.quantity;
+                    }
                 }
                 return item;
             });
