@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import UserRouter from './UserRoutes';
+import PromotionRouter from './PromotionRoutes';
 import AuthRouter from './AuthRoutes';
 import ProductRouter from './ProductRoutes';
 import OrderRouter from './OrderRoutes';
@@ -7,7 +8,8 @@ import OrderRouter from './OrderRoutes';
 const router = Router();
 
 router.use('/user', UserRouter);
-router.use('/login', AuthRouter);
+router.use('/promotion', PromotionRouter);
+router.use('/auth', AuthRouter);
 router.use('/product', ProductRouter);
 router.use('/order', OrderRouter);
 

@@ -2759,7 +2759,7 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
+debug@4, debug@4.3.4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1, debug@^4.3.2, debug@^4.3.4:
   version "4.3.4"
   resolved "https://registry.npmjs.org/debug/-/debug-4.3.4.tgz"
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
@@ -4997,6 +4997,13 @@ jest-environment-node@^29.7.0:
     "@types/node" "*"
     jest-mock "^29.7.0"
     jest-util "^29.7.0"
+
+jest-firestore@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/jest-firestore/-/jest-firestore-0.2.0.tgz#edeeba6ab4f9fcf2290a002d5f7490d927f5859d"
+  integrity sha512-jT9Io/RL4g2QQHOv020czidOGhzWe0XQahow4DL8A6fEojxbbW4ugfmBxWTbPPjMBKZSzz/3TgE3SHY2N55YKQ==
+  dependencies:
+    debug "4.3.4"
 
 jest-get-type@^26.3.0:
   version "26.3.0"

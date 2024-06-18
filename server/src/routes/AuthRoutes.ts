@@ -3,7 +3,10 @@ import { AuthController } from '../controllers';
 
 const AuthRouter = Router();
 
-AuthRouter.route('/')
-    .post(AuthController.create);
+AuthRouter.route('/login')
+    .post(AuthController.login);
+
+AuthRouter.route('/logout')
+    .post(AuthController.logout);
 
 export default AuthRouter;
