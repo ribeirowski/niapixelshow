@@ -16,6 +16,10 @@ class ProductController {
             if (!name || !description || !price || !status || !category) {
                 throw new HttpException(400, "Todos os campos devem ser preenchidos");
             }
+            // Verifica se o preço é um número positivo
+            if (price <= 0) {
+                throw new Error('O preço deve ser um número positivo');
+            }
             const productData = Product.parse(req.body);
             // Verifica se já existe um produto com o mesmo nome
             const existsProductWithName = await firestoreDB.collection('products').where('name', '==', productData.name).get();
@@ -36,22 +40,25 @@ class ProductController {
     //UPDATE METHOD
     async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
             const productData = UpdateProduct.parse(req.body);
 
+            // Verifica se todos os campos estão preenchidos
+            if (!productData.name || !productData.description || !productData.price || !productData.status || !productData.category) {
+                throw new HttpException(400, "Todos os campos devem ser preenchidos");
+            }
+
             // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
-            // Atualiza o produto no Firestore
-            await productDoc.ref.update(productData);
+             // Atualiza as informações do produto no Firestore
+             await firestoreDB.collection('products').doc(productId).update(productData);
 
-            res.status(200).json({ message: 'Produto atualizado com sucesso', product: { ...productDoc.data(), ...productData } });
-            return next();
+             res.status(200).json({ message: 'Produto atualizado com sucesso', product: { id: productId, ...productData } });
+             return next();
         }  catch (error) {
             return next(error);
         }
@@ -60,20 +67,17 @@ class ProductController {
     //DEACTIVATE METHOD
     async deactivate(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
-            // Atualiza o status do produto para 'Indisponível'
-            await productDoc.ref.update({ status: false });
+            // Exclui o produto no Firestore
+            await firestoreDB.collection('products').doc(productId).update({ status: false });
 
-            res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productDoc.data(), status: 'Indisponível' } });
+            res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productdoc.data(), status: 'Indisponível' } });
             return next();
         } catch (error) {
             return next(error);
@@ -83,18 +87,15 @@ class ProductController {
     //DELET METHOD
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
-            const productDoc = querySnapshot.docs[0];
 
             // Exclui o produto no Firestore
-            await productDoc.ref.delete();
+            await firestoreDB.collection('products').doc(productId).delete();
 
             res.status(200).json({ message: 'Produto excluído com sucesso' });
             return next();
@@ -120,17 +121,16 @@ class ProductController {
     //READ METHOD
     async read(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name } = req.params;
+            const productId = req.params.id;
 
-            // Verifica se o produto existe no Firestore baseado no nome
-            const q = firestoreDB.collection('products').where('name', '==', name);
-            const querySnapshot = await q.get();
-            if (querySnapshot.empty) {
+            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            if (!productdoc.exists) {
                 return res.status(404).json({ message: 'Produto não encontrado' });
             }
-            const productDoc = querySnapshot.docs[0];
 
-            res.status(200).json({ id: productDoc.id, ...productDoc.data() });
+            const productData = productdoc.data();
+
+            res.status(200).json({ product: productData });
             return next();
         } catch (error) {
             return next(error);
