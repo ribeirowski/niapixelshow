@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
-import { Order, UpdateOrder } from 'src/DTOs/Order';
+import { Order, UpdateOrder } from '../DTOs';
+import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
 
 class OrderController{
 
