@@ -4,6 +4,15 @@ import OrderController from './OrderController';
 import PromotionController from './PromotionController';
 import AuthController from './AuthController';
 import ProductController from './ProductController';
+import CategoryController from './CategoryController';
 
-export { UserController, AuthController, ProductController, OrderController, CartController, PromotionController};
+export {
+    UserController,
+    AuthController,
+    ProductController,
+    PromotionController,
+    OrderController,
+    CategoryController
+};
+
 

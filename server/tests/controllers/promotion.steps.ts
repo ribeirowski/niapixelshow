@@ -3,6 +3,7 @@ import supertest from 'supertest';
 import app from '../../src/app';
 import { firestoreDBTest } from '../services/firebaseAdmin';
 
+
 const feature = loadFeature('tests/features/promotion.feature');
 
 defineFeature(feature, (test) => {
