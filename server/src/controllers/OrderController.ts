@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder, Product, UpdateProduct } from '../DTOs';
-import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 
 class OrderController{
 
@@ -66,13 +66,8 @@ class OrderController{
     async getStats(req: Request, res: Response, next: NextFunction) {
         try {
             // Get all products or paid orders
-            const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").get();
-            const allProducts = await firestoreDB.collection('products').get();
+            const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").orderBy('item').get();
             const orders = allOrders.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            const products = allProducts.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
@@ -81,24 +76,28 @@ class OrderController{
             var mostSold = 'none';
             var productAmount = [0];
             var productValue = [0];
+            var productName = [''];
             var index = 0;
-            products.forEach(product => {
-                if(index != 0) {
-                    productAmount.push(0);
-                    productValue.push(0);
-                    index = index + 1;
-                }
-                const productVar = Product.parse(product);
-                orders.forEach(element => {
-                    const orderVar = Order.parse(element);
-                    if(productVar.name == orderVar.item) {
-                        totalValue = totalValue + orderVar.price;
-                        productAmount[index] = productAmount[index] + orderVar.qtd;
-                        productValue[index] = productValue[index] + orderVar.price;
+            var first = 0;
+            allOrders.forEach(element => {
+                const orderVar = Order.parse(element);
+                if(orderVar.item != productName[index]) {
+                    if(!first) {
+                        index = index + 1;
+                        productName.push(orderVar.item);
+                        productAmount.push(0);
+                        productValue.push(0);
                     }
-                })
-            })
-            res.status(200).json({ totalValue, productAmount, productValue });
+                    else {
+                        first = 0;
+                        productName[index] = orderVar.item;
+                    }
+                }
+                totalValue = totalValue + orderVar.price;
+                productAmount[index] = productAmount[index] + orderVar.qtd;
+                productValue[index] = productValue[index] + orderVar.price;
+            });
+            res.status(200).json({ totalValue, mostSold, productName, productAmount, productValue });
             return next();
         } catch(error) {
             return next(error);

@@ -15,6 +15,6 @@ OrderRouter.route('/stats')
 OrderRouter.route('/:id')
     .get(OrderController.read) // Rota para buscar um pedido por ID
     .patch(OrderController.update) // Rota para atualizar um pedido por ID
-    .delete(OrderController.delete) // Rota para deletar um pedido por ID
+    .delete(OrderController.delete); // Rota para deletar um pedido por ID
 
 export default OrderRouter;
