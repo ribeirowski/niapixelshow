@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
+import { Parser } from 'json2csv';
 
 class OrderController{
 
@@ -134,6 +135,54 @@ class OrderController{
             return next(error);
         }
     }
+
+    //READ BY DATE METHOD
+    async readByDate(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { startDate, endDate } = req.query;
+
+            if (!startDate || !endDate) {
+                return res.status(400).json({ message: 'startDate and endDate query parameters are required' });
+            }
+
+            const ordersQuery = await firestoreDB.collection('orders')
+                .where('date', '>=', startDate)
+                .where('date', '<=', endDate)
+                .get();
+
+            const orders = ordersQuery.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            res.status(200).json(orders);
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    async export(req: Request, res: Response, next: NextFunction) {
+        try {
+            const allOrders = await firestoreDB.collection('orders').get();
+            const orders = allOrders.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(orders);
+
+            res.header('Content-Type', 'text/csv');
+            res.attachment('orders.csv');
+            res.send(csv);
+
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
 
     //DELETE METHOD
     async delete(req: Request, res: Response, next: NextFunction) {

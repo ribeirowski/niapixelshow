@@ -12,6 +12,12 @@ OrderRouter.route('/all')
 OrderRouter.route('/stats')
     .get(OrderController.getStats); // Rota para buscar estatísticas de pedidos
 
+OrderRouter.route('/export')
+    .get(OrderController.export);//Rota para exportar dados dos pedidos
+
+OrderRouter.route('/filterByDate')
+    .get(OrderController.readByDate);//Rota para filtrar pela data
+
 OrderRouter.route('/:id')
     .get(OrderController.read) // Rota para buscar um pedido por ID
     .patch(OrderController.update) // Rota para atualizar um pedido por ID
