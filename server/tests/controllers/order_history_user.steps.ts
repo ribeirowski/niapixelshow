@@ -21,10 +21,7 @@ defineFeature(feature, (test)=>{
             adminAuth.deleteUser(doc.id);
             batch.delete(doc.ref)
         });
-        order.forEach(doc => {
-            adminAuth.deleteUser(doc.id);
-            batch.delete(doc.ref)
-        });
+        order.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
     });
     
@@ -143,11 +140,11 @@ defineFeature(feature, (test)=>{
         });
         when(/^filtrar por "(.*)" "(.*)"$/, async (arg0, arg1) => {
             const condição = arg1.split(" ");
-            console.log(condição);
             const filt = {
                 func: condição[0] + ' ' + condição[1],
-                filter: condição[3]
+                filter: parseFloat(condição[3])
             }
+            console.log(filt);
             response = await request.get('/order/filter/'+arg0).send(filt);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {

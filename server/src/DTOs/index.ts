@@ -10,5 +10,9 @@ export {
     Product,
     UpdateProduct, Order, UpdateOrder,
     Promotion,
-    UpdatePromotion
+    UpdatePromotion,
+    Cart,
+    UpdateCart,
+    CartItem,
+    UpdateCartItem
 };

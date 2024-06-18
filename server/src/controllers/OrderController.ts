@@ -125,63 +125,6 @@ class OrderController{
         }
     }
 
-    //GET STATS METHOD
-    async getStats(req: Request, res: Response, next: NextFunction) {
-        try {
-            // Get all products or paid orders
-            const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").get();
-            const orders = allOrders.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            // Establish stats to be sent
-            var totalValue = 0;
-            var mostSold = 'none';
-            var productAmount = [0];
-            var productValue = [0];
-            var productName = [''];
-            var index = 0;
-            var first = 1;
-            orders.forEach(element => {
-                const orderVar = Order.parse(element);
-                var found = -1;
-                for(var i = 0; i <= index; i++) {
-                    if(orderVar.item == productName[i]) {
-                        found = i;
-                    }
-                }
-                if(found == -1) {
-                    if(first) {
-                        first = 0;
-                        productName[index] = orderVar.item;
-                        found = 0;
-                    }
-                    else {
-                        index = index + 1;
-                        productName.push(orderVar.item);
-                        productAmount.push(0);
-                        productValue.push(0);
-                        found = index;
-                    }
-                }
-                totalValue = totalValue + orderVar.price;
-                productAmount[found] = productAmount[found] + orderVar.qtd;
-                productValue[found] = productValue[found] + orderVar.price;
-            });
-            var highestValue = 0;
-            for(var i = 0; i <= index; i++) {
-                if(productAmount[i] > highestValue) {
-                    highestValue = productAmount[i];
-                    mostSold = productName[i];
-                }
-            }
-            res.status(200).json({ totalValue, mostSold, productName, productAmount, productValue });
-            return next();
-        } catch(error) {
-            return next(error);
-        }
-    }
-
     //READ METHOD
     async read(req: Request, res: Response, next: NextFunction) {
         try {
