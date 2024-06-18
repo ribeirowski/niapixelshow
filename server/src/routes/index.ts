@@ -7,7 +7,7 @@ import ProductRouter from './ProductRoutes';
 const router = Router();
 
 router.use('/user', UserRouter);
-router.use('/login', AuthRouter);
+router.use('/auth', AuthRouter);
 router.use('/product', ProductRouter);
 
 router.route('/').get((_, res) => {

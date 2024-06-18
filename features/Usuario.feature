@@ -98,3 +98,11 @@ When deixo ambos os campos em branco
 And clico no botão de login 
 Then vejo uma mensagem de erro indicando que os campos não podem estar vazios
 And os campos de email e senha são destacados com uma mensagem de erro
+
+Scenario: Logout com sucesso
+Given eu estou logado na minha conta
+And estou na página de perfil do usuário
+When clico no botão de logout
+Then sou deslogado do sistema
+And sou redirecionado para a página de login
+And vejo uma mensagem indicando que o logout foi realizado com sucesso
