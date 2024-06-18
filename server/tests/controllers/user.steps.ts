@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app'; // Importe o seu app Express aqui
-import { firestoreDB, adminAuth } from '../../src/services/firebaseAdmin'; // Importe a configuração do Firebase para testes
+import { firestoreDBTest, adminAuthTest } from '../services/firebaseAdmin'; // Importe a configuração do Firebase para testes
 
 const feature = loadFeature('tests/features/user.feature');
 
@@ -13,8 +13,8 @@ defineFeature(feature, (test) => {
 
   const deleteUserByEmail = async (email: string) => {
     try {
-      const userRecord = await adminAuth.getUserByEmail(email);
-      await adminAuth.deleteUser(userRecord.uid);
+      const userRecord = await adminAuthTest.getUserByEmail(email);
+      await adminAuthTest.deleteUser(userRecord.uid);
     } catch (error: unknown) {
       // Verificação de tipo para acessar a propriedade `code`
       if (error instanceof Error && 'code' in error) {
@@ -32,7 +32,7 @@ defineFeature(feature, (test) => {
   // Configuração inicial para remover usuários de teste
   beforeAll(async () => {
     // Remove o usuário do Firestore
-    const snapshot = await firestoreDB.collection('users').where('email', '==', testEmail).get();
+    const snapshot = await firestoreDBTest.collection('users').where('email', '==', testEmail).get();
     snapshot.forEach(async (doc) => {
       await doc.ref.delete();
     });
@@ -45,10 +45,10 @@ defineFeature(feature, (test) => {
   afterEach(async () => {
     if (createdUserId) {
       // Remove do Firestore
-      await firestoreDB.collection('users').doc(createdUserId).delete();
+      await firestoreDBTest.collection('users').doc(createdUserId).delete();
       
       // Remove da autenticação do Firebase
-      const userDoc = await firestoreDB.collection('users').doc(createdUserId).get();
+      const userDoc = await firestoreDBTest.collection('users').doc(createdUserId).get();
       if (userDoc.exists) {
         const email = userDoc.data()?.email;
         if (email) {
@@ -100,7 +100,7 @@ defineFeature(feature, (test) => {
     and('posso verificar no banco de dados que o usuário foi registrado corretamente', async () => {
       // Verifica no Firestore se o usuário foi registrado corretamente
       if (createdUserId) {
-        const userDoc = await firestoreDB.collection('users').doc(createdUserId).get();
+        const userDoc = await firestoreDBTest.collection('users').doc(createdUserId).get();
         expect(userDoc.exists).toBeTruthy();
         expect(userDoc.data()?.email).toBe(response.body.email);
       }
