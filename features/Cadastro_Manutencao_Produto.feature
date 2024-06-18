@@ -72,7 +72,7 @@ And o sistema atualiza o produto no banco de dados e retorna uma confirmação d
 Cenário de Serviço: Exclusão de Produto Bem-Sucedida
 Given que o produto com ID "123" existe no banco de dados de produto
 When o fornecedor submete um pedido de exclusão de produto
-Then o sistema verifica que o produto existe
+Then o sistema verifica se o produto existe
 And o sistema remove o produto do banco de dados e retorna uma mensagem de confirmação de exclusão
 
 Cenário de Serviço: Leitura de Todos os Produtos com Filtro
