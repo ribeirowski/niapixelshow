@@ -18,7 +18,7 @@ class OrderController{
             // Adiciona o novo produto ao Firestore
             const orderRef = await firestoreDB.collection('orders').add(orderData);
 
-            res.status(201).json({ message: 'Produto cadastrado com sucesso', id: orderRef.id, product: orderData });
+            res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, product: orderData });
             return next();
         } catch (error) {
             return next(error);
