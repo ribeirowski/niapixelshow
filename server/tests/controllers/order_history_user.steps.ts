@@ -2,7 +2,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import expect from 'expect'
-import { firestoreDB, adminAuth } from '../../src/services/firebaseAdmin';
+import { firestoreDBTest, adminAuthTest } from '../services/firebaseAdmin';
 import { Stats } from 'fs';
 
 const feature = loadFeature('tests/features/order_history_user.feature');
@@ -14,11 +14,11 @@ defineFeature(feature, (test)=>{
     jest.setTimeout(15000);
 
     beforeEach(async () => {
-        const order = await firestoreDB.collection('orders').get();
-        const user = await firestoreDB.collection('users').get();
-        const batch = firestoreDB.batch();
+        const order = await firestoreDBTest.collection('orders').get();
+        const user = await firestoreDBTest.collection('users').get();
+        const batch = firestoreDBTest.batch();
         user.forEach(doc => {
-            adminAuth.deleteUser(doc.id);
+            adminAuthTest.deleteUser(doc.id);
             batch.delete(doc.ref)
         });
         order.forEach(doc => batch.delete(doc.ref));
@@ -81,10 +81,10 @@ defineFeature(feature, (test)=>{
         and('não tem cadastrado nenhum pedido', async () => {
             const email = response.body.email;
             if(email != null){
-                const orders = await firestoreDB.collection('orders').where("email", "==", email).get();
-                const batch = firestoreDB.batch();
+                const orders = await firestoreDBTest.collection('orders').where("email", "==", email).get();
+                const batch = firestoreDBTest.batch();
                 orders.forEach(doc => {
-                    adminAuth.deleteUser(doc.id);
+                    adminAuthTest.deleteUser(doc.id);
                     batch.delete(doc.ref)
                 });
                 await batch.commit();

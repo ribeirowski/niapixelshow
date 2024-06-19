@@ -2,7 +2,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import expect from 'expect'
-import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { firestoreDBTest } from '../services/firebaseAdmin';
 import { Stats } from 'fs';
 
 const feature = loadFeature('tests/features/payment.feature');
@@ -13,8 +13,8 @@ defineFeature(feature, (test)=>{
     jest.setTimeout(15000);
 
     beforeEach(async () => {
-        const order = await firestoreDB.collection('orders').get();
-        const batch = firestoreDB.batch();
+        const order = await firestoreDBTest.collection('orders').get();
+        const batch = firestoreDBTest.batch();
         order.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
     });

@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { firestoreDBTest } from '../services/firebaseAdmin';
 import { HttpException } from '../../src/middlewares';
 import {expect} from 'expect'
 
@@ -13,8 +13,8 @@ defineFeature(feature, (test) => {
 
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
     given('que o banco de dados de produto está vazio', async () => {
-      const products = await firestoreDB.collection('products').get();
-      const batch = firestoreDB.batch();
+      const products = await firestoreDBTest.collection('products').get();
+      const batch = firestoreDBTest.batch();
       products.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     });
@@ -51,8 +51,8 @@ defineFeature(feature, (test) => {
   test('Cadastro do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
 
     given('que o banco de dados de produto está vazio', async () => {
-      const products = await firestoreDB.collection('products').get();
-      const batch = firestoreDB.batch();
+      const products = await firestoreDBTest.collection('products').get();
+      const batch = firestoreDBTest.batch();
       products.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     });
@@ -82,8 +82,8 @@ defineFeature(feature, (test) => {
     jest.setTimeout(15000);
 
     given('que o banco de dados de produto está vazio', async () => {
-      const products = await firestoreDB.collection('products').get();
-      const batch = firestoreDB.batch();
+      const products = await firestoreDBTest.collection('products').get();
+      const batch = firestoreDBTest.batch();
       products.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
     });
@@ -120,7 +120,7 @@ defineFeature(feature, (test) => {
         status: true,
         category: 'Camisas'
       };
-      await firestoreDB.collection('products').doc('123').set(productData);
+      await firestoreDBTest.collection('products').doc('123').set(productData);
     });
 
     when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Azul", descrição "Algodão", preço "50", status "true", categoria "Camisas"', async () => {
@@ -139,7 +139,7 @@ defineFeature(feature, (test) => {
     });
 
     and('o sistema atualiza o produto no banco de dados e retorna uma confirmação de sucesso', async () => {
-      const updatedProduct = await firestoreDB.collection('products').doc('123').get();
+      const updatedProduct = await firestoreDBTest.collection('products').doc('123').get();
       const productData = updatedProduct.data();
       expect(response.body.product.name).toBe('Camisa Azul');
       expect(response.body.product.description).toBe('Algodão');
@@ -162,7 +162,7 @@ defineFeature(feature, (test) => {
         status: true,
         category: 'Camisas'
       };
-      await firestoreDB.collection('products').doc('123').set(productData);
+      await firestoreDBTest.collection('products').doc('123').set(productData);
     });
 
     when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "", preço "50", status "Disponível", categoria "Camisas"', async () => {
@@ -195,7 +195,7 @@ defineFeature(feature, (test) => {
         status: true,
         category: 'Camisas'
       };
-      await firestoreDB.collection('products').doc('123').set(productData);
+      await firestoreDBTest.collection('products').doc('123').set(productData);
     });
 
     when('o fornecedor submete um formulário de atualização de produto com nome "Camisa Nova", descrição "Algodão", preço "-50", status "Disponível", categoria "Camisas"', async () => {
@@ -229,7 +229,7 @@ defineFeature(feature, (test) => {
         status: true,
         category: 'Camisas'
       };
-      await firestoreDB.collection('products').doc('123').set(productData);
+      await firestoreDBTest.collection('products').doc('123').set(productData);
     });
 
     when('o fornecedor submete um pedido de exclusão de produto', async () => {
@@ -237,7 +237,7 @@ defineFeature(feature, (test) => {
     });
 
     then('o sistema verifica se o produto existe', async () => {
-      const productdoc = await firestoreDB.collection('products').doc('123').get();
+      const productdoc = await firestoreDBTest.collection('products').doc('123').get();
       expect(productdoc.exists).toBe(false);
     });
 
@@ -258,9 +258,9 @@ defineFeature(feature, (test) => {
         status: true,
         category: 'Camisas'
       };
-      await firestoreDB.collection('products').doc('123').set(productData);
+      await firestoreDBTest.collection('products').doc('123').set(productData);
 
-      const productDoc = await firestoreDB.collection('products').doc('123').get();
+      const productDoc = await firestoreDBTest.collection('products').doc('123').get();
       expect(productDoc.exists).toBe(true);
     });
 
@@ -269,7 +269,7 @@ defineFeature(feature, (test) => {
     });
 
     then('o sistema verifica que o produto existe', async () => {
-      const productDoc = await firestoreDB.collection('products').doc('123').get();
+      const productDoc = await firestoreDBTest.collection('products').doc('123').get();
       expect(productDoc.exists).toBe(true);
     });
 
