@@ -12,7 +12,8 @@ export {
     ProductController,
     PromotionController,
     OrderController,
-    CategoryController
+    CategoryController,
+    CartController
 };
 
 
