@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { firestoreDBTest } from '../../src/services/firebaseAdmin';
 import { Stats } from 'fs';
 import { expect } from 'expect';
 
@@ -14,8 +14,8 @@ defineFeature(feature, (test)=>{
     // Teste 1
     test('Requisição de Estatísticas', ({given, when, then}) => {
         given(/^o banco de dados tem pedido com qtd "(.*)", date "(.*)", item "(.*)", price "(.*)", description "(.*)", addr "(.*)", email "(.*)" e status "(.*)"$/, async (qtd, date, item, price, description, addr, email, status) => {
-            const orders = await firestoreDB.collection('orders').get();
-            const batch = firestoreDB.batch();
+            const orders = await firestoreDBTest.collection('orders').get();
+            const batch = firestoreDBTest.batch();
             orders.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
             const orderData = {
@@ -42,8 +42,8 @@ defineFeature(feature, (test)=>{
     // Teste 2
     test('Requisição sem Pedidos Pagos', ({given, when, then}) => {
         given(/^o banco de dados não tem pedidos$/, async () => {
-            const orders = await firestoreDB.collection('orders').get();
-            const batch = firestoreDB.batch();
+            const orders = await firestoreDBTest.collection('orders').get();
+            const batch = firestoreDBTest.batch();
             orders.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         });

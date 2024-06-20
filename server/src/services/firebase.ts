@@ -1,19 +1,17 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import 'dotenv/config';
 
-const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
-  measurementId: process.env.MEASUREMENT_ID
+const firebaseConfigTest = {
+  apiKey: "AIzaSyDSFiUDASWXi8HwqVpTHnAIq6P5GJGiUFw",
+  authDomain: "nia-pixel-show---testes.firebaseapp.com",
+  projectId: "nia-pixel-show---testes",
+  storageBucket: "nia-pixel-show---testes.appspot.com",
+  messagingSenderId: "660691809608",
+  appId: "1:660691809608:web:fbc5af4d64f3f965a32f7d"
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const appTest = initializeApp(firebaseConfigTest);
+const authTest = getAuth(appTest);
 
-export { app, auth };
+export { appTest, authTest };

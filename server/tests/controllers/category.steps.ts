@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDBTest } from '../services/firebaseAdmin';
+import { firestoreDBTest } from '../../src/services/firebaseAdmin';
 import { expect } from 'expect';
 
 const feature = loadFeature('tests/features/category.feature');

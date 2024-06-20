@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
+import { firestoreDBTest } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Product, UpdateProduct } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
 import { HttpException } from '../middlewares';
@@ -22,13 +22,13 @@ class ProductController {
             }
             const productData = Product.parse(req.body);
             // Verifica se já existe um produto com o mesmo nome
-            const existsProductWithName = await firestoreDB.collection('products').where('name', '==', productData.name).get();
+            const existsProductWithName = await firestoreDBTest.collection('products').where('name', '==', productData.name).get();
             if (!existsProductWithName.empty) {
                 throw new HttpException(400, "Produto com esse nome já existe");
             }
 
             // Adiciona o novo produto ao Firestore
-            const productRef = await firestoreDB.collection('products').add(productData);
+            const productRef = await firestoreDBTest.collection('products').add(productData);
 
             res.status(201).json({ message: 'Produto cadastrado com sucesso', id: productRef.id, product: productData });
             return next();
@@ -49,13 +49,13 @@ class ProductController {
             }
 
             // Verifica se o produto existe no Firestore
-            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            const productdoc = await firestoreDBTest.collection('products').doc(productId).get();
             if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
 
              // Atualiza as informações do produto no Firestore
-             await firestoreDB.collection('products').doc(productId).update(productData);
+             await firestoreDBTest.collection('products').doc(productId).update(productData);
 
              res.status(200).json({ message: 'Produto atualizado com sucesso', product: { id: productId, ...productData } });
              return next();
@@ -69,13 +69,13 @@ class ProductController {
         try {
             const productId = req.params.id;
 
-            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            const productdoc = await firestoreDBTest.collection('products').doc(productId).get();
             if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
 
             // Exclui o produto no Firestore
-            await firestoreDB.collection('products').doc(productId).update({ status: false });
+            await firestoreDBTest.collection('products').doc(productId).update({ status: false });
 
             res.status(200).json({ message: 'Produto desativado com sucesso', product: { ...productdoc.data(), status: 'Indisponível' } });
             return next();
@@ -89,13 +89,13 @@ class ProductController {
         try {
             const productId = req.params.id;
 
-            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            const productdoc = await firestoreDBTest.collection('products').doc(productId).get();
             if (!productdoc.exists) {
                 throw new HttpException(404, "Produto não encontrado");
             }
 
             // Exclui o produto no Firestore
-            await firestoreDB.collection('products').doc(productId).delete();
+            await firestoreDBTest.collection('products').doc(productId).delete();
 
             res.status(200).json({ message: 'Produto excluído com sucesso' });
             return next();
@@ -108,7 +108,7 @@ class ProductController {
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
             // Obtém todos os produtos do Firestore
-            const querySnapshot = await firestoreDB.collection('products').get();
+            const querySnapshot = await firestoreDBTest.collection('products').get();
             const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
             res.status(200).json(products);
@@ -123,7 +123,7 @@ class ProductController {
         try {
             const productId = req.params.id;
 
-            const productdoc = await firestoreDB.collection('products').doc(productId).get();
+            const productdoc = await firestoreDBTest.collection('products').doc(productId).get();
             if (!productdoc.exists) {
                 return res.status(404).json({ message: 'Produto não encontrado' });
             }

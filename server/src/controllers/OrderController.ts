@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
+import { firestoreDBTest } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 import { request } from 'http';
@@ -17,7 +17,7 @@ class OrderController{
             }
             const orderData = Order.parse(req.body);
             // Adiciona o novo pedido ao Firestore
-            const orderRef = await firestoreDB.collection('orders').add(orderData);
+            const orderRef = await firestoreDBTest.collection('orders').add(orderData);
 
             res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, order: orderData });
             return next();
@@ -33,13 +33,13 @@ class OrderController{
             const orderData = UpdateOrder.parse(req.body);
 
             // Verifica se o pedido existe
-            const orderDoc = await firestoreDB.collection('orders').doc(orderId).get();
+            const orderDoc = await firestoreDBTest.collection('orders').doc(orderId).get();
             if (!orderDoc.exists) {
                 return res.status(404).json({ message: 'Order not found' });
             }
 
             // Atualiza as informações do pedido no Firestore
-            await firestoreDB.collection('orders').doc(orderId).update(orderData);
+            await firestoreDBTest.collection('orders').doc(orderId).update(orderData);
 
             res.status(200).json({ message: 'Order updated successfully' });
             return next();
@@ -51,7 +51,7 @@ class OrderController{
     //READ ALL METHOD
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const allOrders = await firestoreDB.collection('orders').get();
+            const allOrders = await firestoreDBTest.collection('orders').get();
             if(allOrders.empty){
                 res.status(426).json({ message: 'Nenhum pedido encontrado' })
             }
@@ -72,7 +72,7 @@ class OrderController{
     async getStats(req: Request, res: Response, next: NextFunction) {
         try {
             // Get all products or paid orders
-            const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").get();
+            const allOrders = await firestoreDBTest.collection('orders').where("status", "==", "Pago").get();
             const orders = allOrders.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
@@ -129,7 +129,7 @@ class OrderController{
     async read(req: Request, res: Response, next: NextFunction) {
         try {
             const orderId = req.params.id;
-            const orderDoc = await firestoreDB.collection('orders').doc(orderId).get();
+            const orderDoc = await firestoreDBTest.collection('orders').doc(orderId).get();
             if (!orderDoc.exists) {
                 return res.status(404).json({ message: 'order not found' }); // Aqui enviamos uma resposta se o pedido não for encontrado
             }
@@ -150,7 +150,7 @@ class OrderController{
                 return res.status(400).json({ message: 'startDate and endDate query parameters are required' });
             }
 
-            const ordersQuery = await firestoreDB.collection('orders')
+            const ordersQuery = await firestoreDBTest.collection('orders')
                 .where('date', '>=', startDate)
                 .where('date', '<=', endDate)
                 .get();
@@ -169,7 +169,7 @@ class OrderController{
 
     async export(req: Request, res: Response, next: NextFunction) {
         try {
-            const allOrders = await firestoreDB.collection('orders').get();
+            const allOrders = await firestoreDBTest.collection('orders').get();
             const orders = allOrders.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
@@ -193,7 +193,7 @@ class OrderController{
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const orderId = req.params.id;
-            await firestoreDB.collection('orders').doc(orderId).delete();
+            await firestoreDBTest.collection('orders').doc(orderId).delete();
             res.status(200).json({ message: 'order deleted successfully' });
             return next();
         } catch (error) {
@@ -207,13 +207,13 @@ class OrderController{
             const atribute = req.params.filtro;
             const {func, filter} = req.body
             if(func === 'Acima de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filter).get();
+                var allOrders = await firestoreDBTest.collection('orders').where(atribute, ">" , filter).get();
             }
             else if(func === 'Abaixo de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filter).get();
+                var allOrders = await firestoreDBTest.collection('orders').where(atribute, "<" , filter).get();
             }
             else{
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filter).get();
+                var allOrders = await firestoreDBTest.collection('orders').where(atribute, "==" , filter).get();
             }
             
             if(allOrders.empty){

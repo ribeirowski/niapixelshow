@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { auth } from '../services/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { adminAuth } from '../services/firebaseAdmin';
+import { authTest } from '../services/firebase';
+import { signInWithEmailAndPassword, signOut } from 'firebase/authTest';
+import { adminAuthTest } from '../services/firebaseAdmin';
 
 class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {
@@ -16,9 +16,9 @@ class AuthController {
             // Verificar se o email está cadastrado
             let user;
             try {
-                user = await adminAuth.getUserByEmail(email);
+                user = await adminAuthTest.getUserByEmail(email);
             } catch (error: any) {
-                if (error.code === 'auth/user-not-found') {
+                if (error.code === 'authTest/user-not-found') {
                     return res.status(400).json({ message: 'Email not found' });
                 }
                 // Tratar outros erros
@@ -30,7 +30,7 @@ class AuthController {
                 return res.status(400).json({ message: 'Email not verified' });
             }
 
-            await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(authTest, email, password);
 
             res.status(200).json({ message: 'Login successful' });
             return next();
@@ -41,7 +41,7 @@ class AuthController {
 
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            await signOut(auth);
+            await signOut(authTest);
             res.status(200).json({ message: 'Logout successful' });
             return next();
         } catch (error: any) {

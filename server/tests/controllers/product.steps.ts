@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDBTest } from '../services/firebaseAdmin';
+import { firestoreDBTest } from '../../src/services/firebaseAdmin';
 import { HttpException } from '../../src/middlewares';
 import {expect} from 'expect'
 

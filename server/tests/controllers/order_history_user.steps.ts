@@ -2,7 +2,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import expect from 'expect'
-import { firestoreDBTest, adminAuthTest } from '../services/firebaseAdmin';
+import { firestoreDBTest, adminAuthTest } from '../../src/services/firebaseAdmin';
 import { Stats } from 'fs';
 import { z } from 'zod';
 

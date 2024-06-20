@@ -3,13 +3,13 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-const serviceAccount = require('./credentials/nia-pixel-show-firebase-adminsdk-d7h8l-8d5934817b.json');
+const serviceAccount = require('./credentials/nia-pixel-show---testes-firebase-adminsdk-8m0ty-ee554cb33c.json');
 
-const adminApp = initializeApp({
+const adminAppTest = initializeApp({
     credential: admin.credential.cert(serviceAccount),
-});
+}, "adminAppTest");
 
-const adminAuth = getAuth(adminApp);
-const firestoreDB = getFirestore(adminApp);
+const adminAuthTest = getAuth(adminAppTest);
+const firestoreDBTest = getFirestore(adminAppTest);
 
-export { adminAuth, firestoreDB };
+export { adminAuthTest, firestoreDBTest };
