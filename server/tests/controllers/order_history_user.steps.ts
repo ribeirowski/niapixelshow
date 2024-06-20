@@ -25,6 +25,18 @@ defineFeature(feature, (test)=>{
         order.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
     });
+
+    afterEach(async () => {
+        const order = await firestoreDBTest.collection('orders').get();
+        const user = await firestoreDBTest.collection('users').get();
+        const batch = firestoreDBTest.batch();
+        user.forEach(doc => {
+            adminAuthTest.deleteUser(doc.id);
+            batch.delete(doc.ref)
+        });
+        order.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+    });
     
     test('Retornar pedidos no histórico de pedidos com pedidos cadastrados', ({given, and, when, then}) => {
         given(/^um usuário com nome "(.*)", email "(.*)", senha "(.*)" e telefone "(.*)"$/, async (arg0, arg1, arg2, arg3) => {
@@ -81,8 +93,8 @@ defineFeature(feature, (test)=>{
         });
         and('não tem cadastrado nenhum pedido', async () => {
             const email = response.body.email;
-            const orders = await firestoreDB.collection('orders').where("email", "==", email).get();
-            const batch = firestoreDB.batch();
+            const orders = await firestoreDBTest.collection('orders').where("email", "==", email).get();
+            const batch = firestoreDBTest.batch();
             orders.forEach(doc => { batch.delete(doc.ref) });
             await batch.commit();
         });
@@ -136,6 +148,7 @@ defineFeature(feature, (test)=>{
         });
         when(/^filtrar por "(.*)" "(.*)"$/, async (arg0, arg1) => {
             const condição = arg1.split(" ");
+            condição[2] = condição.slice(2).join(' ');
             const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             const isDate = (str: string) => {
                 if(!dateRegex.test(str)){

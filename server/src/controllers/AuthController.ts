@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { authTest } from '../services/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/authTest';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { adminAuthTest } from '../services/firebaseAdmin';
 
 class AuthController {
