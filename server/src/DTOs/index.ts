@@ -1,4 +1,6 @@
 import { User, UpdateUser } from './User';
+import { Category, UpdateCategory } from './Category';
+import { Cart, UpdateCart, CartItem, UpdateCartItem } from './Cart';
 import { Promotion, UpdatePromotion } from './Promotion';
 import { Product, UpdateProduct} from './Product';
 
@@ -8,5 +10,8 @@ export {
     Product,
     UpdateProduct,
     Promotion,
-    UpdatePromotion
+    UpdatePromotion,
+    Category, UpdateCategory,
+    Cart, UpdateCart, CartItem, 
+    UpdateCartItem
 };
