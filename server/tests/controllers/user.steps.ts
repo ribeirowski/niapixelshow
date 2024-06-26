@@ -14,6 +14,8 @@ defineFeature(feature, (test) => {
   let uid: string;
   let token: string;
 
+  jest.setTimeout(20000);
+
   beforeAll(async () => {
     // Deleta usuários no Firebase Authentication
     for (const email of testEmails) {
@@ -71,8 +73,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Criar um novo usuário', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^eu tenho dados de usuário válidos com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
           name: arg0,
@@ -99,8 +99,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Criar um usuário com um email existente', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
           name: arg0,
@@ -139,8 +137,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Atualizar um usuário existente com autenticação', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -183,8 +179,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Atualizar usuário sem autenticação', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -221,8 +215,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Administrador atualiza os detalhes de outro usuário', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -277,8 +269,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Deletar um usuário como administrador', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^que existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -326,8 +316,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Deletar um usuário com autenticação', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^que existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -365,8 +353,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Deletar um usuário sem privilégios de administrador', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^que existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -414,8 +400,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Ler todos os usuários como administrador', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       // Cria e autentica um administrador
       const adminUser = {
@@ -452,8 +436,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Ler todos os usuários como um usuário normal', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       // Cria e autentica um usuário
       const adminUser = {
@@ -490,8 +472,6 @@ defineFeature(feature, (test) => {
   });
 
   test('Ler um usuário específico', ({ given, when, then, and }) => {
-    jest.setTimeout(30000);
-
     given(/^que existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
       user = {
         name: arg0,
@@ -503,7 +483,6 @@ defineFeature(feature, (test) => {
       };
       const userResponse = await request.post('/user').send(user);
       uid = userResponse.body.uid; // Obtendo o UID do usuário criado
-      console.log(uid);
     });
 
     given(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
@@ -529,6 +508,173 @@ defineFeature(feature, (test) => {
       expect(response.body.name).toBe(user.name);
       expect(response.body.phone).toBe(user.phone);
       expect(response.body.address).toBe(user.address);
+    });
+  });
+
+  test('Login de usuário', ({ given, when, then, and }) => {
+    given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
+        user = {
+            name: arg0,
+            phone: arg1,
+            email: arg2,
+            password: arg3,
+            address: arg4,
+            is_admin: false
+        };
+        response = await request.post('/user').send(user);
+        uid = response.body.uid; // Obtendo o UID do usuário criado
+
+        await adminAuth.updateUser(uid, { emailVerified: true });
+    });
+
+    when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/login com email "(.*)" e senha "(.*)"$/, async (arg0, arg1) => {
+        response = await request.post('/auth/login').send({ 
+            email: arg0, 
+            password: arg1 
+        });
+    });
+
+    then('o status da resposta deve ser 200', () => {
+        expect(response.status).toBe(200);
+    });
+
+    and('a resposta deve conter a mensagem "Login successful" e um token JWT', () => {
+        expect(response.body.message).toBe('Login successful');
+        expect(response.body.token).toBeDefined();
+    });
+  });
+
+  test('Login com senha errada', ({ given, when, then, and }) => {
+    given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
+        user = {
+            name: arg0,
+            phone: arg1,
+            email: arg2,
+            password: arg3,
+            address: arg4,
+            is_admin: false
+        };
+        response = await request.post('/user').send(user);
+        uid = response.body.uid; // Obtendo o UID do usuário criado
+
+        await adminAuth.updateUser(uid, { emailVerified: true });
+    });
+
+    when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/login com email "(.*)" e senha "(.*)"$/, async (arg0, arg1) => {
+        response = await request.post('/auth/login').send({ 
+            email: arg0, 
+            password: arg1 
+        });
+    });
+
+    then('o status da resposta deve ser 500', () => {
+        expect(response.status).toBe(500);
+    });
+
+    and('a resposta deve conter a mensagem "Invalid credential"', () => {
+        expect(response.body.message).toBe('Invalid credential');
+    });
+  });
+
+  test('Login com email não cadastrado', ({ given, when, then, and }) => {
+    given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
+        user = {
+            name: arg0,
+            phone: arg1,
+            email: arg2,
+            password: arg3,
+            address: arg4,
+            is_admin: false
+        };
+        response = await request.post('/user').send(user);
+        uid = response.body.uid; // Obtendo o UID do usuário criado
+
+        await adminAuth.updateUser(uid, { emailVerified: true });
+    });
+
+    when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/login com email "(.*)" e senha "(.*)"$/, async (arg0, arg1) => {
+        response = await request.post('/auth/login').send({ 
+            email: arg0, 
+            password: arg1 
+        });
+    });
+
+    then('o status da resposta deve ser 400', () => {
+        expect(response.status).toBe(400);
+    });
+
+    and('a resposta deve conter a mensagem "Email not found"', () => {
+        expect(response.body.message).toBe('Email not found');
+    });
+  });
+
+  test('Logout de usuário', ({ given, when, then, and }) => {
+    given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
+        user = {
+            name: arg0,
+            phone: arg1,
+            email: arg2,
+            password: arg3,
+            address: arg4,
+            is_admin: false
+        };
+        response = await request.post('/user').send(user);
+        uid = response.body.uid; // Obtendo o UID do usuário criado
+
+        await adminAuth.updateUser(uid, { emailVerified: true });
+    });
+
+    and(/^eu estou autenticado com email "(.*)" e senha "(.*)"$/, async (arg0, arg1) => {
+        const loginResponse = await request.post('/auth/login').send({
+          email: arg0,
+          password: arg1
+        });
+        token = loginResponse.body.token;
+    });
+
+    when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/logout$/, async () => {
+        response = await request.post('/auth/logout').set('Authorization', `Bearer ${token}`);
+    });
+
+    then('o status da resposta deve ser 200', () => {
+        expect(response.status).toBe(200);
+    });
+
+    and('a resposta deve conter a mensagem "Logout successful"', () => {
+        expect(response.body.message).toBe('Logout successful');
+    });
+  });
+
+  test('Logout sem autenticação', ({ given, when, then, and }) => {
+    given(/^já existe um usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, async (arg0, arg1, arg2, arg3, arg4) => {
+        user = {
+            name: arg0,
+            phone: arg1,
+            email: arg2,
+            password: arg3,
+            address: arg4,
+            is_admin: false
+        };
+        response = await request.post('/user').send(user);
+        uid = response.body.uid; // Obtendo o UID do usuário criado
+
+        await adminAuth.updateUser(uid, { emailVerified: true });
+    });
+
+    and('eu não estou autenticado', () => {
+        // Não faz nada, pois não está autenticado
+    });
+
+    when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/logout$/, async () => {
+        response = await request.post('/auth/logout');
+    });
+
+    then('o status da resposta deve ser 401', () => {
+        expect(response.status).toBe(401);
+    });
+
+    and('a resposta deve conter a mensagem "No user is currently logged in"', () => {
+        expect(response.body.message).toBe('No user is currently logged in');
     });
   });
 });

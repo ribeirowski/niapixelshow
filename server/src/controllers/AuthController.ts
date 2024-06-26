@@ -36,7 +36,7 @@ class AuthController {
             res.status(200).json({ message: 'Login successful', token });
             return next();
         } catch (error: any) {
-            return next(error);
+            return res.status(500).json({ message: 'Invalid credential' });
         }
     }
 

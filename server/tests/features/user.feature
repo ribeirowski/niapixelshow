@@ -1,6 +1,6 @@
 Feature: Usuario
 As a usuário
-I want to ser capaz de me cadastrar e logar no site
+I want to ser capaz de me cadastrar no site
 So that eu possa fazer pedidos e visualizar meu histórico de compras
 
 Scenario: Criar um novo usuário
@@ -79,3 +79,35 @@ And eu estou autenticado como um usuário normal com email "ehnr@cin.ufpe.br" e 
 When eu envio uma requisição GET para http://localhost:3001/user/{id} com o token JWT no cabeçalho
 Then o status da resposta deve ser 200
 And a resposta deve conter os detalhes do usuário
+
+Scenario: Login de usuário
+Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
+When eu envio uma requisição POST para http://localhost:3001/auth/login com email "ehnr@cin.ufpe.br" e senha "enio1234"
+Then o status da resposta deve ser 200
+And a resposta deve conter a mensagem "Login successful" e um token JWT
+
+Scenario: Login com senha errada
+Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
+When eu envio uma requisição POST para http://localhost:3001/auth/login com email "ehnr@cin.ufpe.br" e senha "enio4321"
+Then o status da resposta deve ser 500
+And a resposta deve conter a mensagem "Invalid credential"
+
+Scenario: Login com email não cadastrado
+Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
+When eu envio uma requisição POST para http://localhost:3001/auth/login com email "ehnr@ufpe.br" e senha "enio1234"
+Then o status da resposta deve ser 400
+And a resposta deve conter a mensagem "Email not found"
+
+Scenario: Logout de usuário
+Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
+And eu estou autenticado com email "ehnr@cin.ufpe.br" e senha "enio1234"
+When eu envio uma requisição POST para http://localhost:3001/auth/logout
+Then o status da resposta deve ser 200
+And a resposta deve conter a mensagem "Logout successful"
+
+Scenario: Logout sem autenticação
+Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
+And eu não estou autenticado
+When eu envio uma requisição POST para http://localhost:3001/auth/logout
+Then o status da resposta deve ser 401
+And a resposta deve conter a mensagem "No user is currently logged in"

@@ -12,7 +12,6 @@ interface CustomRequest extends Request {
 // Função auxiliar para definir a reivindicação is_admin
 const setAdminClaim = async (uid: string) => {
     await adminAuth.setCustomUserClaims(uid, { is_admin: true });
-    console.log(`Admin claim set for user ${uid}`);
 };
 
 class UserController {
