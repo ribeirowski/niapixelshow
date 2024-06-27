@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
+import { firestoreDB } from '../services/firebase/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Product, UpdateProduct } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where } from 'firebase/firestore';
 import { HttpException } from '../middlewares';

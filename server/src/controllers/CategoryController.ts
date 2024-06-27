@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express';
-import {firestoreDB} from '../services/firebaseAdmin';
+import {firestoreDB} from '../services/firebase/firebaseAdmin';
 import {Category, UpdateCategory} from '../DTOs';
 
 class CategoryController {

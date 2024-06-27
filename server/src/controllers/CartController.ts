@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestoreDB } from '../services/firebaseAdmin';
+import { firestoreDB } from '../services/firebase/firebaseAdmin';
 import { hash } from 'bcryptjs';
 import { UpdateCartItem, Cart, CartItem } from '../DTOs';
 

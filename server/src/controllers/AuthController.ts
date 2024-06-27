@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { auth } from '../services/firebase';
+import { auth } from '../services/firebase/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { adminAuth } from '../services/firebaseAdmin';
+import { adminAuth } from '../services/firebase/firebaseAdmin';
 
 class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {

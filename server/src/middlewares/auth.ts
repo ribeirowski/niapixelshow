@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuth } from '../services/firebaseAdmin';
+import { adminAuth } from '../services/firebase/firebaseAdmin';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 interface CustomRequest extends Request {

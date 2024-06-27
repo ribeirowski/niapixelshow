@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuth, firestoreDB } from '../services/firebaseAdmin';
-import { auth } from '../services/firebase';
+import { adminAuth, firestoreDB } from '../services/firebase/firebaseAdmin';
+import { auth } from '../services/firebase/firebase';
 import { sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth';
 import { User, UpdateUser } from '../DTOs';
 import { hash } from 'bcryptjs';
