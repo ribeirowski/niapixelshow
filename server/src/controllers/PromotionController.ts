@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuthTest, firestoreDBTest } from '../services/firebaseAdmin';
-import { authTest } from '../services/firebase';
+import { adminAuth, firestoreDB } from '../services/firebase/firebaseAdmin';
+import { auth } from '../services/firebase/firebase';
 import { Promotion, UpdatePromotion } from '../DTOs';
 import { errorHandler } from 'src/middlewares';
 

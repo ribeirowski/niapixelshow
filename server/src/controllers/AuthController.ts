@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { authTest } from '../services/firebase';
+import { auth } from '../services/firebase/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { adminAuthTest } from '../services/firebaseAdmin';
+import { adminAuth } from '../services/firebase/firebaseAdmin';
 
 class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {
@@ -30,25 +30,30 @@ class AuthController {
                 return res.status(400).json({ message: 'Email not verified' });
             }
 
-            await signInWithEmailAndPassword(authTest, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const token = await userCredential.user.getIdToken();
 
-            res.status(200).json({ message: 'Login successful' });
+            res.status(200).json({ message: 'Login successful', token });
             return next();
         } catch (error: any) {
-            return next(error);
+            return res.status(500).json({ message: 'Invalid credential' });
         }
     }
 
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            await signOut(authTest);
+            // Certificar-se de que o usuário está autenticado
+            if (!auth.currentUser) {
+                return res.status(401).json({ message: 'No user is currently logged in' });
+            }
+
+            await signOut(auth);
             res.status(200).json({ message: 'Logout successful' });
             return next();
         } catch (error: any) {
             return next(error);
         }
     }
-}
+};
 
-const authController = new AuthController();
-export default authController;
+export default new AuthController();

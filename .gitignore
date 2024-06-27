@@ -129,10 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
 .env
 .credentials
 
-
-.env
-.credentials
+.yarn.lock
