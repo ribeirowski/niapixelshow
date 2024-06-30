@@ -21,7 +21,7 @@ class UserController {
             const userData = User.parse(req.body);
 
             // Verifica se já existe um usuário com o mesmo e-mail
-            const existsUserWithEmail = await firestoreDBTest.collection('users').where('email', '==', userData.email).get();
+            const existsUserWithEmail = await firestoreDB.collection('users').where('email', '==', userData.email).get();
             if (!existsUserWithEmail.empty) {
                 return res.status(400).json({ message: 'Email already in use' });
             }
@@ -30,7 +30,7 @@ class UserController {
             const hashedPassword = await hash(userData.password, 6);
 
             // Crie o usuário no Firebase Authentication
-            const userRecord = await adminAuthTest.createUser({
+            const userRecord = await adminAuth.createUser({
                 email: userData.email,
                 password: userData.password,
                 displayName: userData.name,
@@ -60,9 +60,9 @@ class UserController {
             };
 
             // Salva as informações do usuário no Firestore
-            await firestoreDBTest.collection('users').doc(userRecord.uid).set(userDataForFirestore);
+            await firestoreDB.collection('users').doc(userRecord.uid).set(userDataForFirestore);
 
-            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid });
+            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid, email: userData.email, name: userData.name });
             return next();
         } catch (error) {
             return next(error);
@@ -76,7 +76,7 @@ class UserController {
             const userData = UpdateUser.parse(req.body);
 
             // Verifica se o usuário existe
-            const userDoc = await firestoreDBTest.collection('users').doc(userId).get();
+            const userDoc = await firestoreDB.collection('users').doc(userId).get();
             if (!userDoc.exists) {
                 return res.status(404).json({ message: 'User not found' });
             }
@@ -87,7 +87,7 @@ class UserController {
             }
 
             // Atualiza as informações do usuário no Firestore
-            await firestoreDBTest.collection('users').doc(userId).update(userData);
+            await firestoreDB.collection('users').doc(userId).update(userData);
 
             res.status(200).json({ message: 'User updated successfully' });
             return next();
@@ -99,7 +99,7 @@ class UserController {
     // Leitura de todos os usuários (apenas para administradores)
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const allUsers = await firestoreDBTest.collection('users').get();
+            const allUsers = await firestoreDB.collection('users').get();
             const users = allUsers.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
@@ -115,7 +115,7 @@ class UserController {
     async read(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.id;
-            const userDoc = await firestoreDBTest.collection('users').doc(userId).get();
+            const userDoc = await firestoreDB.collection('users').doc(userId).get();
             if (!userDoc.exists) {
                 return res.status(404).json({ message: 'User not found' });
             }

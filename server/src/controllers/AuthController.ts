@@ -16,7 +16,7 @@ class AuthController {
             // Verificar se o email está cadastrado
             let user;
             try {
-                user = await adminAuthTest.getUserByEmail(email);
+                user = await adminAuth.getUserByEmail(email);
             } catch (error: any) {
                 if (error.code === 'authTest/user-not-found') {
                     return res.status(400).json({ message: 'Email not found' });

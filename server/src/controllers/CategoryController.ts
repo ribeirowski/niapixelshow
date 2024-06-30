@@ -12,12 +12,12 @@ class CategoryController {
             }
             const categoryData = Category.parse(req.body);
             
-            const sameCategoryName = await firestoreDBTest.collection('categories').where('name', '==', categoryData.name).get();
+            const sameCategoryName = await firestoreDB.collection('categories').where('name', '==', categoryData.name).get();
             if (!sameCategoryName.empty) {
                 return res.status(400).json({ message: 'Já existe uma categoria com esse nome!' });
             }
 
-            const categoryRecord = await firestoreDBTest.collection('categories').add(categoryData);
+            const categoryRecord = await firestoreDB.collection('categories').add(categoryData);
 
             res.status(201).json({ message: 'Categoria cadastrada com sucesso', id: categoryRecord.id, category: categoryData });
             return next();
@@ -32,7 +32,7 @@ class CategoryController {
             const { name } = req.params;
             const categoryData = UpdateCategory.parse(req.body);
 
-            const q = firestoreDBTest.collection('categories').where('name', '==', name);
+            const q = firestoreDB.collection('categories').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
                 return res.status(400).json({ message: 'Essa categoria não existe!' });
@@ -50,7 +50,7 @@ class CategoryController {
 
     async readAll (req: Request, res: Response, next: NextFunction) {
         try {
-            const querySnapshot = await firestoreDBTest.collection('categories').get();
+            const querySnapshot = await firestoreDB.collection('categories').get();
             const categories = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
             res.status(200).json(categories);
@@ -65,7 +65,7 @@ class CategoryController {
         try {
             const { name } = req.params;
 
-            const q = firestoreDBTest.collection('categories').where('name', '==', name);
+            const q = firestoreDB.collection('categories').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
                 return res.status(404).json({ message: 'Essa categoria não existe!' });
@@ -83,7 +83,7 @@ class CategoryController {
         try {
             const { name } = req.params;
 
-            const q = firestoreDBTest.collection('categories').where('name', '==', name);
+            const q = firestoreDB.collection('categories').where('name', '==', name);
             const querySnapshot = await q.get();
             if (querySnapshot.empty) {
                 return res.status(404).json({ message: 'Categoria não encontrada!' });

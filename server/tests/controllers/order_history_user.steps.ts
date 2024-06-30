@@ -2,7 +2,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import expect from 'expect'
-import { firestoreDBTest, adminAuthTest } from '../../src/services/firebaseAdmin';
+import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmin';
 import { Stats } from 'fs';
 import { z } from 'zod';
 
@@ -14,28 +14,28 @@ defineFeature(feature, (test)=>{
     let response: supertest.Response;
     jest.setTimeout(15000);
 
-    beforeEach(async () => {
-        const order = await firestoreDBTest.collection('orders').get();
-        const user = await firestoreDBTest.collection('users').get();
-        const batch = firestoreDBTest.batch();
-        user.forEach(doc => {
-            adminAuthTest.deleteUser(doc.id);
-            batch.delete(doc.ref)
-        });
-        order.forEach(doc => batch.delete(doc.ref));
+    async function clearDatabase(){
+        const orders = await firestoreDB.collection('orders').get();
+        const users = await firestoreDB.collection('users').get();
+        const batch = firestoreDB.batch();
+        for (const userDoc of users.docs) {
+            await adminAuth.deleteUser(userDoc.id);
+            batch.delete(userDoc.ref);
+        }
+        orders.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
+    }
+
+    beforeAll(async () => {
+        await clearDatabase();
     });
 
-    afterEach(async () => {
-        const order = await firestoreDBTest.collection('orders').get();
-        const user = await firestoreDBTest.collection('users').get();
-        const batch = firestoreDBTest.batch();
-        user.forEach(doc => {
-            adminAuthTest.deleteUser(doc.id);
-            batch.delete(doc.ref)
-        });
-        order.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
+    beforeEach(async () => {
+        await clearDatabase();
+    });
+
+    afterAll(async () => {
+        await clearDatabase();
     });
     
     test('Retornar pedidos no histórico de pedidos com pedidos cadastrados', ({given, and, when, then}) => {
@@ -68,6 +68,7 @@ defineFeature(feature, (test)=>{
                 filter: response.body.order.email
             }
             response = await request.get('/order/filter/email').send(filt);
+            console.log(response.body);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
@@ -93,8 +94,8 @@ defineFeature(feature, (test)=>{
         });
         and('não tem cadastrado nenhum pedido', async () => {
             const email = response.body.email;
-            const orders = await firestoreDBTest.collection('orders').where("email", "==", email).get();
-            const batch = firestoreDBTest.batch();
+            const orders = await firestoreDB.collection('orders').where("email", "==", email).get();
+            const batch = firestoreDB.batch();
             orders.forEach(doc => { batch.delete(doc.ref) });
             await batch.commit();
         });

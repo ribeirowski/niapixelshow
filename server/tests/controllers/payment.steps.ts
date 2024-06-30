@@ -2,7 +2,7 @@ import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
 import expect from 'expect'
-import { firestoreDBTest } from '../../src/services/firebaseAdmin';
+import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
 import { Stats } from 'fs';
 
 const feature = loadFeature('tests/features/payment.feature');
@@ -12,13 +12,25 @@ defineFeature(feature, (test)=>{
     let response: supertest.Response;
     jest.setTimeout(15000);
 
-    beforeEach(async () => {
-        const order = await firestoreDBTest.collection('orders').get();
-        const batch = firestoreDBTest.batch();
-        order.forEach(doc => batch.delete(doc.ref));
+    async function clearDatabase(){
+        const orders = await firestoreDB.collection('orders').get();
+        const batch = firestoreDB.batch();
+        orders.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
+    }
+
+    beforeAll(async () => {
+        await clearDatabase();
     });
-    
+
+    beforeEach(async () => {
+        await clearDatabase();
+    });
+
+    afterAll(async () => {
+        await clearDatabase();
+    });
+
     test('Marcar o pedido como pago ao confirmar pagamento', ({given, when, then}) => {
         given(/^o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)" cadastrado$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             const orderData = {
