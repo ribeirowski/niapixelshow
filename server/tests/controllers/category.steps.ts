@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDBTest } from '../../src/services/firebaseAdmin';
+import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
 import { expect } from 'expect';
 
 const feature = loadFeature('tests/features/category.feature');
@@ -12,8 +12,8 @@ defineFeature(feature, (test) => {
 
     test('Administrador Adiciona uma nova Categoria de Produto', ({ given, when, then, and }) => {
         given(/^o administrador de nome ligia, e mail ligiaferropadilha@gmail.com e senha “liginha(\d+)” está logado no painel de administração do e-commercen na página "(.*)"$/, async (arg0, arg1) => {            
-            const categories = await firestoreDBTest.collection('categories').get();
-            const batch = firestoreDBTest.batch();
+            const categories = await firestoreDB.collection('categories').get();
+            const batch = firestoreDB.batch();
             categories.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         });
@@ -42,8 +42,8 @@ defineFeature(feature, (test) => {
 
     test('Erro ao Adicionar uma nova Categoria de Produto', ({ given, when, then, and }) => {
         given(/^o administrador de nome ligia, e mail ligiaferropadilha@gmail.com e senha “liginha(\d+)” está logado no painel de administração do e-commercen na página "(.*)"$/, async (arg0, arg1) => {            
-            const categories = await firestoreDBTest.collection('categories').get();
-            const batch = firestoreDBTest.batch();
+            const categories = await firestoreDB.collection('categories').get();
+            const batch = firestoreDB.batch();
             categories.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         });
@@ -70,7 +70,7 @@ defineFeature(feature, (test) => {
                 name: 'Camisetas Personalizadas',
                 description: 'Camisetas com estampas personalizadas',
             };
-            await firestoreDBTest.collection('categories').add(categoryData);
+            await firestoreDB.collection('categories').add(categoryData);
         });
 
         when('ele seleciona a opção “editar” para a categoria “Camisetas Personalizadas” e altera seu nome para "Camisetas Temáticas"', async () => {
@@ -94,7 +94,7 @@ defineFeature(feature, (test) => {
                 name: 'Promoções Temporárias',
                 description: 'Descontos em produtos selecionados por tempo limitado',
             };
-            await firestoreDBTest.collection('categories').add(categoryData);
+            await firestoreDB.collection('categories').add(categoryData);
         });
 
         when('ele seleciona a opção “remover” para a categoria “Promoções Temporárias”', async () => {
