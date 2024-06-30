@@ -4,6 +4,7 @@ import app from '../../src/app';
 import expect from 'expect'
 import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
 import { Stats } from 'fs';
+import { any, string } from 'zod';
 
 const feature = loadFeature('tests/features/payment.feature');
 
@@ -51,13 +52,39 @@ defineFeature(feature, (test)=>{
                 status: "Pago"
             }
             await request.patch('/order/'+id).send(orderData)
-            response = await request.get('/order/'+id)
         });
         then(/^o pedido possui "(.*)" "(.*)"$/, async (arg0, arg1) => {
+            response = await request.get('/order/'+response.body.id)
             expect(response.body[arg0]).toBe(arg1);
         });
+        and(/^é enviado um email de "(.*)" para o email "(.*)"$/, async (arg0, arg1) => {
+            const pedido = response.body.order
+            response = await request.get("/user/all");
+            const users = response.body
+            var nome = ""
+            const user = users.find(user => user.email === arg1);
+            if (user) {
+                nome = user.name;
+            }
+            if(arg0 === "Confirmação"){
+                var email = {
+                    stat: arg0,
+                    order: pedido,
+                    name: nome
+                }
+            }
+            else{
+                var email = {
+                    stat: arg0,
+                    order: pedido,
+                    name: nome
+                }
+            };
+            response = await request.post("/email/"+arg0).send(email);
+            expect(response.status).toBe(200);
+        });
     });
-    test('Pagamento errado informado pelo fornecedor', ({given, when, then}) => {
+    test('Pagamento errado informado pelo fornecedor', ({given, when, then, and}) => {
         given(/^o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)" cadastrado$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             const orderData = {
                 email: arg0,
@@ -77,10 +104,36 @@ defineFeature(feature, (test)=>{
                 status: "Erro no Pagamento"
             }
             await request.patch('/order/'+id).send(orderData)
-            response = await request.get('/order/'+id)
         });
         then(/^o pedido possui "(.*)" "(.*)"$/, async (arg0, arg1) => {
+            response = await request.get('/order/'+response.body.id)
             expect(response.body[arg0]).toBe(arg1);
+        });
+        and(/^é enviado um email de "(.*)" para o email "(.*)"$/, async (arg0, arg1) => {
+            const pedido = response.body.order
+            response = await request.get("/user/all");
+            const users = response.body
+            var nome = ""
+            const user = users.find(user => user.email === arg1);
+            if (user) {
+                nome = user.name;
+            }
+            if(arg0 === "Confirmação"){
+                var email = {
+                    stat: arg0,
+                    order: pedido,
+                    name: nome
+                }
+            }
+            else{
+                var email = {
+                    stat: arg0,
+                    order: pedido,
+                    name: nome
+                }
+            };
+            response = await request.post("/email/"+arg0).send(email);
+            expect(response.status).toBe(200);
         });
     });
 })
