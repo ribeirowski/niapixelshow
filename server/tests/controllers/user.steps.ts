@@ -1,7 +1,7 @@
 import { defineFeature, loadFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB, adminAuth } from '../../src/services/firebaseAdmin';
+import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmin';
 import expect from 'expect';
 
 const feature = loadFeature('tests/features/user.feature');
@@ -150,12 +150,12 @@ defineFeature(feature, (test) => {
       uid = userResponse.body.uid; // Obtendo o UID do usuário criado
     });
 
-    given(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
+    and(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
       user.phone = arg0;
       user.address = arg1;
     });
 
-    given(/^eu estou autenticado com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
+    and(/^eu estou autenticado com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       await adminAuth.updateUser(uid, { emailVerified: true });
 
       const loginResponse = await request.post('/auth/login').send({
