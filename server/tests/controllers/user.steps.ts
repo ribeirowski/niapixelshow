@@ -5,7 +5,7 @@ import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmi
 import expect from 'expect';
 
 const feature = loadFeature('tests/features/user.feature');
-const testEmails = ['ehnr@cin.ufpe.br', 'enio.ribeiro@citi.org.br', 'vxq@cin.ufpe.br'];
+const testEmails = ['ehnr@cin.ufpe.br', 'enio.ribeiro@citi.org.br'];
 
 defineFeature(feature, (test) => {
   let request = supertest(app);
@@ -14,7 +14,7 @@ defineFeature(feature, (test) => {
   let uid: string;
   let token: string;
 
-  jest.setTimeout(20000);
+  jest.setTimeout(30000);
 
   beforeAll(async () => {
     // Deleta usuários no Firebase Authentication
@@ -29,11 +29,11 @@ defineFeature(feature, (test) => {
   });
 
   beforeEach(async () => {
-    // Limpa qualquer dado existente antes de rodar os testes
-    const existingUsers = await firestoreDB.collection('users').get();
+    // Apaga os dados do Firestore e do Firebase Authentication criados para os testes
+    const users = await firestoreDB.collection('users').where('email', 'in', testEmails).get();
     const batch = firestoreDB.batch();
 
-    existingUsers.forEach(doc => {
+    users.forEach(doc => {
       batch.delete(doc.ref);
     });
 
@@ -229,21 +229,7 @@ defineFeature(feature, (test) => {
     });
 
     and(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      const adminUid = adminResponse.body.uid; // Obtendo o UID do usuário criado
-
-      await adminAuth.updateUser(adminUid, { emailVerified: true });
-
-      const loginResponse = await request.post('/auth/login').send({
+        const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
       });
@@ -278,23 +264,12 @@ defineFeature(feature, (test) => {
         address: arg4,
         is_admin: false
       };
-      await request.post('/user').send(user);
+      const userResponse = await request.post('/user').send(user);
+
+      uid = userResponse.body.uid;
     });
 
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      uid = adminResponse.body.uid; // Obtendo o UID do usuário criado
-
-      await adminAuth.updateUser(uid, { emailVerified: true });
       const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
@@ -368,7 +343,7 @@ defineFeature(feature, (test) => {
 
     and(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       const user2 = {
-        name: 'Victoria',
+        name: 'Enio',
         phone: '81999999999',
         email: arg0,
         password: arg1,
@@ -401,20 +376,6 @@ defineFeature(feature, (test) => {
 
   test('Ler todos os usuários como administrador', ({ given, when, then, and }) => {
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      uid = adminResponse.body.uid;
-
-      await adminAuth.updateUser(uid, { emailVerified: true });
-      
       const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
@@ -439,7 +400,7 @@ defineFeature(feature, (test) => {
     given(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       // Cria e autentica um usuário
       const adminUser = {
-        name: 'Admin',
+        name: 'Nathy',
         phone: '81988888888',
         email: arg0,
         password: arg1,

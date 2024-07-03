@@ -7,6 +7,7 @@ import { Stats } from 'fs';
 
 const feature = loadFeature('tests/features/order_history_user.feature');
 
+const usedEmail = 'thiagojgcosta@gmail.com';
 
 defineFeature(feature, (test)=>{
     let request = supertest(app)
@@ -15,7 +16,7 @@ defineFeature(feature, (test)=>{
 
     beforeEach(async () => {
         const order = await firestoreDB.collection('orders').get();
-        const user = await firestoreDB.collection('users').get();
+        const user = await firestoreDB.collection('users').where('email', 'in', usedEmail).get();
         const batch = firestoreDB.batch();
         user.forEach(doc => {
             adminAuth.deleteUser(doc.id);

@@ -34,7 +34,7 @@ And a resposta deve conter a mensagem "Authentication token is required"
 
 Scenario: Administrador atualiza os detalhes de outro usuário
 Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
-And eu estou autenticado como administrador com email "enio.ribeiro@citi.org.br" e senha "enio1234" e tenho um token JWT válido
+And eu estou autenticado como administrador com email "nrc2@cin.ufpe.br" e senha "nia12345" e tenho um token JWT válido
 And eu tenho dados de atualização de usuário com telefone "81988888887" e endereço "Avenida Recife, 123, Recife, PE"
 When eu envio uma requisição PATCH para http://localhost:3001/user/{id} com os dados do usuário e o token JWT no cabeçalho
 Then o status da resposta deve ser 200
@@ -42,7 +42,7 @@ And a resposta deve conter a mensagem "User updated successfully"
 
 Scenario: Deletar um usuário como administrador
 Given que existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
-And eu estou autenticado como administrador com email "enio.ribeiro@citi.org.br" e senha "enio1234" e tenho um token JWT válido
+And eu estou autenticado como administrador com email "nrc2@cin.ufpe.br" e senha "nia12345" e tenho um token JWT válido
 When eu envio uma requisição DELETE para http://localhost:3001/user/{id} com o token JWT no cabeçalho
 Then o status da resposta deve ser 200
 And a resposta deve conter a mensagem "User deleted successfully"
@@ -56,13 +56,13 @@ And a resposta deve conter a mensagem "User deleted successfully"
 
 Scenario: Deletar um usuário sem privilégios de administrador
 Given que existe um usuário com nome "Enio", telefone "81999999999", email "ehnr@cin.ufpe.br", senha "enio1234", endereço "Rua das Flores, 123, Recife, PE" e is_admin "false"
-And eu estou autenticado como um usuário normal com email "vxq@cin.ufpe.br" e senha "vivi1234" e tenho um token JWT válido
+And eu estou autenticado como um usuário normal com email "enio.ribeiro@citi.org.br" e senha "enio1234" e tenho um token JWT válido
 When eu envio uma requisição DELETE para http://localhost:3001/user/{id}
 Then o status da resposta deve ser 403
 And a resposta deve conter a mensagem "Permission denied"
 
 Scenario: Ler todos os usuários como administrador
-Given eu estou autenticado como administrador com email "enio.ribeiro@citi.org.br" e senha "enio1234" e tenho um token JWT válido
+Given eu estou autenticado como administrador com email "nrc2@cin.ufpe.br" e senha "nia12345" e tenho um token JWT válido
 When eu envio uma requisição GET para http://localhost:3001/user/all com o token JWT no cabeçalho
 Then o status da resposta deve ser 200
 And a resposta deve conter uma lista de usuários
