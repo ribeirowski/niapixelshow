@@ -16,18 +16,6 @@ defineFeature(feature, (test) => {
 
   jest.setTimeout(30000);
 
-  beforeAll(async () => {
-    // Deleta usuários no Firebase Authentication
-    for (const email of testEmails) {
-      try {
-        const userRecord = await adminAuth.getUserByEmail(email);
-        await adminAuth.deleteUser(userRecord.uid);
-      } catch (error) {
-        return;
-      }
-    }
-  });
-
   beforeEach(async () => {
     // Apaga os dados do Firestore e do Firebase Authentication criados para os testes
     const users = await firestoreDB.collection('users').where('email', 'in', testEmails).get();
@@ -162,11 +150,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição PATCH para http:\/\/localhost:3001\/user\/{id} com os novos dados do usuário e o token JWT no cabeçalho$/, async () => {
-      response = await request.patch(`/user/${uid}`).send(user).set('Authorization', `Bearer ${token}`);
+      response = await request.patch(`/user/${uid}`).send(user).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -233,7 +221,7 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     and(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
@@ -242,7 +230,7 @@ defineFeature(feature, (test) => {
     });
 
     when(/^eu envio uma requisição PATCH para http:\/\/localhost:3001\/user\/{id} com os dados do usuário e o token JWT no cabeçalho$/, async () => {
-      response = await request.patch(`/user/${uid}`).send(user).set('Authorization', `Bearer ${token}`);
+      response = await request.patch(`/user/${uid}`).send(user).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -274,11 +262,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -311,11 +299,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -358,11 +346,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id}$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 403', () => {
@@ -380,11 +368,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/all com o token JWT no cabeçalho$/, async () => {
-      response = await request.get('/user/all').set('Authorization', `Bearer ${token}`);
+      response = await request.get('/user/all').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -416,11 +404,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/all com o token JWT no cabeçalho$/, async () => {
-      response = await request.get('/user/all').set('Authorization', `Bearer ${token}`);
+      response = await request.get('/user/all').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 403', () => {
@@ -453,11 +441,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.get(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.get(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -590,11 +578,11 @@ defineFeature(feature, (test) => {
           email: arg0,
           password: arg1
         });
-        token = loginResponse.body.token;
+        token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/logout$/, async () => {
-        response = await request.post('/auth/logout').set('Authorization', `Bearer ${token}`);
+        response = await request.post('/auth/logout').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
