@@ -4,10 +4,10 @@ import app from '../../src/app';
 import expect from 'expect'
 import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmin';
 import { Stats } from 'fs';
-import { z } from 'zod';
 
 const feature = loadFeature('tests/features/order_history_user.feature');
 
+const usedEmail = 'thiagojgcosta@gmail.com';
 
 defineFeature(feature, (test)=>{
     let request = supertest(app)
@@ -15,14 +15,14 @@ defineFeature(feature, (test)=>{
     jest.setTimeout(15000);
 
     async function clearDatabase(){
-        const orders = await firestoreDB.collection('orders').get();
-        const users = await firestoreDB.collection('users').get();
+        const order = await firestoreDB.collection('orders').get();
+        const user = await firestoreDB.collection('users').where('email', 'in', usedEmail).get();
         const batch = firestoreDB.batch();
-        for (const userDoc of users.docs) {
-            await adminAuth.deleteUser(userDoc.id);
-            batch.delete(userDoc.ref);
-        }
-        orders.forEach(doc => batch.delete(doc.ref));
+        user.forEach(doc => {
+            adminAuth.deleteUser(doc.id);
+            batch.delete(doc.ref)
+        });
+        order.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
     }
 

@@ -127,6 +127,18 @@ class UserController {
         }
     }
 
+    async verifyEmail(req: Request, res: Response, next: NextFunction){
+        try {
+            const uid = req.body.uid;
+            await adminAuth.updateUser(uid, { emailVerified: true });
+
+            res.status(200).json({ message: 'Email verified' });
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
     // Deleção de um usuário
     async delete(req: CustomRequest, res: Response, next: NextFunction) {
         try {

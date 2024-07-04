@@ -7,7 +7,7 @@ interface CustomRequest extends Request {
 }
 
 export const isAuthenticated = async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.cookies.authToken;
     if (!token) {
         return res.status(401).json({ message: 'Authentication token is required' });
     }
