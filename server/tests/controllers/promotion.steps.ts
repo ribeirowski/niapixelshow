@@ -1,6 +1,5 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
 import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
-import { Promotion, UpdatePromotion } from '../../src/DTOs';
 import { expect } from 'expect';
 import supertest from "supertest";
 import app from "../../src/app";
@@ -79,8 +78,6 @@ defineFeature(feature, (test) => {
         throw new Error('Erro ao adicionar produto');	
       }
       productId = addProduct.body.id;
-      console.log(productId);
-
     });
     when(/^eu faço uma requisição POST para "(.*)" com os dados:$/, async (arg0) => {
       response = await request.post('/promotion').send({
@@ -93,13 +90,7 @@ defineFeature(feature, (test) => {
       }).set('Cookie', token);
 
       promotionId = response.body.id;
-      console.log(promotionId);
-
-      // Pegar os dados da promoção
-      const data = await request.get('/promotion/' + promotionId).set('Cookie', token)
-
-      // consolar dados, mas o token é necessário para isso
-      console.log(data.body);
+      
     });
     then(/^a resposta deve ter status (\d+)$/, (arg0) => {
       expect(response.status).toBe(201);
@@ -280,7 +271,6 @@ defineFeature(feature, (test) => {
       // @ts-ignore
       const price = product.data().price;
 
-      console.log(price);
       expect(price).toBe(50);
     });
   });
