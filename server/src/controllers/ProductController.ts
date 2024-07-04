@@ -10,10 +10,10 @@ class ProductController {
     //CREATE METHOD
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name, description, price, status, category } = req.body;
+            const { name, description, price, status, category, promotion_id } = req.body;
 
             // Verifica se todos os campos estão preenchidos
-            if (!name || !description || !price || !status || !category) {
+            if (!name || !description || !price || !status || !category ) {
                 throw new HttpException(400, "Todos os campos devem ser preenchidos");
             }
             // Verifica se o preço é um número positivo
@@ -107,9 +107,22 @@ class ProductController {
     //READALL METHOD
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
-            // Obtém todos os produtos do Firestore
             const querySnapshot = await firestoreDB.collection('products').get();
-            const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const products = [];
+
+            for (const doc of querySnapshot.docs) {
+                const productData = doc.data();
+
+                // Buscar promoção associada, se existir
+                if (productData.promotionId) {
+                    const promotionDoc = await firestoreDB.collection('promotions').doc(productData.promotionId).get();
+                    if (promotionDoc.exists) {
+                        productData.promotion = promotionDoc.data();
+                    }
+                }
+
+                products.push({ id: doc.id, ...productData });
+            }
 
             res.status(200).json(products);
             return next();
@@ -129,6 +142,16 @@ class ProductController {
             }
 
             const productData = productdoc.data();
+
+            // Buscar promoção associada, se existir
+            if(productData){
+                if (productData.promotionId) {
+                    const promotionDoc = await firestoreDB.collection('promotions').doc(productData.promotionId).get();
+                    if (promotionDoc.exists) {
+                        productData.promotion = promotionDoc.data();
+                    }
+                }
+            }
 
             res.status(200).json({ product: productData });
             return next();
