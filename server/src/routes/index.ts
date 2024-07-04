@@ -6,6 +6,7 @@ import AuthRouter from './AuthRoutes';
 import ProductRouter from './ProductRoutes';
 import CategoryRouter from './CategoryRoutes';
 import OrderRouter from './OrderRoutes';
+import EmailRouter from './EmailRoutes';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use('/auth', AuthRouter);
 router.use('/product', ProductRouter);
 router.use('/category', CategoryRouter);
 router.use('/order', OrderRouter);
+router.use('/email', EmailRouter);
 
 router.route('/').get((_, res) => {
     res.status(200).send('Made with ❤️ by @ribeirowski');

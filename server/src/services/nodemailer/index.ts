@@ -1,4 +1,4 @@
 import MailHandler from "./mailHandler";
-import { PaymentMail } from "./paymentMail";
+import { ConfirmPayment, ErrorPayment } from "./paymentMail";
 
-export { MailHandler, PaymentMail }
+export { MailHandler, ConfirmPayment, ErrorPayment }
