@@ -14,9 +14,16 @@ defineFeature(feature, (test) => {
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
     given('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
+      const productVic = await firestoreDB.collection('products').where('name', '==', 'Camisetao').get();
+      
+      // apaga todos os produtos menos productVic
       const batch = firestoreDB.batch();
-      products.forEach(doc => batch.delete(doc.ref));
-      await batch.commit();
+      products.forEach(doc => {
+        if (doc.id !== productVic.docs[0].id) {
+          batch.delete(doc.ref)
+        }
+      });
+      
     });
 
     when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"', async () => {
