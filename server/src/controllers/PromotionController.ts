@@ -105,8 +105,50 @@ class PromotionController {
                 return res.status(400).json({ message: 'Promotion not found' });
             }
 
+            // Verifica se a data de início é anterior à data de término
+            // @ts-ignore
+            if (new Date(promotionData.start_date) > new Date(promotionData.end_date)) {
+                return res.status(400).json({ message: 'Start date must be before end date' });
+            }
+
+            // Verifica se a porcentagem de desconto é um número positivo entre 0 e 100
+            // @ts-ignore
+            if (promotionData.discount <= 0 && promotionData.discount > 100) {
+                return res.status(400).json({ message: 'Discount must be a value between 1 and 100' });
+            }
+            
             // Atualiza a promoção no Firestore
             await firestoreDB.collection('promotions').doc(promotionId).update(promotionData);
+
+            // Atualizando o preço do produto caso necessário
+            // @ts-ignore
+            if (promotionData.discount !== promotionDoc.data().discount) {
+                
+                // voltando ao valor original
+
+                // get produto
+                // @ts-ignore
+                const productId = promotionDoc.data().product_id;
+                const productDoc = await firestoreDB.collection('products').doc(productId).get();
+
+                // pega o preço atual do produto com a promoção
+                // @ts-ignore
+                const price = productDoc.data().price;
+                
+                // pega o atual desconto
+                // @ts-ignore
+                const curDiscount = promotionDoc.data().discount;
+
+                // calculando o preço sem desconto
+                const oldPrice = price / (1 - (curDiscount / 100));
+
+                // calculando o novo preço com o novo desconto
+                // @ts-ignore
+                const newPrice = oldPrice * (1 - (promotionData.discount / 100));
+                
+                // mudando o valor do produto com o novo preço
+                await firestoreDB.collection('products').doc(productId).update({ price: newPrice });
+            }
 
             res.status(200).json({ message: 'Promotion updated successfully' });
             return next();
