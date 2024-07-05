@@ -15,4 +15,7 @@ UserRouter.route('/:id')
     .patch(isAuthenticated, UserController.update) // Usuário autenticado pode atualizar sua própria conta
     .delete(isAuthenticated, UserController.delete); // Usuário autenticado pode deletar sua própria conta
 
+UserRouter.route('/email')
+    .post(UserController.verifyEmail);
+
 export default UserRouter;
