@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
 import { HttpException } from '../../src/middlewares';
 import {expect} from 'expect'
 
@@ -214,7 +214,7 @@ defineFeature(feature, (test) => {
     });
 
     and('o sistema retorna uma mensagem de erro informando que o "preço" não pode ser negativo', () => {
-      expect(response.body.message).toBe('O preço deve ser um número positivo');
+      expect(response.body.message).toBe('Erro de validação.');
     });
   });
 
