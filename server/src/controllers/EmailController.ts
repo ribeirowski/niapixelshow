@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { firestoreDB } from '../services/firebase/firebaseAdmin'; // Importa a instância correta do Firestore
-import { ConfirmPayment, ErrorPayment, MailHandler } from 'src/services/nodemailer';
+import { ConfirmPayment, ErrorPayment, MailHandler } from '../services/nodemailer';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 import { request } from 'http';
 import { Parser } from 'json2csv';
