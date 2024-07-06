@@ -18,7 +18,7 @@ class AuthController {
             try {
                 user = await adminAuth.getUserByEmail(email);
             } catch (error: any) {
-                if (error.code === 'auth/user-not-found') {
+                if (error.code === 'authTest/user-not-found') {
                     return res.status(400).json({ message: 'Email not found' });
                 }
                 // Tratar outros erros

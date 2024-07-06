@@ -62,7 +62,7 @@ class UserController {
             // Salva as informações do usuário no Firestore
             await firestoreDB.collection('users').doc(userRecord.uid).set(userDataForFirestore);
 
-            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid });
+            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid, email: userData.email, name: userData.name });
             return next();
         } catch (error) {
             return next(error);
