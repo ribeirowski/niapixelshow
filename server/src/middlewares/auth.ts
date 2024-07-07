@@ -28,3 +28,20 @@ export const isAdmin = (req: CustomRequest, res: Response, next: NextFunction) =
     }
     return next();
 };
+
+export const isSameUserOrAdmin = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const { user } = req;
+    const userId = req.params.id || req.body.id;
+    const email = req.params.email || req.body.email;
+
+    if (!user) {
+        return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    // Verifica se o usuário autenticado é o mesmo da requisição ou é um administrador
+    if ((user.uid !== userId && user.email !== email) && !user.is_admin) {
+        return res.status(403).json({ message: 'Permission denied' });
+    }
+
+    return next();
+};

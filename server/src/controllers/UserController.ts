@@ -62,7 +62,7 @@ class UserController {
             // Salva as informações do usuário no Firestore
             await firestoreDB.collection('users').doc(userRecord.uid).set(userDataForFirestore);
 
-            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid });
+            res.status(201).json({ message: 'User created successfully. Verification email sent.', uid: userRecord.uid, email: userRecord.email, name: userRecord.displayName });
             return next();
         } catch (error) {
             return next(error);
@@ -100,11 +100,11 @@ class UserController {
     async readAll(req: Request, res: Response, next: NextFunction) {
         try {
             const allUsers = await firestoreDB.collection('users').get();
-            const users = allUsers.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            res.status(200).json(users);
+            if(allUsers.empty){
+                return res.status(404).json({ message: 'No users found' });
+            }
+            const usersData = allUsers.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            res.status(200).json(usersData);
             return next();
         } catch (error) {
             return next(error);
@@ -112,7 +112,7 @@ class UserController {
     }
 
     // Leitura de um usuário por ID
-    async read(req: Request, res: Response, next: NextFunction) {
+    async readById(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.params.id;
             const userDoc = await firestoreDB.collection('users').doc(userId).get();
@@ -127,10 +127,31 @@ class UserController {
         }
     }
 
+    // Leitura de um usuário por e-mail
+    async readByEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            const email = req.params.email;
+            const userDoc = await firestoreDB.collection('users').where('email', '==', email).get();
+            if (userDoc.empty) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const userData = userDoc.docs[0].data();
+            res.status(200).json({ id: userDoc.docs[0].id, ...userData });
+            return next();
+        } catch (error) {
+            return next(error);
+        }
+    }
+
+    // Verificação de e-mail de um usuário
     async verifyEmail(req: Request, res: Response, next: NextFunction){
         try {
-            const uid = req.body.uid;
-            await adminAuth.updateUser(uid, { emailVerified: true });
+            const email = req.params.email;
+            const user = await adminAuth.getUserByEmail(email);
+            if (user.emailVerified) {
+                return res.status(400).json({ message: 'Email already verified' });
+            }
+            await adminAuth.updateUser(user.uid, { emailVerified: true });
 
             res.status(200).json({ message: 'Email verified' });
             return next();

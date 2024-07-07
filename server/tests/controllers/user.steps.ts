@@ -97,7 +97,7 @@ defineFeature(feature, (test) => {
           is_admin: false
       };
       const userResponse = await request.post('/user').send(user);
-      uid = userResponse.body.uid; // Obtendo o UID do usuário criado
+      uid = userResponse.body.uid;
     });
 
     given(/^eu tenho dados de usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, (arg0, arg1, arg2, arg3, arg4) => {
@@ -622,8 +622,8 @@ defineFeature(feature, (test) => {
         expect(response.status).toBe(401);
     });
 
-    and('a resposta deve conter a mensagem "No user is currently logged in"', () => {
-        expect(response.body.message).toBe('No user is currently logged in');
+    and('a resposta deve conter a mensagem "Authentication token is required"', () => {
+        expect(response.body.message).toBe('Authentication token is required');
     });
   });
 });

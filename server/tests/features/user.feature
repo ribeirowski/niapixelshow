@@ -110,4 +110,4 @@ Given já existe um usuário com nome "Enio", telefone "81999999999", email "ehn
 And eu não estou autenticado
 When eu envio uma requisição POST para http://localhost:3001/auth/logout
 Then o status da resposta deve ser 401
-And a resposta deve conter a mensagem "No user is currently logged in"
+And a resposta deve conter a mensagem "Authentication token is required"
