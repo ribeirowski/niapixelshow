@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
+import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmin';
 import { HttpException } from '../../src/middlewares';
 import {expect} from 'expect'
 
@@ -10,31 +10,40 @@ const feature = loadFeature('tests/features/product.feature');
 defineFeature(feature, (test) => {
   let request = supertest(app);
   let response: supertest.Response;
-
+  let token: string;
+  
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
-    given('que o banco de dados de produto está vazio', async () => {
+    given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (email, password) => {
+      const loginResponse = await request.post('/auth/login').send({
+          email,
+          password
+      });
+      token = loginResponse.headers['set-cookie'];
+    });
+
+    and('que o banco de dados de produto está vazio', async () => {
       const products = await firestoreDB.collection('products').get();
       const productVic = await firestoreDB.collection('products').where('name', '==', 'Camisetao').get();
       
       // apaga todos os produtos menos productVic
       const batch = firestoreDB.batch();
       products.forEach(doc => {
-        if (doc.id !== productVic.docs[0].id) {
-          batch.delete(doc.ref)
-        }
+          if (doc.id !== productVic.docs[0].id) {
+              batch.delete(doc.ref);
+          }
       });
-      
+      await batch.commit();
     });
 
-    when('o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"', async () => {
+    when(/^o fornecedor submete um formulário de cadastro de produto com nome "(.*)", descrição "(.*)", preço "(.*)", status "(.*)", categoria "(.*)"$/,  async (arg0, arg1, arg2, arg3, arg4) => {
       const productData = {
-        name: 'Camisa Nova',
-        description: 'Algodão',
-        price: 50,
-        status: true,
-        category: 'Camisas'
+          name:arg0,
+          description:arg1,
+          price:arg2,
+          status:arg3,
+          category:arg4
       };
-      response = await request.post('/product').send(productData);
+      response = await request.post('/product').set('Cookie', token).send(productData);
     });
 
     then('o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {

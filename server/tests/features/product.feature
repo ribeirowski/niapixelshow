@@ -1,11 +1,12 @@
 Feature: Cadastro e Manutenção do Produto
 
   Scenario: Cadastro do Produto Bem-Sucedido
-    Given que o banco de dados de produto está vazio
-    When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "Disponível", categoria "Camisas"
+    Given eu estou autenticado como administrador com email "nrc2@cin.ufpe.br" e senha "nia12345" e tenho um token JWT válido
+    And que o banco de dados de produto está vazio
+    When o fornecedor submete um formulário de cadastro de produto com nome "Camisa Nova", descrição "Algodão", preço "50", status "true", categoria "Camisas"
     Then o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos
     And o sistema verifica que todos os dados estão válidos
-    Then o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
+    And o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso
 
  Scenario: Cadastro do Produto com Campo Não Preenchido
     Given que o banco de dados de produto está vazio
