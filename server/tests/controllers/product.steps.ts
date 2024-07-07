@@ -13,55 +13,61 @@ defineFeature(feature, (test) => {
   let token: string;
   
   test('Cadastro do Produto Bem-Sucedido', ({ given, when, then, and }) => {
+
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (email, password) => {
-      const loginResponse = await request.post('/auth/login').send({
-          email,
-          password
-      });
-      token = loginResponse.headers['set-cookie'];
+        const loginResponse = await request.post('/auth/login').send({
+            email,
+            password
+        });
+        token = loginResponse.headers['set-cookie'];
     });
 
     and('que o banco de dados de produto está vazio', async () => {
-      const products = await firestoreDB.collection('products').get();
-      const productVic = await firestoreDB.collection('products').where('name', '==', 'Camisetao').get();
-      
-      // apaga todos os produtos menos productVic
-      const batch = firestoreDB.batch();
-      products.forEach(doc => {
-          if (doc.id !== productVic.docs[0].id) {
-              batch.delete(doc.ref);
-          }
-      });
-      await batch.commit();
+        const products = await firestoreDB.collection('products').get();
+        const productVic = await firestoreDB.collection('products').where('name', '==', 'Camisetao').get();
+        
+        // apaga todos os produtos menos productVic
+        const batch = firestoreDB.batch();
+        products.forEach(doc => {
+            if (doc.id !== productVic.docs[0].id) {
+                batch.delete(doc.ref);
+            }
+        });
+        await batch.commit();
     });
 
-    when(/^o fornecedor submete um formulário de cadastro de produto com nome "(.*)", descrição "(.*)", preço "(.*)", status "(.*)", categoria "(.*)"$/,  async (arg0, arg1, arg2, arg3, arg4) => {
-      const productData = {
-          name:arg0,
-          description:arg1,
-          price:arg2,
-          status:arg3,
-          category:arg4
-      };
-      response = await request.post('/product').set('Cookie', token).send(productData);
+    when(/^o fornecedor submete um formulário de cadastro de produto com nome "(.*)", descrição "(.*)", preço "(.*)", status "(.*)", categoria "(.*)", descrição da categoria "(.*)"$/, async (name, description, price, status, categoryName, categoryDescription) => {
+        const productData = {
+            name: name,
+            description: description,
+            price: parseFloat(price),
+            status: status === 'true',
+            category: {
+                name: categoryName,
+                description: categoryDescription
+            }
+        };
+        response = await request.post('/product').set('Cookie', token).send(productData);
     });
 
     then('o sistema valida que os campos "nome", "descrição", "preço", "status" e "categoria" estão preenchidos', () => {
-      expect(response.status).toBe(201);
+        expect(response.status).toBe(201);
     });
 
     and('o sistema verifica que todos os dados estão válidos', () => {
-      expect(response.body.product.name).toBe('Camisa Nova');
-      expect(response.body.product.description).toBe('Algodão');
-      expect(response.body.product.price).toBe(50);
-      expect(response.body.product.status).toBe(true);
-      expect(response.body.product.category).toBe('Camisas');
+        expect(response.body.product.name).toBe('Camisa Nova');
+        expect(response.body.product.description).toBe('Algodão');
+        expect(response.body.product.price).toBe(50);
+        expect(response.body.product.status).toBe(true);
+        expect(response.body.product.category.name).toBe('Camisas');
+        expect(response.body.product.category.description).toBe('Descrição da categoria');
     });
 
     then('o sistema salva o produto no banco de dados e retorna uma confirmação de sucesso', () => {
-      expect(response.body.message).toBe('Produto cadastrado com sucesso');
+        expect(response.body.message).toBe('Produto cadastrado com sucesso');
     });
-  });
+});
+
 
   //TEST #2 - CREATION WITH MISSING FIELD
   test('Cadastro do Produto com Campo Não Preenchido', ({ given, when, then, and }) => {
