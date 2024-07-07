@@ -5,7 +5,7 @@ import { firestoreDB, adminAuth } from '../../src/services/firebase/firebaseAdmi
 import expect from 'expect';
 
 const feature = loadFeature('tests/features/user.feature');
-const testEmails = ['ehnr@cin.ufpe.br', 'enio.ribeiro@citi.org.br', 'vxq@cin.ufpe.br'];
+const testEmails = ['ehnr@cin.ufpe.br', 'enio.ribeiro@citi.org.br'];
 
 defineFeature(feature, (test) => {
   let request = supertest(app);
@@ -14,26 +14,14 @@ defineFeature(feature, (test) => {
   let uid: string;
   let token: string;
 
-  jest.setTimeout(20000);
-
-  beforeAll(async () => {
-    // Deleta usuários no Firebase Authentication
-    for (const email of testEmails) {
-      try {
-        const userRecord = await adminAuth.getUserByEmail(email);
-        await adminAuth.deleteUser(userRecord.uid);
-      } catch (error) {
-        return;
-      }
-    }
-  });
+  jest.setTimeout(30000);
 
   beforeEach(async () => {
-    // Limpa qualquer dado existente antes de rodar os testes
-    const existingUsers = await firestoreDB.collection('users').get();
+    // Apaga os dados do Firestore e do Firebase Authentication criados para os testes
+    const users = await firestoreDB.collection('users').where('email', 'in', testEmails).get();
     const batch = firestoreDB.batch();
 
-    existingUsers.forEach(doc => {
+    users.forEach(doc => {
       batch.delete(doc.ref);
     });
 
@@ -109,7 +97,7 @@ defineFeature(feature, (test) => {
           is_admin: false
       };
       const userResponse = await request.post('/user').send(user);
-      uid = userResponse.body.uid; // Obtendo o UID do usuário criado
+      uid = userResponse.body.uid;
     });
 
     given(/^eu tenho dados de usuário com nome "(.*)", telefone "(.*)", email "(.*)", senha "(.*)", endereço "(.*)" e is_admin "false"$/, (arg0, arg1, arg2, arg3, arg4) => {
@@ -150,23 +138,23 @@ defineFeature(feature, (test) => {
       uid = userResponse.body.uid; // Obtendo o UID do usuário criado
     });
 
-    given(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
+    and(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
       user.phone = arg0;
       user.address = arg1;
     });
 
-    given(/^eu estou autenticado com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
+    and(/^eu estou autenticado com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       await adminAuth.updateUser(uid, { emailVerified: true });
 
       const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição PATCH para http:\/\/localhost:3001\/user\/{id} com os novos dados do usuário e o token JWT no cabeçalho$/, async () => {
-      response = await request.patch(`/user/${uid}`).send(user).set('Authorization', `Bearer ${token}`);
+      response = await request.patch(`/user/${uid}`).send(user).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -229,25 +217,11 @@ defineFeature(feature, (test) => {
     });
 
     and(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      const adminUid = adminResponse.body.uid; // Obtendo o UID do usuário criado
-
-      await adminAuth.updateUser(adminUid, { emailVerified: true });
-
-      const loginResponse = await request.post('/auth/login').send({
+        const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     and(/^eu tenho dados de atualização de usuário com telefone "(.*)" e endereço "(.*)"$/, (arg0, arg1) => {
@@ -256,7 +230,7 @@ defineFeature(feature, (test) => {
     });
 
     when(/^eu envio uma requisição PATCH para http:\/\/localhost:3001\/user\/{id} com os dados do usuário e o token JWT no cabeçalho$/, async () => {
-      response = await request.patch(`/user/${uid}`).send(user).set('Authorization', `Bearer ${token}`);
+      response = await request.patch(`/user/${uid}`).send(user).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -278,32 +252,21 @@ defineFeature(feature, (test) => {
         address: arg4,
         is_admin: false
       };
-      await request.post('/user').send(user);
+      const userResponse = await request.post('/user').send(user);
+
+      uid = userResponse.body.uid;
     });
 
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      uid = adminResponse.body.uid; // Obtendo o UID do usuário criado
-
-      await adminAuth.updateUser(uid, { emailVerified: true });
       const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -336,11 +299,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -368,7 +331,7 @@ defineFeature(feature, (test) => {
 
     and(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       const user2 = {
-        name: 'Victoria',
+        name: 'Enio',
         phone: '81999999999',
         email: arg0,
         password: arg1,
@@ -383,11 +346,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição DELETE para http:\/\/localhost:3001\/user\/{id}$/, async () => {
-      response = await request.delete(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.delete(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 403', () => {
@@ -401,29 +364,15 @@ defineFeature(feature, (test) => {
 
   test('Ler todos os usuários como administrador', ({ given, when, then, and }) => {
     given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
-      // Cria e autentica um administrador
-      const adminUser = {
-        name: 'Admin',
-        phone: '81988888888',
-        email: arg0,
-        password: arg1,
-        address: 'Rua das Flores, 123, Recife, PE',
-        is_admin: true
-      };
-      const adminResponse = await request.post('/user').send(adminUser);
-      uid = adminResponse.body.uid;
-
-      await adminAuth.updateUser(uid, { emailVerified: true });
-      
       const loginResponse = await request.post('/auth/login').send({
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/all com o token JWT no cabeçalho$/, async () => {
-      response = await request.get('/user/all').set('Authorization', `Bearer ${token}`);
+      response = await request.get('/user/all').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -439,7 +388,7 @@ defineFeature(feature, (test) => {
     given(/^eu estou autenticado como um usuário normal com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (arg0, arg1) => {
       // Cria e autentica um usuário
       const adminUser = {
-        name: 'Admin',
+        name: 'Nathy',
         phone: '81988888888',
         email: arg0,
         password: arg1,
@@ -455,11 +404,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/all com o token JWT no cabeçalho$/, async () => {
-      response = await request.get('/user/all').set('Authorization', `Bearer ${token}`);
+      response = await request.get('/user/all').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 403', () => {
@@ -492,11 +441,11 @@ defineFeature(feature, (test) => {
         email: arg0,
         password: arg1
       });
-      token = loginResponse.body.token;
+      token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição GET para http:\/\/localhost:3001\/user\/{id} com o token JWT no cabeçalho$/, async () => {
-      response = await request.get(`/user/${uid}`).set('Authorization', `Bearer ${token}`);
+      response = await request.get(`/user/${uid}`).set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -629,11 +578,11 @@ defineFeature(feature, (test) => {
           email: arg0,
           password: arg1
         });
-        token = loginResponse.body.token;
+        token = loginResponse.headers['set-cookie'];
     });
 
     when(/^eu envio uma requisição POST para http:\/\/localhost:3001\/auth\/logout$/, async () => {
-        response = await request.post('/auth/logout').set('Authorization', `Bearer ${token}`);
+        response = await request.post('/auth/logout').set('Cookie', token);
     });
 
     then('o status da resposta deve ser 200', () => {
@@ -673,8 +622,8 @@ defineFeature(feature, (test) => {
         expect(response.status).toBe(401);
     });
 
-    and('a resposta deve conter a mensagem "No user is currently logged in"', () => {
-        expect(response.body.message).toBe('No user is currently logged in');
+    and('a resposta deve conter a mensagem "Authentication token is required"', () => {
+        expect(response.body.message).toBe('Authentication token is required');
     });
   });
 });
