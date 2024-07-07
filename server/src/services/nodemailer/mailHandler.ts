@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 async function MailHandler(emailConfig: {
-    userName: string,
     userEmail: string,
     subjectText: string,
     html: string
@@ -20,7 +19,7 @@ async function MailHandler(emailConfig: {
 
         await transporter.sendMail({
             to: emailConfig.userEmail,
-            from: emailConfig.userName,
+            from: process.env.EMAIL,
             subject: emailConfig.subjectText,
             html: emailConfig.html
         })

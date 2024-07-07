@@ -14,16 +14,15 @@ defineFeature(feature, (test)=>{
     let response: supertest.Response;
     jest.setTimeout(15000);
 
-    beforeEach(async () => {
+    afterEach(async () => {
         const order = await firestoreDB.collection('orders').get();
-        const user = await firestoreDB.collection('users').where('email', 'in', usedEmail).get();
+        const user = await firestoreDB.collection('users').where('email', '==', usedEmail).get();
         const batch = firestoreDB.batch();
-        user.forEach(doc => {
-            adminAuth.deleteUser(doc.id);
-            batch.delete(doc.ref)
-        });
         order.forEach(doc => batch.delete(doc.ref));
+        user.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
+        const deletePromises = user.docs.map(async doc => await adminAuth.deleteUser(doc.id));
+        await Promise.all(deletePromises);
     });
     
     test('Retornar pedidos no histórico de pedidos com pedidos cadastrados', ({given, and, when, then}) => {
@@ -53,9 +52,10 @@ defineFeature(feature, (test)=>{
         when('acessar a página de Histórico de Pedidos', async () => {
             const filt = {
                 func: "Igual a",
-                filter: response.body.product.email
+                filter: response.body.order.email
             }
             response = await request.get('/order/filter/email').send(filt);
+            console.log(response.body);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
@@ -81,20 +81,15 @@ defineFeature(feature, (test)=>{
         });
         and('não tem cadastrado nenhum pedido', async () => {
             const email = response.body.email;
-            if(email != null){
-                const orders = await firestoreDB.collection('orders').where("email", "==", email).get();
-                const batch = firestoreDB.batch();
-                orders.forEach(doc => {
-                    adminAuth.deleteUser(doc.id);
-                    batch.delete(doc.ref)
-                });
-                await batch.commit();
-            }
+            const orders = await firestoreDB.collection('orders').where("email", "==", email).get();
+            const batch = firestoreDB.batch();
+            orders.forEach(doc => { batch.delete(doc.ref) });
+            await batch.commit();
         });
         when('acessar a página de Histórico de Pedidos', async () => {
             const filt = {
                 func: "Igual a",
-                filter: response.body.product.email
+                filter: response.body.email
             }
             response = await request.get('/order/filter/email').send(filt);
         });
@@ -141,11 +136,27 @@ defineFeature(feature, (test)=>{
         });
         when(/^filtrar por "(.*)" "(.*)"$/, async (arg0, arg1) => {
             const condição = arg1.split(" ");
-            const filt = {
-                func: condição[0] + ' ' + condição[1],
-                filter: parseFloat(condição[3])
+            condição[2] = condição.slice(2).join(' ');
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            const isDate = (str: string) => {
+                if(!dateRegex.test(str)){
+                    return false;
+                }
+                return true;
             }
-            console.log(filt);
+            var filt
+            if(Number.isNaN(parseFloat(condição[2])) || isDate(condição[2])){
+                filt = {
+                    func: condição[0] + ' ' + condição[1],
+                    filter: condição[2]
+                }
+            }
+            else {
+                filt = {
+                    func: condição[0] + ' ' + condição[1],
+                    filter: parseFloat(condição[2])
+                }
+            }
             response = await request.get('/order/filter/'+arg0).send(filt);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {

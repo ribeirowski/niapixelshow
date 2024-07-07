@@ -16,10 +16,10 @@ class OrderController{
                 return res.status(400).json({ message: 'Todos os campos devem ser preenchidos' });
             }
             const orderData = Order.parse(req.body);
-            // Adiciona o novo produto ao Firestore
+            // Adiciona o novo pedido ao Firestore
             const orderRef = await firestoreDB.collection('orders').add(orderData);
 
-            res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, product: orderData });
+            res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, order: orderData });
             return next();
         } catch (error) {
             return next(error);

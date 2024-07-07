@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "concurrently \"ts-node-dev --poll --exit-child -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts\"",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "add": "^2.0.6",
