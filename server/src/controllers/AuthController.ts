@@ -36,9 +36,11 @@ class AuthController {
              // Definir o cookie com o token
             res.cookie('authToken', token, {
                 httpOnly: true,
-                secure: false,
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                secure: true, // Usar apenas em produção com HTTPS
+                maxAge: 24 * 60 * 60 * 1000, // 1 dia
+                sameSite: 'strict' // Ou 'Lax' dependendo da necessidade
             });
+            
 
             res.status(200).json({ message: 'Login successful', token });
             return next();
@@ -49,14 +51,8 @@ class AuthController {
 
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            // Certificar-se de que o usuário está autenticado
-            if (!auth.currentUser) {
-                return res.status(401).json({ message: 'No user is currently logged in' });
-            }
-
             await signOut(auth);
             res.clearCookie('authToken');
-            
             res.status(200).json({ message: 'Logout successful' });
             return next();
         } catch (error: any) {

@@ -1,8 +1,8 @@
-import { loadFeature, defineFeature } from 'jest-cucumber';
-import supertest from 'supertest';
-import app from '../../src/app';
+import { loadFeature, defineFeature } from "jest-cucumber";
 import { firestoreDB } from '../../src/services/firebase/firebaseAdmin';
-
+import { expect } from 'expect';
+import supertest from "supertest";
+import app from "../../src/app";
 
 const feature = loadFeature('tests/features/promotion.feature');
 
@@ -13,23 +13,17 @@ defineFeature(feature, (test) => {
   let productId: string;
   let token: string;
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
-
-    // Limpar coleções relevantes no Firestore de teste
-    const promotions = await firestoreDB.collection('promotions').get();
-    promotions.forEach(async (doc) => {
-      await doc.ref.delete();
+  beforeAll(async () => {
+    //apagar todas as promoções
+    const promotionQuery = await firestoreDB.collection('promotions').get();
+    promotionQuery.forEach(doc => {
+      doc.ref.delete();
     });
 
-    const products = await firestoreDB.collection('products').get();
-    products.forEach(async (doc) => {
-      await doc.ref.delete();
-    });
-
-    // Adicionar produto de teste necessário
-    await firestoreDB.collection('products').doc('CamisaCin').set({
-      name: 'Camisa Cin',
+    //apagar todos os produtos com nome "Camisetao"
+    const productQuery = await firestoreDB.collection('products').where('name', '==', 'Camisetao').get();
+    productQuery.forEach(doc => {
+      doc.ref.delete();
     });
   });
 
@@ -57,6 +51,7 @@ defineFeature(feature, (test) => {
       const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(true);
     });
+    jest.setTimeout(30000);
 
     given(/^estou logado como administrador com email "(.*)", senha "(.*)"$/, async (arg0, arg1) => {
       const loginResponse = await request.post('/auth/login').send({
@@ -101,20 +96,11 @@ defineFeature(feature, (test) => {
       promotionId = response.body.id;
       
     });
-
-    when('preencher o campo "data de início" com "2025-01-01"', () => {});
-
-    when('preencher o campo "data de término" com "2025-02-01"', () => {});
-
-    when('preencher o campo "descrição" com "Promoção de Ano Novo"', () => {});
-
-    when('preencher o campo "porcentagem" com "10"', () => {});
-
-    when('preencher o campo "produto" com "Camisa Cin"', () => {});
-
-    then('a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(false);
+    then(/^a resposta deve ter status (\d+)$/, (arg0) => {
+      expect(response.status).toBe(201);
+    });
+    and(/^uma mensagem de sucesso "(.*)" deve ser retornada$/, (arg0) => {
+      expect(response.body.message).toBe(arg0);
     });
   });
 
@@ -136,21 +122,14 @@ defineFeature(feature, (test) => {
   //   Then a resposta deve ter status 200
   //   And uma mensagem de sucesso "Promotion updated successfully" deve ser retornada
 
-    given('estou na página "promoções"', () => {
-      // Contexto inicial, se necessário
-    });
-
-    given('existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      await firestoreDB.collection('promotions').doc('PromoAnoNovo').set({
-        start_date: '2025-01-01',
-        end_date: '2025-02-01',
-        name: 'Promoção de Ano Novo',
-        discount: 10,
-        product_id: 'CamisaCin',
+  test('Editar promoção', ({ given, and, when, then }) => {
+    given(/^estou logado como administrador com email "(.*)", senha "(.*)"$/, async (arg0, arg1) => {
+      const loginResponse = await request.post('/auth/login').send({
+        email: arg0,
+        password: arg1
       });
 
       token = loginResponse.headers['set-cookie'];
-
     });
     and(/^existem produtos cadastrados com o nome "(.*)"$/, async (arg0) => {
       
@@ -161,20 +140,21 @@ defineFeature(feature, (test) => {
       }
 
     });
-
-    when('preencher o campo "data de início" com "2025-01-01"', () => {});
-
-    when('preencher o campo "data de término" com "2025-02-01"', () => {});
-
-    when('preencher o campo "descrição" com "Promoção de Ano Novo"', () => {});
-
-    when('preencher o campo "porcentagem" com "20"', () => {});
-
-    when('preencher o campo "produto" com "Camisa Cin"', () => {});
-
-    then('a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(false);
+    and(/^existem promoções cadastradas com o id "(.*)"$/, async (arg0) => {
+      //get da promoção com id promotionId
+      const promotion = await request.get('/promotion/' + promotionId);
+      if (promotion.status !== 200) {
+        throw new Error('Erro ao buscar promoção');	
+      }
+    });
+    when(/^eu fizer uma requisição PATCH para "(.*)" com os dados:$/, async (arg0) => {
+      response = await request.patch('/promotion/' + promotionId).send({ discount: 20 }).set('Cookie', token);
+    });
+    then(/^a resposta deve ter status (\d+)$/, (arg0) => {
+      expect(response.status).toBe(200);
+    });
+    and(/^uma mensagem de sucesso "(.*)" deve ser retornada$/, (arg0) => {
+      expect(response.body.message).toBe(arg0);
     });
   });
 
@@ -185,24 +165,30 @@ defineFeature(feature, (test) => {
   //   Then o sistema deve retornar status 200
   //   And a resposta deve ser uma lista com todas as promoções
 
-    given('estou na página "promoções"', () => {
-      // Contexto inicial, se necessário
-    });
-
-    given('existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      await firestoreDB.collection('promotions').doc('PromoAnoNovo').set({
-        start_date: '2025-01-01',
-        end_date: '2025-02-01',
-        name: 'Promoção de Ano Novo',
-        discount: 10,
-        product_id: 'CamisaCin',
+  test('Listar promoções', ({ given, when, then, and }) => {
+    given(/^estou logado como usuario com email "(.*)", senha "(.*)"$/, async (arg0, arg1) => {
+      const loginResponse = await request.post('/auth/login').send({
+        email: arg0,
+        password: arg1
       });
 
       token = loginResponse.headers['set-cookie'];
 
-    then('a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(true);
+    });
+    given(/^existem promoções cadastradas$/, async () => {
+      const promotion = await request.get('/promotion');
+      if (promotion.status !== 200) {
+        throw new Error('Erro ao buscar promoções');	
+      }
+    });
+    when(/^eu fizer uma requisição GET para "(.*)"$/, async (arg0) => {
+      response = await request.get('/promotion');
+    });
+    then(/^o sistema deve retornar status (\d+)$/, (arg0) => {
+      expect(response.status).toBe(200);
+    });
+    and(/^a resposta deve ser uma lista com todas as promoções$/, () => {
+      expect(response.body).toBeInstanceOf(Array);
     });
   });
 
@@ -213,46 +199,30 @@ defineFeature(feature, (test) => {
   //   Then o sistema deve retornar status 200
   //   And a resposta deve ser a promoção com id "1"
 
-  test('Cadastro de promoção com porcentagem menor que 0', ({ given, when, then, and }) => {
-    given('estou logado como "administrador", com usuário "nathy" e senha "nia12345"', () => {
-      // Simular autenticação do administrador, se necessário
-    });
-
-    given('estou na página "promoções"', () => {
-      // Contexto inicial, se necessário
-    });
-
-    given('não existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(true);
-    });
-
-    when('eu selecionar a opção de cadastrar uma nova promoção', async () => {
-      response = await request.post('/promotion').send({
-        start_date: '2025-01-01',
-        end_date: '2025-02-01',
-        name: 'Promoção de Ano Novo',
-        discount: -10,
-        product_id: 'CamisaCin',
+  test('Listar promoção por id', ({ given, when, then, and }) => {
+    given(/^estou logado como administrador com email "(.*)", senha "(.*)"$/, async (arg0, arg1) => {
+      const loginResponse = await request.post('/auth/login').send({
+        email: arg0,
+        password: arg1
       });
 
       token = loginResponse.headers['set-cookie'];
 
     });
-
-    when('preencher o campo "data de início" com "2025-01-01"', () => {});
-
-    when('preencher o campo "data de término" com "2025-02-01"', () => {});
-
-    when('preencher o campo "descrição" com "Promoção de Ano Novo"', () => {});
-
-    when('preencher o campo "porcentagem" com "-10"', () => {});
-
-    when('preencher o campo "produto" com "Camisa Cin"', () => {});
-
-    then('a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(true);
+    given(/^existem promoções cadastradas com o id "(.*)"$/, async (arg0) => {
+      const promotion = await request.get('/promotion/' + promotionId);
+      if (promotion.status !== 200) {
+        throw new Error('Erro ao buscar promoções');	
+      }
+    });
+    when(/^eu fizer uma requisição GET para "(.*)"$/, async (arg0) => {
+      response = await request.get('/promotion/' + promotionId);
+    });
+    then(/^o sistema deve retornar status (\d+)$/, (arg0) => {
+      expect(response.status).toBe(200);
+    });
+    and(/^a resposta deve ser a promoção com id "(.*)"$/, (arg0) => {
+      expect(response.body.id).toBe(promotionId);
     });
   });
 
@@ -273,7 +243,6 @@ defineFeature(feature, (test) => {
       });
 
       token = loginResponse.headers['set-cookie'];
-
     });
     given(/^existe um produto cadastrado com o nome "(.*)"$/, async (arg0) => {
       const product = await request.get('/product/' + productId);

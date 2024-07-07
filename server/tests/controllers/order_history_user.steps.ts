@@ -14,28 +14,15 @@ defineFeature(feature, (test)=>{
     let response: supertest.Response;
     jest.setTimeout(15000);
 
-    async function clearDatabase(){
+    afterEach(async () => {
         const order = await firestoreDB.collection('orders').get();
-        const user = await firestoreDB.collection('users').where('email', 'in', usedEmail).get();
+        const user = await firestoreDB.collection('users').where('email', '==', usedEmail).get();
         const batch = firestoreDB.batch();
-        user.forEach(doc => {
-            adminAuth.deleteUser(doc.id);
-            batch.delete(doc.ref)
-        });
         order.forEach(doc => batch.delete(doc.ref));
+        user.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
-    }
-
-    beforeAll(async () => {
-        await clearDatabase();
-    });
-
-    beforeEach(async () => {
-        await clearDatabase();
-    });
-
-    afterAll(async () => {
-        await clearDatabase();
+        const deletePromises = user.docs.map(async doc => await adminAuth.deleteUser(doc.id));
+        await Promise.all(deletePromises);
     });
     
     test('Retornar pedidos no histórico de pedidos com pedidos cadastrados', ({given, and, when, then}) => {
