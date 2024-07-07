@@ -126,7 +126,6 @@ defineFeature(feature, (test) => {
       });
 
       token = loginResponse.headers['set-cookie'];
-
     });
     and(/^existem produtos cadastrados com o nome "(.*)"$/, async (arg0) => {
       
@@ -240,7 +239,6 @@ defineFeature(feature, (test) => {
       });
 
       token = loginResponse.headers['set-cookie'];
-
     });
     given(/^existe um produto cadastrado com o nome "(.*)"$/, async (arg0) => {
       const product = await request.get('/product/' + productId);

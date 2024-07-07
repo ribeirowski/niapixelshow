@@ -5,6 +5,7 @@ import PromotionController from './PromotionController';
 import AuthController from './AuthController';
 import ProductController from './ProductController';
 import CategoryController from './CategoryController';
+import EmailController from './EmailController';
 
 export {
     UserController,
@@ -13,7 +14,8 @@ export {
     PromotionController,
     OrderController,
     CategoryController,
-    CartController
+    CartController,
+    EmailController
 };
 
 
