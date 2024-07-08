@@ -95,9 +95,6 @@ class CartController {
 
             const updatedItems = cartData.items.map((item: any) => {
                 if (item.item_id === itemId) {
-                    console.log("ENTROU");
-                    console.log(itemData.quantity);
-                    console.log(itemData.size);
                     if(!itemData.quantity){
                         item.size = itemData.size;
                     }
