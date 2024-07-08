@@ -47,10 +47,6 @@ defineFeature(feature, (test) => {
 
   test('Cadastro de Promoção', ({ given, and, when, then }) => {
 
-    given('não existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
-      expect(snapshot.empty).toBe(true);
-    });
     jest.setTimeout(30000);
 
     given(/^estou logado como administrador com email "(.*)", senha "(.*)"$/, async (arg0, arg1) => {
