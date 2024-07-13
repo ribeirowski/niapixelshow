@@ -30,7 +30,11 @@ class CartController {
             const userId = req.params.id;
             const itemData = CartItem.parse(req.body);
 
-            // Verifica se o carrinho existe
+            if (!itemData.status){
+                return res.status(460).json({ message: 'Item is no longer available' });
+            }
+
+            // Verify if the cart exists
             const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
             if (!cartDoc.exists) {
                 const cartData = { user_id: userId, items: [itemData], price: itemData.price*itemData.quantity };
@@ -39,10 +43,26 @@ class CartController {
                 return next();
             }
 
-            // Adiciona o item ao carrinho
+            // Add item to cart
             const cartData = cartDoc.data();
             if (!cartData) {
                 return res.status(404).json({ message: 'Cart data not found' });
+            }
+            // Verify if the item is already in the cart
+            const item = cartData.items.find((item: any) => item.item_id === itemData.item_id);
+
+            if (item) {
+                const updatedItems = cartData.items.map((item: any) => {
+                    if (item.item_id === itemData.item_id) {
+                        item.quantity += itemData.quantity;
+                    }
+                    return item;
+                });    
+                await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
+                const cartPrice = updatedItems.reduce((acc: number, item: any) => acc + item.price*item.quantity, 0);
+                await firestoreDB.collection('carts').doc(userId).update({ price: cartPrice });
+                res.status(200).json({ message: 'Item added successfully' });
+                return next();
             }
 
             const updatedItems = [...cartData.items, itemData];
@@ -78,7 +98,7 @@ class CartController {
                     if(!itemData.quantity){
                         item.size = itemData.size;
                     }
-                    if(!itemData.size){
+                    else if(!itemData.size){
                         item.quantity = itemData.quantity;
                     }
                     else{
@@ -114,7 +134,7 @@ class CartController {
                 return res.status(404).json({ message: 'Cart data not found' });
             }
 
-            const updatedItems = cartData.items.filter((item: any) => item.id !== itemId);
+            const updatedItems = cartData.items.filter((item: any) => item.item_id !== itemId);
 
             await firestoreDB.collection('carts').doc(userId).update({ items: updatedItems });
 
@@ -132,6 +152,12 @@ class CartController {
         try {
             const userId = req.params.id;
 
+            // Verifies if the cart exists
+            const cartDoc = await firestoreDB.collection('carts').doc(userId).get();
+            if (!cartDoc.exists) {
+                return res.status(404).json({ message: 'Cart not found' });
+            }
+            
             await firestoreDB.collection('carts').doc(userId).delete();
 
             res.status(200).json({ message: 'Cart deleted successfully' });

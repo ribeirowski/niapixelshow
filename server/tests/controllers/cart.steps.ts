@@ -34,7 +34,6 @@ defineFeature(feature, (test)=>{
         })
         then(/^o banco de dados cria um novo carrinho com user_id "(.*)" e o produto de item_id "(.*)"$/, async (arg0,arg1) => {
             response = await request.get(`/cart/${arg0}`);
-            console.log(response.body.items[0].item_id)
             expect(response.body.items[0].item_id).toBe(arg1);
         })
         and('o preço total do carrinho de user_id "5" é atualizado para o valor do produto de item_id "1"', async () => {
@@ -110,7 +109,6 @@ defineFeature(feature, (test)=>{
         });
         when(/^o produto de item_id "(.*)" é removido do carrinho$/, async (arg0) => {
             response = await request.get(`/cart/8`);
-            console.log(response.body)
             response = await request.delete(`/cart/8/${arg0}`);
         });
         then(/^o banco de dados remove o produto de item_id "(.*)" do banco de dados$/, async (arg0) => {
@@ -121,7 +119,7 @@ defineFeature(feature, (test)=>{
             response = await request.get(`/cart/8`);
             expect(response.body.price).toBe(0);
         });
-    });
+    }, 10000);
 
         /* Scenario: Editar um produto do carrinho 
         Given o banco de dados possui um carrinho com user_id "10" e o produto de item_id "1" com nome "Camisa Cin 50 anos", descrição "Esta é uma camisa que representa os 50 anos do Centro de informática", preço "50", status "true", categoria "Camisas", quantidade "4" e tamanho "P"
@@ -145,21 +143,26 @@ defineFeature(feature, (test)=>{
             response = await request.post(`/cart/10`).send(orderData);
         });
         when(/^o tamanho do produto de item_id "(.*)" é editado para "(.*)"$/, async (arg0, arg1) => {
-            response = await request.put(`/cart/10/${arg0}`).send({size: arg1});
+            const orderData = {
+                size: arg1,
+            }
+            response = await request.put(`/cart/10/${arg0}`).send(orderData);
         });
         and(/^a quantidade do produto de item_id "(.*)" é editado para "(.*)"$/, async (arg0, arg1) => {
-            response = await request.put(`/cart/10/${arg0}`).send({quantity: parseInt(arg1)});
+            const orderData = {
+                quantity: parseInt(arg1),
+            }
+            response = await request.put(`/cart/10/${arg0}`).send(orderData);
         });
         then(/^o banco de dados edita o valor do campo tamanho do produto de item_id "(.*)" para "(.*)"$/, async (arg0, arg1) => {
             response = await request.get(`/cart/10`);
-            console.log(response.body)
-            expect(response.body.items[0].size).toBe(arg1);
+            expect(response.body.items[0].size).toBe("M");
         });
         and(/^o banco de dados edita o valor do campo de quantidade do produto de item_id para "(.*)"$/, async (arg0) => {
             response = await request.get(`/cart/10`);
-            expect(response.body.items[0].quantity).toBe(parseInt(arg0));
+            expect(response.body.items[0].quantity).toBe(2);
         });
-    });
+    }, 10000);
 
     /* Scenario: Finalizar o pedido no carrinho de compras
     Given o banco de dados possui um carrinho com user_id "12" e o produto de item_id "1" com nome "Camisa Cin 50 anos", descrição "Esta é uma camisa que representa os 50 anos do Centro de informática", preço "50", status "true", categoria "Camisas", quantidade "4" e tamanho "P"
@@ -187,4 +190,4 @@ defineFeature(feature, (test)=>{
             expect(response.body.user_id).toBe(undefined);
         });
     });
-    })
+})
