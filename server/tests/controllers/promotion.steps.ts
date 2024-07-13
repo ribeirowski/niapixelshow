@@ -70,10 +70,13 @@ defineFeature(feature, (test) => {
         description: "Algodão",
         price: 50,
         status: true,
-        category: "Camisas"
+        category: {
+          name: 'categoryName',
+          description: 'categoryDescription'
+        }
       }
   
-      const addProduct = await request.post('/product').send(product);
+      const addProduct = await request.post('/product').set('Cookie', token).send(product);
       if (addProduct.status !== 201) {
         throw new Error('Erro ao adicionar produto');	
       }
