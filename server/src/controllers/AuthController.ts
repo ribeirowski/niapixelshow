@@ -17,12 +17,8 @@ class AuthController {
             let user;
             try {
                 user = await adminAuth.getUserByEmail(email);
-            } catch (error: any) {
-                if (error.code === 'authTest/user-not-found') {
-                    return res.status(400).json({ message: 'Email not found' });
-                }
-                // Tratar outros erros
-                return next(error);
+            } catch (error) {
+                return res.status(400).json({ message: 'Email not found' });
             }
 
             // Verificar se o email está verificado
@@ -30,17 +26,18 @@ class AuthController {
                 return res.status(400).json({ message: 'Email not verified' });
             }
 
+            // Tentar fazer login com o email e a senha fornecidos
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
             const token = await userCredential.user.getIdToken();
 
-             // Definir o cookie com o token
+            // Definir o cookie com o token
             res.cookie('authToken', token, {
                 httpOnly: true,
                 secure: true, // Usar apenas em produção com HTTPS
                 maxAge: 24 * 60 * 60 * 1000, // 1 dia
                 sameSite: 'strict' // Ou 'Lax' dependendo da necessidade
             });
-            
 
             res.status(200).json({ message: 'Login successful', token });
             return next();
