@@ -513,12 +513,12 @@ test('Leitura de Todos os Produtos Bem-Sucedida', ({ given, when, then, and }) =
 
         await batch.commit();
 
-        console.log('Produtos e promoções adicionados ao banco de dados');
+        //console.log('Produtos e promoções adicionados ao banco de dados');
     });
 
     when('o fornecedor solicita a lista de todos os produtos', async () => {
         response = await request.get('/product').set('Cookie', token).send();
-        console.log('Resposta da solicitação:', response.status, response.body);
+        //console.log('Resposta da solicitação:', response.status, response.body);
     });
 
     then('o sistema retorna a lista de todos os produtos', () => {
