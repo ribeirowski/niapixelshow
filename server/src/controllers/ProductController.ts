@@ -41,12 +41,25 @@ class ProductController {
     async update(req: Request, res: Response, next: NextFunction) {
         try {
             const productId = req.params.id;
-            const productData = UpdateProduct.parse(req.body);
+            let productData;
+
+            const { name, description, price, status, category} = req.body;
+            // Verifica se o preço é um número positivo
+            
 
             // Verifica se todos os campos estão preenchidos
-            if (!productData.name || !productData.description || !productData.price || !productData.status || !productData.category) {
+            if (!name || !description || !price || !status || !category ) {
                 throw new HttpException(400, "Todos os campos devem ser preenchidos");
             }
+
+            if (price < 0) {
+                throw new Error('O preço deve ser um número positivo');
+            }
+            
+
+        
+            productData = UpdateProduct.parse(req.body);
+
 
             // Verifica se o produto existe no Firestore
             const productdoc = await firestoreDB.collection('products').doc(productId).get();
