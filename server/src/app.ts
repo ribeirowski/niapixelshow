@@ -3,17 +3,16 @@ import routes from './routes';
 import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 import { errorHandler } from './middlewares';
-import cors
+import cors from 'cors';
 
 dotenv.config();
 
 const app: Express = express();
 
-// Configuração CORS
 const corsOptions = {
-    origin: 'http://localhost:3000', // URL do seu frontend
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Permite enviar cookies com as requisições CORS
+    credentials: true,
     optionsSuccessStatus: 204
 };
 

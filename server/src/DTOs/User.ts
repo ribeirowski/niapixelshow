@@ -7,15 +7,22 @@ export const User = z.object({
   phone: z
     .string()
     .regex(/^\+?[0-9]+$/, {
-      message: 'O número de telefone deve conter apenas números',
+        message: 'O número de telefone deve conter apenas números',
     })
-    .optional(),
-  email: z.string({ message: 'O email não pode ser vazio' }).email({ message: 'Endereço de email inválido' }),
+    .optional()
+    .or(z.literal('')),
+  email: z
+    .string({ message: 'O email não pode ser vazio' })
+    .email({ message: 'Endereço de email inválido' }),
   password: z
     .string({ message: 'A senha não pode ser vazia' })
     .min(8, { message: 'A senha deve ter no mínimo 8 caracteres' }),
-  address: z.string().optional(),
-  is_admin: z.boolean().default(false),
+  address: z
+    .string()
+    .optional(),
+  is_admin: z
+    .boolean()
+    .default(false),
 });
 
 export const UpdateUser = User.partial();
