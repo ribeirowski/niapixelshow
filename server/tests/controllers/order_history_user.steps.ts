@@ -55,7 +55,7 @@ defineFeature(feature, (test)=>{
                 filter: response.body.order.email
             }
             response = await request.get('/order/filter/email').send(filt);
-            console.log(response.body);
+            //console.log(response.body);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
