@@ -1,6 +1,30 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import Head from "next/head";
+import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
+import "@fontsource/poppins";
+import theme from '../styles/theme';
+import { Navbar, Footer } from "@/components";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Head>
+        <title>Nia Pixel Show</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Container maxWidth='xl'>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Navbar />
+            <Container maxWidth='xl' sx={{ flexGrow: 1, marginTop: '2rem', marginBottom: '2rem' }}>
+              <Component {...pageProps} />
+            </Container>
+            <Footer />
+          </Box>
+        </Container>
+      </ThemeProvider>
+    </>
+  );
 }
