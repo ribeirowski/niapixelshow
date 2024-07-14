@@ -17,8 +17,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <CssBaseline />
         <Container maxWidth='xl'>
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Navbar />
-            <Container maxWidth='xl' sx={{ flexGrow: 1, marginTop: '2rem', marginBottom: '2rem' }}>
+            <Navbar /> 
+            <Container maxWidth='xl' sx={{ my: '2rem', flexGrow: 1, alignContent: 'center' }}>
               <Component {...pageProps} />
             </Container>
             <Footer />

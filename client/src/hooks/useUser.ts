@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { UserSchema, UseUserReturn } from '../pages/SignUp/types';
+import { UserSchema, UseUserReturn } from '../pages/sign-up/types';
 import { SERVER_URL } from '@/hooks/url';
 
 const useUser = (): UseUserReturn => {
