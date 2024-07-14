@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../services/firebase/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { adminAuth } from '../services/firebase/firebaseAdmin';
 
 class AuthController {
@@ -54,6 +54,34 @@ class AuthController {
             return next();
         } catch (error: any) {
             return next(error);
+        }
+    }
+
+    async checkAuth(req: Request, res: Response, next: NextFunction) {
+        try {
+            // If the middleware has passed, user is authenticated
+            res.status(200).json({ message: 'Authenticated' });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email } = req.body;
+
+            // Verificar se o email está cadastrado
+            let user;
+            try {
+                user = await adminAuth.getUserByEmail(email);
+            } catch (error) {
+                return res.status(400).json({ message: 'Email not found' });
+            }
+
+            await sendPasswordResetEmail(auth, email);
+            res.status(200).json({ message: 'Password reset email sent.' });
+        } catch (error: any) {
+            res.status(500).json({ message: 'Error sending password reset email.' });
         }
     }
 };

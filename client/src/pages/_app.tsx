@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
 import "@fontsource/poppins";
-import theme from '../styles/theme';
+import theme from '@/styles/theme';
 import { Navbar, Footer } from "@/components";
 
 export default function App({ Component, pageProps }: AppProps) {

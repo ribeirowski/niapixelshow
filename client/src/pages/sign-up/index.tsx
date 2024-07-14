@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Container, TextField, Typography, Snackbar, Alert, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { userSchema, UserSchema } from './types';
-import useUser from '../../hooks/useUser';
+import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/router';
 
 const SignUp: React.FC = () => {
@@ -52,14 +52,16 @@ const SignUp: React.FC = () => {
     const onSubmit: SubmitHandler<UserSchema> = async (data) => {
         try {
             await createUser(data);
-            setSnackbarMessage('User created successfully!');
+            setSnackbarMessage('Usuário criado com sucesso!');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
 
             reset();
-            router.push('/verify-email');
+            setTimeout(() => {
+                router.push('/verify-email');
+            }, 1000);
         } catch (err) {
-            console.error('Error creating user:', err);
+            console.error('Erro ao criar usuário:', err);
         }
     };
 
