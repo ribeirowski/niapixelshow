@@ -133,3 +133,7 @@ dist
 nia-pixel-show-firebase-adminsdk-d7h8l-9cb06f05c1.json
 
 .yarn.lock
+.package-lock.json
+
+package-lock.json
+yarn.lock
