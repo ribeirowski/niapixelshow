@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { auth } from '../services/firebase/firebase';
 import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { adminAuth } from '../services/firebase/firebaseAdmin';
+import { CustomRequest } from 'src/middlewares/auth';
 
 class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {
@@ -39,7 +40,7 @@ class AuthController {
                 sameSite: 'strict' // Ou 'Lax' dependendo da necessidade
             });
 
-            res.status(200).json({ message: 'Login successful', token });
+            res.status(200).json({ message: 'Login successful', token, uid: user.uid });
             return next();
         } catch (error: any) {
             return res.status(500).json({ message: 'Invalid credential' });
@@ -57,10 +58,10 @@ class AuthController {
         }
     }
 
-    async checkAuth(req: Request, res: Response, next: NextFunction) {
+    async checkAuth(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             // If the middleware has passed, user is authenticated
-            res.status(200).json({ message: 'Authenticated' });
+            res.status(200).json({ message: 'Authenticated', uid: req.user?.uid });
         } catch (error: any) {
             res.status(500).json({ message: 'Internal Server Error' });
         }
