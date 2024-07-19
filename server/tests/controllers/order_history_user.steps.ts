@@ -50,11 +50,9 @@ defineFeature(feature, (test)=>{
             response = await request.post('/order').send(orderData);
         });
         when('acessar a página de Histórico de Pedidos', async () => {
-            const filt = {
-                func: "Igual a",
-                filter: response.body.order.email
-            }
-            response = await request.get('/order/filter/email').send(filt);
+            const func = "Igual a"
+            const filter = response.body.order.email
+            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}`);
             //console.log(response.body);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
@@ -87,11 +85,9 @@ defineFeature(feature, (test)=>{
             await batch.commit();
         });
         when('acessar a página de Histórico de Pedidos', async () => {
-            const filt = {
-                func: "Igual a",
-                filter: response.body.email
-            }
-            response = await request.get('/order/filter/email').send(filt);
+            const func = "Igual a"
+            const filter = response.body.email
+            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}`);
         });
         then('é retornada uma mensagem informando que não há pedidos cadastrados', async () => {
             expect(response.status).toBe(426);
@@ -144,20 +140,9 @@ defineFeature(feature, (test)=>{
                 }
                 return true;
             }
-            var filt
-            if(Number.isNaN(parseFloat(condição[2])) || isDate(condição[2])){
-                filt = {
-                    func: condição[0] + ' ' + condição[1],
-                    filter: condição[2]
-                }
-            }
-            else {
-                filt = {
-                    func: condição[0] + ' ' + condição[1],
-                    filter: parseFloat(condição[2])
-                }
-            }
-            response = await request.get('/order/filter/'+arg0).send(filt);
+            const func = condição[0] + ' ' + condição[1]
+            const filter = condição[2]
+            response = await request.get(`/order/filter/${arg0}?func=${func}&filter=${filter}`);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
