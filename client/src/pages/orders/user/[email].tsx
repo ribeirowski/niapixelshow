@@ -4,6 +4,7 @@ import useOrder from '@/hooks/useOrder';
 import useUser from '@/hooks/useUser'
 import { withProtectedRoute } from '@/components';
 import { useRouter } from 'next/router';
+import { OrderTable } from '../../../components';
 
 const OrderDetails: React.FC = () => {
     const router = useRouter();
@@ -32,30 +33,7 @@ const OrderDetails: React.FC = () => {
             {orders.length === 0 ? (
                 <Typography variant="body1" sx={{ textAlign: 'center' }}>Nenhum pedido encontrado.</Typography>
             ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Item</TableCell>
-                                <TableCell>Descrição</TableCell>
-                                <TableCell>Preço</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Data</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {orders.map((order) => (
-                                <TableRow key={order.id}>
-                                    <TableCell>{order.item}</TableCell>
-                                    <TableCell>{order.description}</TableCell>
-                                    <TableCell>{order.price}</TableCell>
-                                    <TableCell>{order.status}</TableCell>
-                                    <TableCell>{order.date}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                OrderTable(orders)
             )}
         </Container>
     );
