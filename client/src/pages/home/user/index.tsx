@@ -6,8 +6,8 @@ const UserHome: React.FC = () => {
     const router = useRouter();
 
     return (
-        <Container maxWidth="xl" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3, mt: 4 }}>
-            <Box sx={{ textAlign: 'center', my: 4 }}>
+        <Container maxWidth="xl" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3 }}>
+            <Box sx={{ textAlign: 'center', p: 4 }}>
                 <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: '700', color: 'text.primary' }}>
                     Bem-vindo ao Nia Pixel Show
                 </Typography>
