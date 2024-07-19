@@ -15,7 +15,7 @@ const UserHome = () => {
         <PhotoCarousel images={images} />
         <h1>Produtos</h1>
         <ProductCarousel />
-    </div>
+      </div>
     </div>
   );
 };

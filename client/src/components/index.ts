@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import ProductCard from './ProductCard';
 import ProductCarousel from './ProductCarousel';
 import PhotoCarousel from './PhotoCarousel';
-import OrderTable from './OrderTable
+import OrderTable from './OrderTable';
 
 export { 
     Navbar,
