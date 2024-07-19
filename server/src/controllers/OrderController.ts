@@ -204,16 +204,32 @@ class OrderController{
     //FILTER ALL METHOD
     async filterAll(req: Request, res: Response, next: NextFunction){
         try {
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            const isDate = (str: string) => {
+                if(!dateRegex.test(str)){
+                    return false;
+                }
+                return true;
+            }
             const atribute = req.params.filtro;
-            const {func, filter} = req.body
+            const {func, filter} = req.query;
+            const filterString = typeof filter === 'string' ? filter : '';
+            var filt
+            if(Number.isNaN(parseFloat(filterString)) || isDate(filterString)){
+                filt = filterString
+            }
+            else {
+                filt = parseFloat(filterString)
+            }
+
             if(func === 'Acima de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filter).get();
+                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filt).get();
             }
             else if(func === 'Abaixo de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filter).get();
+                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filt).get();
             }
             else{
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filter).get();
+                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filt).get();
             }
             
             if(allOrders.empty){

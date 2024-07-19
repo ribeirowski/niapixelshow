@@ -5,6 +5,7 @@ export interface UseUserReturn<T = any> {
     createUser: (userData: UserSchema) => Promise<void>;
     updateUser: (userId: string, userData: Partial<UserSchema>) => Promise<void>;
     getUserById: (userId: string) => Promise<void>;
+    getUserByEmail: (userEmail: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
     loading: boolean;
     error: string | null;
