@@ -4,12 +4,15 @@ import Footer from "./Footer";
 import ProductCard from './ProductCard';
 import ProductCarousel from './ProductCarousel';
 import PhotoCarousel from './PhotoCarousel';
+import OrderTable from './OrderTable
 
 export { 
     Navbar,
     Footer,
-    withProtectedRoute,
     ProductCard,
     ProductCarousel,
-    PhotoCarousel
+    PhotoCarousel,
+    withProtectedRoute,
+    OrderTable
 };
+
