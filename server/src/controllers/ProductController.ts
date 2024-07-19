@@ -10,7 +10,7 @@ class ProductController {
     //CREATE METHOD
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { name, description, price, status, category, promotion_id } = req.body;
+            const { name, description, price, status, category, promotion_id, image } = req.body;
 
             // Verifica se todos os campos estão preenchidos
             if (!name || !description || !price || !status || !category ) {

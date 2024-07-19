@@ -6,6 +6,8 @@ import "@fontsource/poppins";
 import theme from '@/styles/theme';
 import { Navbar, Footer } from '@/components';
 import { AuthProvider } from '@/hooks';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function App({ Component, pageProps }: AppProps) {
   return (
