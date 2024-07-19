@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Container, TextField, Typography, Snackbar, Alert, IconButton, Stack } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { loginSchema, LoginSchema } from './types';
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
@@ -15,7 +15,7 @@ const Login: React.FC = () => {
     const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
     const [showPassword, setShowPassword] = useState(false);
 
-    const { login, loading, error } = useAuth();
+    const { login, loading, error, authenticated } = useAuth();
 
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
@@ -40,6 +40,12 @@ const Login: React.FC = () => {
     });
 
     useEffect(() => {
+        if (authenticated) {
+            router.push('/profile');
+        }
+    }, [authenticated, router]);
+
+    useEffect(() => {
         if (error) {
             setSnackbarMessage(error);
             setSnackbarSeverity('error');
@@ -48,21 +54,13 @@ const Login: React.FC = () => {
     }, [error]);
 
     const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
-        try {
-            await login(data);
+        await login(data.email, data.password);
+
+        if (!error) {
             setSnackbarMessage('Login bem sucedido!');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
-
             reset();
-            setTimeout(() => {
-                router.push('');
-            }, 1000);
-        } catch (err) {
-            console.error('Erro ao fazer login:', err);
-            setSnackbarMessage('Erro ao fazer login.');
-            setSnackbarSeverity('error');
-            setOpenSnackbar(true);
         }
     };
 
@@ -99,34 +97,32 @@ const Login: React.FC = () => {
                         name="password"
                         control={control}
                         render={({ field }) => (
-                            <>
-                                <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                    <TextField
-                                        {...field}
-                                        label="Senha"
-                                        placeholder="Digite sua senha"
-                                        variant="outlined"
-                                        fullWidth
-                                        required
-                                        type={showPassword ? 'text' : 'password'}
-                                        error={!!errors.password}
-                                        helperText={errors.password?.message}
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            if (e.target.value === '') {
-                                                clearErrors('password');
-                                            }
-                                        }}
-                                    />
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        sx={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
-                                    >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </Box>
-                            </>
+                            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <TextField
+                                    {...field}
+                                    label="Senha"
+                                    placeholder="Digite sua senha"
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    type={showPassword ? 'text' : 'password'}
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message}
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        if (e.target.value === '') {
+                                            clearErrors('password');
+                                        }
+                                    }}
+                                />
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    sx={{ color: '#444444', position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </Box>
                         )}
                     />
                 </Box>
