@@ -24,26 +24,26 @@ const Profile: React.FC = () => {
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', p: 4, boxShadow: 3 }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }}>
+            <Typography variant="h4" component="h1" color="secondary" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', mb: 4, mt: 1 }}>
                 Perfil do Usuário
             </Typography>
             {userData && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, px: 4, mb: 1 }}>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Nome:</Typography>
-                        <Typography variant="body1">{userData.name}</Typography>
+                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Nome:</Typography>
+                        <Typography variant="body1" color="secondary">{userData.name}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Email:</Typography>
-                        <Typography variant="body1">{userData.email}</Typography>
+                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Email:</Typography>
+                        <Typography variant="body1" color="secondary">{userData.email}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Telefone:</Typography>
-                        <Typography variant="body1">{userData.phone}</Typography>
+                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Telefone:</Typography>
+                        <Typography variant="body1" color="secondary">{userData.phone}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" sx={{ fontWeight: 600 }}>Endereço:</Typography>
-                        <Typography variant="body1">{userData.address}</Typography>
+                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Endereço:</Typography>
+                        <Typography variant="body1" color="secondary">{userData.address}</Typography>
                     </Box>
                 </Box>
             )}

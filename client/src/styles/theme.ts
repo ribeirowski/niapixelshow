@@ -5,6 +5,9 @@ const theme = createTheme({
         primary: {
             main: '#DA0037',
         },
+        secondary: {
+            main: '#171717',
+        },
         background: {
             default: '#171717',
             paper: '#EDEDED',
@@ -108,17 +111,6 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     color: '#EDEDED',
-                },
-            },
-        },
-        MuiTypography: {
-            styleOverrides: {
-                root: {
-                    cursor: 'default',
-                    '&.MuiTypography-h6': {
-                        color: '#EDEDED',
-                        fontWeight: '700',
-                    },
                 },
             },
         },
