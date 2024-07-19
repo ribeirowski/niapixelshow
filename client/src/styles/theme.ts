@@ -70,6 +70,68 @@ const theme = createTheme({
                 },
             },
         },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#DA0037',
+                    borderRadius: '1rem',
+                    marginTop: '2rem',
+                },
+            },
+        },
+        MuiTabs: {
+            styleOverrides: {
+                root: {
+                    '& .MuiTabs-indicator': {
+                        display: 'none',
+                    },
+                },
+            },
+        },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    color: '#EDEDED',
+                    fontWeight: '400',
+                    mx: 1.8,
+                    '&.Mui-selected': {
+                        color: '#EDEDED',
+                        fontWeight: '600',
+                    },
+                    '&.MuiTab-root': {
+                        textTransform: 'none',
+                    },
+                },
+            },
+        },
+        MuiIconButton: {
+            styleOverrides: {
+                root: {
+                    color: '#EDEDED',
+                },
+            },
+        },
+        MuiTypography: {
+            styleOverrides: {
+                root: {
+                    cursor: 'default',
+                    '&.MuiTypography-h6': {
+                        color: '#EDEDED',
+                        fontWeight: '700',
+                    },
+                },
+            },
+        },
+        MuiMenu: {
+            styleOverrides: {
+                root: {
+                    '& .MuiMenu-paper': {
+                        backgroundColor: '#EDEDED',
+                        color: '#171717',
+                    },
+                },
+            },
+        },
     },
 });
 
