@@ -1,9 +1,14 @@
 import { z } from 'zod';
 
-export interface UseUserReturn {
-    createUser: (data: UserSchema) => Promise<void>;
+export interface UseUserReturn<T = any> {
+    userData: T | null;
+    createUser: (userData: UserSchema) => Promise<void>;
+    updateUser: (userId: string, userData: Partial<UserSchema>) => Promise<void>;
+    getUserById: (userId: string) => Promise<void>;
+    deleteUser: (userId: string) => Promise<void>;
     loading: boolean;
     error: string | null;
+    resetError: () => void;
 }
 
 export const userSchema = z.object({

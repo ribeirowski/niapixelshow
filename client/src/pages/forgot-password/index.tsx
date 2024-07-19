@@ -41,7 +41,7 @@ const ForgotPassword: React.FC = () => {
 
     const onSubmit: SubmitHandler<ForgotPasswordSchema> = async (data) => {
         try {
-            await forgotPassword(data);
+            await forgotPassword(data.email);
             setSnackbarMessage('Link enviado por email.');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
