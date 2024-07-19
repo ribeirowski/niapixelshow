@@ -39,7 +39,7 @@ const SignUp: React.FC = () => {
         }
     });
 
-    const { createUser, loading, error } = useUser();
+    const { createUser, loading, error, resetError } = useUser();
 
     useEffect(() => {
         if (error) {
@@ -56,12 +56,10 @@ const SignUp: React.FC = () => {
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
 
-            reset();
-            setTimeout(() => {
-                router.push('/verify-email');
-            }, 1000);
+            reset(); 
+            router.push('/verify-email'); 
         } catch (err) {
-            console.error('Erro ao criar usuário:', err);
+            console.error('Error creating user:', err);
         }
     };
 
@@ -182,7 +180,7 @@ const SignUp: React.FC = () => {
                             <IconButton
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowPassword}
-                                sx={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
+                                sx={{ color: '#444444', position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
                             >
                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>

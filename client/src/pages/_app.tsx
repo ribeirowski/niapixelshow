@@ -4,27 +4,32 @@ import Head from "next/head";
 import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
 import "@fontsource/poppins";
 import theme from '@/styles/theme';
-import { Navbar, Footer } from "@/components";
+import { Navbar, Footer } from '@/components';
+import { AuthProvider } from '@/hooks';
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
         <title>Nia Pixel Show</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.jpg" />
       </Head>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Container maxWidth='xl'>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Navbar /> 
-            <Container maxWidth='xl' sx={{ my: '2rem', flexGrow: 1, alignContent: 'center' }}>
-              <Component {...pageProps} />
-            </Container>
-            <Footer />
-          </Box>
-        </Container>
+        <AuthProvider>
+          <CssBaseline />
+          <Container maxWidth='xl'>
+            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+              <Navbar />
+              <Container maxWidth='xl' sx={{ mb: '1.5rem', flexGrow: 1, alignContent: 'center' }}>
+                <Component {...pageProps} />
+              </Container>
+              <Footer />
+            </Box>
+          </Container>
+        </AuthProvider>
       </ThemeProvider>
     </>
   );
 }
+
+export default App;
