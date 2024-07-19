@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import api from '@/services/api';
 
 interface Order {
+    id: string;
     email: string;
     item: string;
     description: string;
@@ -51,42 +52,42 @@ const useOrder = (): UseOrderInterface <Order> => {
         }
     };
     const createOrder = async (orderData: Order) => {
-        await handleApiCall(api.post<{ data: Order }>('/orders', orderData));
+        await handleApiCall(api.post<{ data: Order }>('/order', orderData));
     };
 
     const updateOrder = async (orderId: string, orderData: Partial<Order>) => {
-        await handleApiCall(api.patch<{ data: Order }>(`/orders/${orderId}`, orderData));
+        await handleApiCall(api.patch<{ data: Order }>(`/order/${orderId}`, orderData));
     };
 
     const getOrderById = useCallback(async (orderId: string) => {
-        const response = await handleApiCall<{ data: Order }>(api.get(`/orders/${orderId}`));
+        const response = await handleApiCall<{ data: Order }>(api.get(`/order/${orderId}`));
         setOrderData(response);
     }, []);
 
     const deleteOrder = async (orderId: string) => {
-        await handleApiCall(api.delete(`/orders/${orderId}`));
+        await handleApiCall(api.delete(`/order/${orderId}`));
     };
 
     const getAllOrders = useCallback(async () => {
-        const response = await handleApiCall<{ data: Order[] }>(api.get('/orders/all'));
+        const response = await handleApiCall<{ data: Order[] }>(api.get('/order/all'));
         setOrders(response);
     }, []);
 
     const getStats = useCallback(async () => {
-        await handleApiCall(api.get('/orders/stats'));
+        await handleApiCall(api.get('/order/stats'));
     }, []);
 
     const exportOrders = useCallback(async () => {
-        await handleApiCall(api.get('/orders/export'));
+        await handleApiCall(api.get('/order/export'));
     }, []);
 
     const filterOrdersByDate = useCallback(async (startDate: string, endDate: string) => {
-        const response = await handleApiCall<{ data: Order[] }>(api.get(`/orders/filterByDate?start=${startDate}&end=${endDate}`));
+        const response = await handleApiCall<{ data: Order[] }>(api.get(`/order/filterByDate?start=${startDate}&end=${endDate}`));
         setOrders(response);
     }, []);
 
     const filterOrders = useCallback(async (atribute: string, func: string, filter: string) => {
-        const response = await handleApiCall<{ data: Order[] }>(api.get(`/orders/filter/${atribute}?func=${func}&filter=${filter}`));
+        const response = await handleApiCall<{ data: Order[] }>(api.get(`/order/filter/${atribute}?func=${func}&filter=${filter}`));
         setOrders(response);
     }, []);
 

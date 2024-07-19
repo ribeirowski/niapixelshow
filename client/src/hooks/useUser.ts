@@ -35,6 +35,11 @@ const useUser = (): UseUserReturn<UserSchema> => {
         setUserData(response);
     }, []);
 
+    const getUserByEmail = useCallback(async (userEmail: string) => {
+        const response = await handleApiCall<{ data: UserSchema }>(api.get(`/user/email/${userEmail}`));
+        setUserData(response);
+    }, []);
+
     const deleteUser = async (userId: string) => {
         await handleApiCall(api.delete(`/user/${userId}`));
     };
@@ -52,6 +57,7 @@ const useUser = (): UseUserReturn<UserSchema> => {
         loading,
         error,
         resetError,
+        getUserByEmail,
     };
 };
 

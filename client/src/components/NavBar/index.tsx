@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -7,13 +7,20 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Tabs, Tab, Box, Container, Menu, MenuItem } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useAuth } from '@/hooks';
+import { useAuth, useUser } from '@/hooks';
 
 const Navbar: React.FC = () => {
     const [value, setValue] = useState<number>(0);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { authenticated, logout, loading } = useAuth();
+    const { authenticated, logout, loading, user } = useAuth();
+    const { userData, getUserById } = useUser();
     const router = useRouter();
+
+    useEffect(() => {
+        if (user && user.uid) {
+            getUserById(user.uid);
+        }
+    }, [user, getUserById]);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -42,6 +49,12 @@ const Navbar: React.FC = () => {
         router.push('/profile');
         handleClose();
     };
+
+    const handleOrders = () => {
+        console.log(userData)
+        router.push(`/orders/user/${userData?.email}`)
+        handleClose();
+    }
 
     return (
         <AppBar position="static" style={{ backgroundColor: '#DA0037', borderRadius: '1rem', marginTop: '2rem' }}>
@@ -118,6 +131,7 @@ const Navbar: React.FC = () => {
                             {authenticated ? (
                                 <>
                                     <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+                                    <MenuItem onClick={handleOrders}>Pedidos</MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </>
                             ) : (
