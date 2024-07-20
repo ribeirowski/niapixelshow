@@ -24,7 +24,7 @@ interface UseOrderInterface<T> {
     getStats: () => Promise<void>;
     exportOrders: () => Promise<void>;
     filterOrdersByDate: (startDate: string, endDate: string) => Promise<void>;
-    filterOrders: (atribute: string, func: string, filter: string) => Promise<void>;
+    filterOrders: (atribute: string, func: string, filter: string, email: string) => Promise<void>;
     loading: boolean;
     error: string | null;
     resetError: () => void;
@@ -86,8 +86,8 @@ const useOrder = (): UseOrderInterface <Order> => {
         setOrders(response);
     }, []);
 
-    const filterOrders = useCallback(async (atribute: string, func: string, filter: string) => {
-        const response = await handleApiCall<{ data: Order[] }>(api.get(`/order/filter/${atribute}?func=${func}&filter=${filter}`));
+    const filterOrders = useCallback(async (atribute: string, func: string, filter: string, email: string) => {
+        const response = await handleApiCall<{ data: Order[] }>(api.get(`/order/filter/${atribute}?func=${func}&filter=${filter}&email=${email}`));
         setOrders(response);
     }, []);
 
