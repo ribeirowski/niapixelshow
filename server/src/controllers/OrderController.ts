@@ -202,8 +202,11 @@ class OrderController{
     }
 
     //FILTER ALL METHOD
-    async filterAll(req: Request, res: Response, next: NextFunction){
+    async filterAll(req: Request, res: Response, next: NextFunction){ 
+        //Filtra todos os pedidos de um dado usuário de acordo com alguma característica
         try {
+            let query;
+            let allOrdersSnapshot;
             const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
             const isDate = (str: string) => {
                 if(!dateRegex.test(str)){
@@ -212,9 +215,9 @@ class OrderController{
                 return true;
             }
             const atribute = req.params.filtro;
-            const {func, filter} = req.query;
+            const {func, filter, email} = req.query;
             const filterString = typeof filter === 'string' ? filter : '';
-            var filt
+            var filt: string | Number;
             if(Number.isNaN(parseFloat(filterString)) || isDate(filterString)){
                 filt = filterString
             }
@@ -222,25 +225,42 @@ class OrderController{
                 filt = parseFloat(filterString)
             }
 
-            if(func === 'Acima de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filt).get();
-            }
-            else if(func === 'Abaixo de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filt).get();
-            }
-            else{
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filt).get();
+            type Pedido = {
+                id: string;
+                email: string;
+                item: string;
+                description: string;
+                qtd: number;
+                price: number;
+                status: string;
+                date: string;
+                addr: string;
+            };
+
+            query = firestoreDB.collection('orders').where('email', '==', email);
+
+            // Pegar os resultados do primeiro filtro
+            allOrdersSnapshot = await query.get();
+            const orders = allOrdersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Pedido[];
+
+            // Filtrando em memória pelo segundo critério
+            let filteredOrders : Pedido[];
+            if (func === 'Acima de') {
+                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] > filt);
+            } else if (func === 'Abaixo de') {
+                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] < filt);
+            } else {
+                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] === filt);
             }
             
-            if(allOrders.empty){
+            if(filteredOrders.length === 0){
                 res.status(426).json({ message: 'Nenhum pedido encontrado' })
             }
             else{
-                const orders = allOrders.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-                }));
-                res.status(200).json(orders); // Apenas uma resposta aqui}
+                res.status(200).json(filteredOrders); // Apenas uma resposta aqui}
             }
             return next();
         }catch (error) {

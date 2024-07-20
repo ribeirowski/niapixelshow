@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Box, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import useOrder from '@/hooks/useOrder';
 import useUser from '@/hooks/useUser'
 import { withProtectedRoute } from '@/components';
@@ -13,7 +13,7 @@ const OrderDetails: React.FC = () => {
 
     useEffect(() => {
         if (email && typeof email === 'string') {
-            filterOrders("email", "Igual a", email);
+            filterOrders("email", "Igual a", email, email);
         }
     }, [email, filterOrders]);
 

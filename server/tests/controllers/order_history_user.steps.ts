@@ -52,7 +52,7 @@ defineFeature(feature, (test)=>{
         when('acessar a página de Histórico de Pedidos', async () => {
             const func = "Igual a"
             const filter = response.body.order.email
-            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}`);
+            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}&email=${usedEmail}`);
             //console.log(response.body);
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
@@ -87,7 +87,7 @@ defineFeature(feature, (test)=>{
         when('acessar a página de Histórico de Pedidos', async () => {
             const func = "Igual a"
             const filter = response.body.email
-            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}`);
+            response = await request.get(`/order/filter/email?func=${func}&filter=${filter}&email=${usedEmail}`);
         });
         then('é retornada uma mensagem informando que não há pedidos cadastrados', async () => {
             expect(response.status).toBe(426);
@@ -142,7 +142,8 @@ defineFeature(feature, (test)=>{
             }
             const func = condição[0] + ' ' + condição[1]
             const filter = condição[2]
-            response = await request.get(`/order/filter/${arg0}?func=${func}&filter=${filter}`);
+            response = await request.get(`/order/filter/${arg0}?func=${func}&filter=${filter}&email=${usedEmail}`);
+            console.log(response.body)
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
