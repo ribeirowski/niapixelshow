@@ -15,7 +15,7 @@ defineFeature(feature, (test)=>{
     jest.setTimeout(15000);
 
     afterEach(async () => {
-        const order = await firestoreDB.collection('orders').get();
+        const order = await firestoreDB.collection('orders').where('email', '==', usedEmail).get();
         const user = await firestoreDB.collection('users').where('email', '==', usedEmail).get();
         const batch = firestoreDB.batch();
         order.forEach(doc => batch.delete(doc.ref));
