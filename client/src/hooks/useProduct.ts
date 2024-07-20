@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import api from '@/services/api';
-import { Product, Category } from '@/pages/admin/types';	
+import { Product, Category } from '@/types';	
 
 interface Product {
     image?: string;

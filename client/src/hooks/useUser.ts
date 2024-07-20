@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import api from '@/services/api';
-import { UserSchema, UseUserReturn } from '@/pages/sign-up/types';
+import { UserSchema, UseUserReturn } from '@/types';
 
 const useUser = (): UseUserReturn<UserSchema> => {
     const [userData, setUserData] = useState<UserSchema | null>(null);
