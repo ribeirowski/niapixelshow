@@ -1,5 +1,5 @@
 import React, {  useEffect } from 'react';
-import { Typography, Box, Container } from '@mui/material';
+import { Typography, Box, Container, Button } from '@mui/material';
 import useOrder from '@/hooks/useOrder';
 import { withProtectedRoute } from '@/components';
 import { useRouter } from 'next/router';
@@ -13,6 +13,9 @@ const OrderDetails: React.FC = () => {
         getOrderById(id as string);
     }, [id, getOrderById]);
 
+    const handleBack = () => {
+        router.back();
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -67,6 +70,11 @@ const OrderDetails: React.FC = () => {
                     </Box>
                 </Box>
             )}
+            <Box textAlign='center'>
+                <Button variant="contained" color="primary" onClick={handleBack} sx={{ mt: 2 }}>
+                    Voltar
+                </Button>
+            </Box>
         </Container>
     );
 };
