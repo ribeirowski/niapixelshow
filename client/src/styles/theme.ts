@@ -27,6 +27,12 @@ const theme = createTheme({
                     '&.MuiButton-containedPrimary': {
                         color: '#FFFFFF',
                         borderRadius: '0.6rem',
+                        fontWeight: '500',
+                    },
+                    '&.MuiButton-outlinedPrimary': {
+                        color: '#DA0037',
+                        borderRadius: '0.6rem',
+                        fontWeight: '600',
                     },
                 },
             },

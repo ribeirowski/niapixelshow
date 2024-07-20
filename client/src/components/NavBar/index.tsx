@@ -37,6 +37,11 @@ const Navbar: React.FC = () => {
     const handleLogout = () => {
         logout();
         handleClose();
+        if (userData?.is_admin === false){
+            router.push('/home/user');
+        } else {
+            router.push('/home/admin');
+        }
     };
 
     const handleLogin = async () => {
