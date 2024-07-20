@@ -56,7 +56,6 @@ const Navbar: React.FC = () => {
     };
 
     const handleOrders = () => {
-        console.log(userData)
         router.push(`/orders/user/${userData?.email}`)
         handleClose();
     }
