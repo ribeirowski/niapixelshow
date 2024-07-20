@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Container, TextField, Typography, Snackbar, Alert } from '@mui/material';
-import { forgotPasswordSchema, ForgotPasswordSchema } from './types';
+import { forgotPasswordSchema, ForgotPasswordSchema } from '../../types/ForgotPasswordTypes';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
 

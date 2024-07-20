@@ -20,7 +20,7 @@ function App({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <CssBaseline />
           <Container maxWidth='xl'>
-            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Box maxWidth='xl' sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
               <Navbar />
               <Container maxWidth='xl' sx={{ my: '2rem', flexGrow: 1, alignContent: 'center' }}>
                 <Component {...pageProps} />

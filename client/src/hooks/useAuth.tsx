@@ -8,6 +8,7 @@ interface User {
 interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
+    forgotPassword: (email: string) => Promise<void>;
     logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
     loading: boolean;
@@ -55,6 +56,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const forgotPassword = async (email: string): Promise<void> => {
+        setLoading(true);
+        try {
+            await api.post('/auth/forgot-password', { email });
+            setError(null);
+        } catch (err: any) {
+            console.error('Erro ao enviar email:', err);
+            setError('Erro ao enviar email');
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const checkAuth = async (): Promise<void> => {
         setLoading(true);
         try {
@@ -75,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, checkAuth, loading, authenticated, error }}>
+        <AuthContext.Provider value={{ user, login, logout, checkAuth, forgotPassword, loading, authenticated, error }}>
             {children}
         </AuthContext.Provider>
     );

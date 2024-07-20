@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Container, TextField, Typography, Snackbar, Alert, IconButton, Stack } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { loginSchema, LoginSchema } from './types';
+import { loginSchema, LoginSchema } from '../../types/AuthTypes';
 import { useAuth } from '@/hooks';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
