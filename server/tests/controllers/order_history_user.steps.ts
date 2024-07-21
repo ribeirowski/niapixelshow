@@ -15,7 +15,7 @@ defineFeature(feature, (test)=>{
     jest.setTimeout(15000);
 
     afterEach(async () => {
-        const order = await firestoreDB.collection('orders').get();
+        const order = await firestoreDB.collection('orders').where('email', '==', usedEmail).get();
         const user = await firestoreDB.collection('users').where('email', '==', usedEmail).get();
         const batch = firestoreDB.batch();
         order.forEach(doc => batch.delete(doc.ref));
@@ -143,7 +143,6 @@ defineFeature(feature, (test)=>{
             const func = condição[0] + ' ' + condição[1]
             const filter = condição[2]
             response = await request.get(`/order/filter/${arg0}?func=${func}&filter=${filter}&email=${usedEmail}`);
-            console.log(response.body)
         });
         then(/^é retornado o pedido com email "(.*)", item "(.*)" com descrição "(.*)", quantidade "(.*)", preço "(.*)" reais, status "(.*)", criado em "(.*)", para o endereço "(.*)"$/, async (arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
             expect(response.body[0].email).toBe(arg0);
