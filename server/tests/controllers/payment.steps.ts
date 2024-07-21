@@ -17,7 +17,7 @@ defineFeature(feature, (test)=>{
     let nome: string;
 
     afterEach(async () => {
-        const order = await firestoreDB.collection('orders').get();
+        const order = await firestoreDB.collection('orders').where('email', '==', usedEmail).get();
         const user = await firestoreDB.collection('users').where('email', '==', usedEmail).get();
         const batch = firestoreDB.batch();
         order.forEach(doc => batch.delete(doc.ref));
