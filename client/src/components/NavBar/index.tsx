@@ -60,6 +60,19 @@ const Navbar: React.FC = () => {
         handleClose();
     }
 
+    const handleAdmin = () => {
+        router.push('/home/admin');
+        handleClose();
+    }
+
+    const isAdmin = () => {
+        if (userData?.is_admin === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     return (
         <AppBar position="static" style={{ backgroundColor: '#DA0037', borderRadius: '1rem', marginTop: '2rem' }}>
             <Container maxWidth='lg'>
@@ -133,11 +146,20 @@ const Navbar: React.FC = () => {
                             }}
                         >
                             {authenticated ? (
-                                <>
+                                isAdmin() ? (
+                                    <>
+                                    <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+                                    <MenuItem onClick={handleAdmin}>Admin</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    </>
+                                ) : (
+                                    <>
                                     <MenuItem onClick={handleProfile}>Perfil</MenuItem>
                                     <MenuItem onClick={handleOrders}>Pedidos</MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                                </>
+                                    </>
+                                )
+                              
                             ) : (
                                 <MenuItem onClick={handleLogin}>Login</MenuItem>
                             )}
