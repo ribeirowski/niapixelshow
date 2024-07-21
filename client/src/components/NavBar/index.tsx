@@ -148,8 +148,8 @@ const Navbar: React.FC = () => {
                             {authenticated ? (
                                 isAdmin() ? (
                                     <>
+                                    <MenuItem onClick={handleAdmin}>Dashboard</MenuItem>
                                     <MenuItem onClick={handleProfile}>Perfil</MenuItem>
-                                    <MenuItem onClick={handleAdmin}>Admin</MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                     </>
                                 ) : (
@@ -159,7 +159,6 @@ const Navbar: React.FC = () => {
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                     </>
                                 )
-                              
                             ) : (
                                 <MenuItem onClick={handleLogin}>Login</MenuItem>
                             )}
