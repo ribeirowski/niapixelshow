@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
             getUserById(user.uid);
         }
     }, [user, getUserById]);
+    
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -60,6 +61,13 @@ const Navbar: React.FC = () => {
         handleClose();
     }
 
+    const handleCart = () => {
+        if (user && user.uid) {
+            router.push(`/cart/${user.uid}`);
+        } else {
+            router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
+        }
+    };
     const handleAdmin = () => {
         router.push('/home/admin');
         handleClose();
@@ -103,8 +111,9 @@ const Navbar: React.FC = () => {
                         </Tabs>
                     </Box>
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }}>
+                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart}>
                             <ShoppingCartIcon />
+
                         </IconButton>
                         <IconButton aria-label="account" sx={{ color: '#EDEDED' }} onClick={handleMenu}>
                             <AccountCircleIcon />

@@ -14,4 +14,6 @@ export const Product = z.object({
     price: z.number().positive({ message: 'O preço deve ser um número positivo' }),
     status: z.boolean().refine(value => typeof value === 'boolean', { message: 'O status deve ser verdadeiro ou falso' }),
     category: Category, 
+    promotionId: z.string().optional(),
+    image: z.string().optional(),
 });
