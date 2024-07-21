@@ -12,6 +12,7 @@ const usedEmail = 'thiagojgcosta@gmail.com';
 defineFeature(feature, (test)=>{
     let request = supertest(app)
     let response: supertest.Response;
+    let token: string;
     jest.setTimeout(15000);
 
     afterEach(async () => {
@@ -26,8 +27,15 @@ defineFeature(feature, (test)=>{
     });
 
     // Teste 1
-    test('Requisição de Estatísticas', ({given, when, then}) => {
-        given(/^o banco de dados tem pedido com qtd "(.*)", date "(.*)", item "(.*)", price "(.*)", description "(.*)", addr "(.*)", email "(.*)" e status "(.*)"$/, async (qtd, date, item, price, description, addr, email, status) => {
+    test('Requisição de Estatísticas', ({given, and, when, then}) => {
+        given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (email, password) => {
+            const loginResponse = await request.post('/auth/login').send({
+                email,
+                password
+            });
+            token = loginResponse.headers['set-cookie'];
+        });
+        and(/^o banco de dados tem pedido com qtd "(.*)", date "(.*)", item "(.*)", price "(.*)", description "(.*)", addr "(.*)", email "(.*)" e status "(.*)"$/, async (qtd, date, item, price, description, addr, email, status) => {
             const orderData = {
                 email: email,
                 item: item,
@@ -38,12 +46,13 @@ defineFeature(feature, (test)=>{
                 date: date,
                 addr: addr
             }
-            await request.post('/order').send(orderData);
+            await request.post('/order').set('Cookie', token).send(orderData);
         });
         when(/^são requisitadas as estatísticas de vendas$/, async () => {
-            response = await request.get('/order/stats?year=0000&month=06');
+            response = await request.get('/order/stats?year=0001&month=01').set('Cookie', token);
         });
         then(/^o sistema retorna vendas totais "(.*)", produto mais vendido "(.*)" e tabela de produtos com produto "(.*)" com quantidade "(.*)" e valor total "(.*)"$/, async (totalValue, mostSold, productName, productAmount, productValue) => {
+            console.log(response.body);
             expect(response.body.totalValue).toBe(parseFloat(totalValue));
             expect(response.body.mostSold).toBe(mostSold);
             expect(response.body.productName[0]).toBe(productName);
@@ -53,12 +62,19 @@ defineFeature(feature, (test)=>{
     });
 
     // Teste 2
-    test('Requisição sem Pedidos Pagos', ({given, when, then}) => {
-        given(/^o banco de dados não tem pedidos$/, async () => {
+    test('Requisição sem Pedidos Pagos', ({given, and, when, then}) => {
+        given(/^eu estou autenticado como administrador com email "(.*)" e senha "(.*)" e tenho um token JWT válido$/, async (email, password) => {
+            const loginResponse = await request.post('/auth/login').send({
+                email,
+                password
+            });
+            token = loginResponse.headers['set-cookie'];
+        });
+        and(/^o banco de dados não tem pedidos$/, async () => {
             
         });
         when(/^são requisitadas as estatísticas de vendas$/, async () => {
-            response = await request.get('/order/stats');
+            response = await request.get('/order/stats').set('Cookie', token);
         });
         then(/^o sistema retorna vendas totais "(.*)", produto mais vendido "(.*)" e tabela de produtos com produto "(.*)" com quantidade "(.*)" e valor total "(.*)"$/, async (totalValue, mostSold, productName, productAmount, productValue) => {
             expect(response.body.totalValue).toBe(parseFloat(totalValue));
