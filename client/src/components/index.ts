@@ -1,22 +1,21 @@
-import withProtectedRoute from './ProtectedRoutes';
+import withProtectedRoute from "./ProtectedRoutes";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
-import ProductCard from './ProductCard';
-import ProductCardAdmin from './ProductCardAdmin';
-import ProductCarousel from './ProductCarousel';
-import ProductCarouselAdmin from './ProductCarouselAdmin';
-import PhotoCarousel from './PhotoCarousel';
-import OrderTable from './OrderTable';
+import ProductCard from "./ProductCard";
+import ProductCardAdmin from "./ProductCardAdmin";
+import ProductCarousel from "./ProductCarousel";
+import ProductCarouselAdmin from "./ProductCarouselAdmin";
+import PhotoCarousel from "./PhotoCarousel";
+import OrderTable from "./OrderTable";
 
-export { 
-    Navbar,
-    Footer,
-    ProductCard,
-    ProductCarousel,
-    PhotoCarousel,
-    withProtectedRoute,
-    ProductCardAdmin,
-    ProductCarouselAdmin,
-    OrderTable
+export {
+  Navbar,
+  Footer,
+  ProductCard,
+  ProductCarousel,
+  PhotoCarousel,
+  withProtectedRoute,
+  ProductCardAdmin,
+  ProductCarouselAdmin,
+  OrderTable,
 };
-

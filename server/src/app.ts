@@ -1,19 +1,19 @@
-import dotenv from 'dotenv';
-import routes from './routes';
-import cookieParser from 'cookie-parser';
-import express, { Express } from 'express';
-import { errorHandler } from './middlewares';
-import cors from 'cors';
+import dotenv from "dotenv";
+import routes from "./routes";
+import cookieParser from "cookie-parser";
+import express, { Express } from "express";
+import { errorHandler } from "./middlewares";
+import cors from "cors";
 
 dotenv.config();
 
 const app: Express = express();
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 204
+  origin: "http://localhost:3000",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));

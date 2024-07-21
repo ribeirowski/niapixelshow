@@ -1,5 +1,17 @@
-export const ConfirmPayment = (Name: string, Order: {email:string, item:string, description:string, qtd:number, price:number, status:string, date:string, addr:string}) => {
-    return `
+export const ConfirmPayment = (
+  Name: string,
+  Order: {
+    email: string;
+    item: string;
+    description: string;
+    qtd: number;
+    price: number;
+    status: string;
+    date: string;
+    addr: string;
+  }
+) => {
+  return `
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
@@ -14,10 +26,22 @@ export const ConfirmPayment = (Name: string, Order: {email:string, item:string, 
         </body>
         </html>
     `;
-}
+};
 
-export const ErrorPayment = (Name: string, Order: {email:string, item:string, description:string, qtd:number, price:number, status:string, date:string, addr:string}) => {
-    return `
+export const ErrorPayment = (
+  Name: string,
+  Order: {
+    email: string;
+    item: string;
+    description: string;
+    qtd: number;
+    price: number;
+    status: string;
+    date: string;
+    addr: string;
+  }
+) => {
+  return `
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
@@ -33,4 +57,4 @@ export const ErrorPayment = (Name: string, Order: {email:string, item:string, de
         </body>
         </html>
     `;
-}
+};

@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import ProductCard from "../ProductCardAdmin";
 import useProduct from "@/hooks/useProduct";
 
-const ProductCarousel: React.FC = () => {
+const PromotionCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
 
   useEffect(() => {
@@ -65,4 +65,4 @@ const ProductCarousel: React.FC = () => {
   );
 };
 
-export default ProductCarousel;
+export default PromotionCarousel;
