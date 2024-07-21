@@ -2,11 +2,11 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { Box, Modal, Button, Typography } from '@mui/material';
+import { Box, Modal, Button, Typography, Snackbar, Alert } from '@mui/material';
 import ProductCard from '../ProductCard';
 import useProduct from '@/hooks/useProduct';
 import ProductDetailCard from '../ProductPanel';
-import { useAuth, useUser } from '@/hooks';
+import { useAuth } from '@/hooks';
 import useCart, { CartItem } from '@/hooks/useCart';
 
 interface ProductItem {
@@ -23,15 +23,14 @@ interface ProductItem {
   promotionId?: string;
 }
 
-
 const ProductCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
-  const [ selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
-  const [ openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
+  const [openModal, setOpenModal] = useState(false);
   const { user } = useAuth();
-  const { createCartItem, resetError } = useCart();
-  const [ userId, setUserId] = useState<string | null>(null);
-
+  const { createCartItem } = useCart();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     if (user && user.uid) {
@@ -44,7 +43,6 @@ const ProductCarousel: React.FC = () => {
   }, [getAllProducts]);
 
   const handleProductClick = (product: ProductItem) => {
-
     const { id, name, description, price, category, promotionId, status, image } = product;
 
     const productData = {
@@ -54,7 +52,7 @@ const ProductCarousel: React.FC = () => {
       description: description,
       price: price,
       status: status,
-      category:{
+      category: {
         name: category.name,
         description: category.description,
       },
@@ -76,7 +74,12 @@ const ProductCarousel: React.FC = () => {
     selectedProduct!.size = size;
     if (userId && selectedProduct) {
       createCartItem(userId, selectedProduct);
+      setOpenSnackbar(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   if (loading) {
@@ -121,7 +124,6 @@ const ProductCarousel: React.FC = () => {
             name={product.name}
             price={product.price}
             image={product.image}
-
             onClick={() => handleProductClick(product)}
           />
         ))}
@@ -149,6 +151,16 @@ const ProductCarousel: React.FC = () => {
           )}
         </Box>
       </Modal>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          Produto adicionado ao carrinho!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
