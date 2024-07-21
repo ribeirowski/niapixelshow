@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Modal } from '@mui/material';
 import ProductCarousel from '@/components/ProductCarouselAdmin';
+import Link from 'next/link'; 
 
 
 const ProductPage: React.FC = () => {
@@ -8,6 +9,7 @@ const ProductPage: React.FC = () => {
     <Box>
       <Typography variant="h4" gutterBottom>Produtos</Typography>
       <ProductCarousel />
+      <Link href="/product/create" passHref>
       <Button 
         variant="contained" 
         color="primary" 
@@ -15,6 +17,7 @@ const ProductPage: React.FC = () => {
       >
         Cadastrar Produto
       </Button>
+      </Link>
     
     </Box>
   );
