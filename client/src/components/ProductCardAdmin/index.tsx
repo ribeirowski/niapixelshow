@@ -1,6 +1,7 @@
 import React from 'react';
-import {ProductCard} from '@/components'
+import {ProductCard} from '@/components';
 import { Button } from '@mui/material';
+import Link from 'next/link'; 
 
 interface Props{
     name: string;
@@ -20,13 +21,14 @@ const ProductCardAdmin: React.FC<Props> = ({ name, price, discount, image, onCli
             image={image}
             onClick={onClick}
             />
-
+            <Link href="/product/edit?id=1" passHref>
             <Button variant="contained" 
         
         sx={{ backgroundColor:"black", display: 'block', margin: '10px auto'}} // Centering the button
       >
                 EDITAR PRODUTO
             </Button>
+            </Link>
             <Button variant="contained" 
         color="primary" 
         sx={{ display: 'block'}}>
