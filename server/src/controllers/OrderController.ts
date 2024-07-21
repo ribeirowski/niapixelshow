@@ -225,42 +225,62 @@ class OrderController{
                 filt = parseFloat(filterString)
             }
 
-            type Pedido = {
-                id: string;
-                email: string;
-                item: string;
-                description: string;
-                qtd: number;
-                price: number;
-                status: string;
-                date: string;
-                addr: string;
-            };
-
-            query = firestoreDB.collection('orders').where('email', '==', email);
-
-            // Pegar os resultados do primeiro filtro
-            allOrdersSnapshot = await query.get();
-            const orders = allOrdersSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as Pedido[];
-
-            // Filtrando em memória pelo segundo critério
-            let filteredOrders : Pedido[];
-            if (func === 'Acima de') {
-                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] > filt);
-            } else if (func === 'Abaixo de') {
-                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] < filt);
-            } else {
-                filteredOrders = orders.filter(order => order[atribute as keyof Pedido] === filt);
+            if(email === ''){
+                if (func === 'Acima de') {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '>' , filt).get();;
+                } else if (func === 'Abaixo de') {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '<' , filt).get();
+                } else {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '==' , filt).get();
+                }
+                if(allFiltOrders.empty){
+                    res.status(426).json({ message: 'Nenhum pedido encontrado' })
+                }
+                else{
+                    const orders = allFiltOrders.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                    }));
+                    res.status(200).json(orders); // Apenas uma resposta aqui}
+                }
+                return next();
             }
-            
-            if(filteredOrders.length === 0){
-                res.status(426).json({ message: 'Nenhum pedido encontrado' })
-            }
-            else{
-                res.status(200).json(filteredOrders); // Apenas uma resposta aqui}
+            else{    
+                type Pedido = {
+                    id: string;
+                    email: string;
+                    item: string;
+                    description: string;
+                    qtd: number;
+                    price: number;
+                    status: string;
+                    date: string;
+                    addr: string;
+                };
+
+                allOrdersSnapshot = await firestoreDB.collection('orders').where('email', '==', email).get();
+
+                const orders = allOrdersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })) as Pedido[];
+
+                // Filtrando em memória pelo segundo critério
+                let filteredOrders : Pedido[];
+                if (func === 'Acima de') {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] > filt);
+                } else if (func === 'Abaixo de') {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] < filt);
+                } else {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] === filt);
+                }
+                
+                if(filteredOrders.length === 0){
+                    res.status(426).json({ message: 'Nenhum pedido encontrado' })
+                }
+                else{
+                    res.status(200).json(filteredOrders); // Apenas uma resposta aqui}
+                }
             }
             return next();
         }catch (error) {
