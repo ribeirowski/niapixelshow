@@ -2,10 +2,12 @@ import { z } from 'zod';
 
 export interface UseUserReturn<T = any> {
     userData: T | null;
+    users: T[];
     createUser: (userData: UserSchema) => Promise<void>;
     updateUser: (userId: string, userData: Partial<UserSchema>) => Promise<void>;
     getUserById: (userId: string) => Promise<void>;
     getUserByEmail: (userEmail: string) => Promise<void>;
+    getAllUsers: () => Promise<void>
     deleteUser: (userId: string) => Promise<void>;
     loading: boolean;
     error: string | null;
