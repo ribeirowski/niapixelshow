@@ -31,7 +31,7 @@ const EditProductPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box mt={4}>
         <Typography variant="h4" 
           gutterBottom 
@@ -39,7 +39,8 @@ const EditProductPage: React.FC = () => {
             backgroundColor: 'white', 
             borderRadius: 2, // Adiciona curvas nas bordas
             padding: 2, // Adiciona espaçamento interno
-            textAlign: 'center' // Centraliza o texto
+            textAlign: 'center', // Centraliza o texto
+            fontWeight: 'bold' 
           }}>
           Editar Produto
         </Typography>

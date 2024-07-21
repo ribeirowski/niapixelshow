@@ -22,33 +22,34 @@ const UploadPhotoPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md" sx={{ backgroundColor: 'white', borderRadius: 2, p: 4, boxShadow: 3 }}>
       <Box mt={4}>
         <Typography variant="h4" 
           gutterBottom 
           sx={{ 
-            backgroundColor: 'white', 
-            borderRadius: 2, // Adiciona curvas nas bordas
             padding: 2, // Adiciona espaçamento interno
-            textAlign: 'center' // Centraliza o texto
+            textAlign: 'center', // Centraliza o texto
+            fontWeight: 'bold'
           }}>
           Upload da Foto do Produto
         </Typography>
         <Box mt={4} textAlign="center">
-          <input type="file" accept="image/*" />
-          <Button variant="contained" color="primary" onClick={handleUpload} sx={{ mt: 2 }}>
+          <input type="file" accept="image/*"/>
+          <Button variant="contained" color="primary" onClick={handleUpload} sx={{ mt: 2}}>
             Enviar Foto
           </Button>
           {origin === 'create' ? (
-            <Button variant="contained" color="success" onClick={handleSave} sx={{ mt: 2 }}>
+            <Box mt={2}>
+            <Button variant="contained" color="success" onClick={handleSave} sx={{ mt: 2, mt:20}}>
               Cadastrar Produto
             </Button>
+            </Box>
           ) : (
             <Box mt={2}>
-              <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2 }}>
+              <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2, mt:20 }}>
                 Salvar Produto
               </Button>
-              <Button variant="contained" color="error" onClick={handleDelete}>
+              <Button variant="contained" color="error" onClick={handleDelete} sx={{ mt:20 }}>
                 Excluir Produto
               </Button>
             </Box>
