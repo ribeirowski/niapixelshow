@@ -4,6 +4,7 @@ import { UserSchema, UseUserReturn } from '@/types';
 
 const useUser = (): UseUserReturn<UserSchema> => {
     const [userData, setUserData] = useState<UserSchema | null>(null);
+    const [users, setUsers] = useState<UserSchema[]> ([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +41,11 @@ const useUser = (): UseUserReturn<UserSchema> => {
         setUserData(response);
     }, []);
 
+    const getAllUsers = useCallback(async () => {
+        const response = await handleApiCall<{ data: UserSchema[]}>(api.get(`/user/all`));
+        setUsers(response);
+    }, [])
+
     const deleteUser = async (userId: string) => {
         await handleApiCall(api.delete(`/user/${userId}`));
     };
@@ -50,6 +56,7 @@ const useUser = (): UseUserReturn<UserSchema> => {
 
     return {
         userData,
+        users,
         createUser,
         updateUser,
         getUserById,
@@ -58,6 +65,7 @@ const useUser = (): UseUserReturn<UserSchema> => {
         error,
         resetError,
         getUserByEmail,
+        getAllUsers,
     };
 };
 
