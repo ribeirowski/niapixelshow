@@ -45,3 +45,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price, discount, image,
 };
 
 export default ProductCard;
+export type { ProductCardProps };

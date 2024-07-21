@@ -1,18 +1,86 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { Box } from '@mui/material';
+import { Box, Modal, Button, Typography, Snackbar, Alert } from '@mui/material';
 import ProductCard from '../ProductCard';
 import useProduct from '@/hooks/useProduct';
+import ProductDetailCard from '../ProductPanel';
+import { useAuth } from '@/hooks';
+import useCart, { CartItem } from '@/hooks/useCart';
+
+interface ProductItem {
+  image?: string;
+  id?: string;
+  name: string;
+  description: string;
+  price: number;
+  status: boolean;
+  category: {
+    name: string;
+    description?: string;
+  };
+  promotionId?: string;
+}
 
 const ProductCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
+  const [selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const { user } = useAuth();
+  const { createCartItem } = useCart();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    if (user && user.uid) {
+        setUserId(user.uid);
+    }
+  }, [user]);
 
   useEffect(() => {
     getAllProducts();
-    console.log(products);
   }, [getAllProducts]);
+
+  const handleProductClick = (product: ProductItem) => {
+    const { id, name, description, price, category, promotionId, status, image } = product;
+
+    const productData = {
+      item_id: id,
+      image: image,
+      name: name,
+      description: description,
+      price: price,
+      status: status,
+      category: {
+        name: category.name,
+        description: category.description,
+      },
+      promotionId: promotionId,
+      quantity: 1,
+      size: 'M',
+    };
+    setSelectedProduct(productData as CartItem);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProduct(null);
+  };
+
+  const handleAddToCart = (quantity: number, size: string) => {
+    selectedProduct!.quantity = quantity;
+    selectedProduct!.size = size;
+    if (userId && selectedProduct) {
+      createCartItem(userId, selectedProduct);
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   if (loading) {
     return <p>Carregando...</p>;
@@ -52,15 +120,47 @@ const ProductCarousel: React.FC = () => {
       <Slider {...settings}>
         {products.map((product) => (
           <ProductCard
-            key={product.id} // Adicione a propriedade key aqui
+            key={product.id}
             name={product.name}
             price={product.price}
-            //discount={product.discount}
             image={product.image}
-            onClick={() => console.log(`Produto ${product.name} clicado!`)}
+            onClick={() => handleProductClick(product)}
           />
         ))}
       </Slider>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="product-detail-modal"
+        aria-describedby="product-detail-description"
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          {selectedProduct && (
+            <Box sx={{ position: 'relative', backgroundColor: 'white', p: 3, borderRadius: 1.6 }}>
+              <ProductDetailCard
+                ProductInfo={selectedProduct}
+                onAddToCart={handleAddToCart}
+              />
+              <Button
+                onClick={handleCloseModal}
+                sx={{ position: 'absolute', top: 30, right: 30 }}
+              >
+                Fechar
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Modal>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          Produto adicionado ao carrinho!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
