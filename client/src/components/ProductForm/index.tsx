@@ -3,34 +3,63 @@ import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormC
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/router';
 
-const ProductForm: React.FC<{ onSubmit: (data: any) => void, edit?: boolean }> = ({ onSubmit, edit = false }) => {
-  const [formData, setFormData] = useState({
+interface Category {
+  name: string;
+  description?: string;
+}
+
+interface FormData {
+  image?: string;
+  id?: string;
+  name: string;
+  description: string;
+  price: number;
+  status: boolean;
+  category: Category;
+}
+
+const ProductForm: React.FC<{ onSubmit: (data: FormData) => void, edit?: boolean }> = ({ onSubmit, edit = false }) => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
-    price: '',
+    price: 0,
     status: false,
-    category: '',
+    category: {
+      name: '',
+      description: ''
+    }
   });
 
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name as string]: value });
+
+    if (name?.startsWith('category.')) {
+      const categoryField = name.split('.')[1];
+      setFormData(prevState => ({
+        ...prevState,
+        category: {
+          ...prevState.category,
+          [categoryField]: value
+        }
+      }));
+    } else {
+      setFormData({ ...formData, [name as string]: value });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      price: parseFloat(formData.price),
+      price: parseFloat(formData.price.toString()),  // Ensure price is a number
     });
-    // Navegar para a página de upload da foto com o parâmetro de origem
     router.push(`/product/uploadPhoto?origin=${edit ? 'edit' : 'create'}`);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ backgroundColor: 'white', mt: 4, p: 4, borderRadius: 1, boxShadow: 3, maxWidth: 600, mx: 'auto' }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ backgroundColor: 'white', mt: 4, p: 4, borderRadius: 1, boxShadow: 3, mx: 'auto' }}>
       <Box display="flex" alignItems="center" mb={2}>
         <IconButton 
           onClick={() => router.back()} 
@@ -38,7 +67,7 @@ const ProductForm: React.FC<{ onSubmit: (data: any) => void, edit?: boolean }> =
             mr: 2, 
             color: 'black', 
             '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.1)', // Cor de fundo ao passar o mouse
+              backgroundColor: 'rgba(0, 0, 0, 0.1)', 
             }
           }}
         >
@@ -73,14 +102,22 @@ const ProductForm: React.FC<{ onSubmit: (data: any) => void, edit?: boolean }> =
           margin="normal"
         />
         <TextField
-          name="category"
+          name="category.name"
           label="Categoria"
-          value={formData.category}
+          value={formData.category.name}
           onChange={handleChange}
           fullWidth
           margin="normal"
         />
       </Box>
+      <TextField
+        name="category.description"
+        label="Descrição da Categoria"
+        value={formData.category.description}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+      />
       <FormControl fullWidth margin="normal">
         <InputLabel>Disponível</InputLabel>
         <Select
