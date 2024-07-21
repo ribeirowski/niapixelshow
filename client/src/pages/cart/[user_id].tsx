@@ -38,9 +38,8 @@ const CartPage: React.FC = () => {
     };
 
     const handleQuantityChange = async (item: CartItem, newQuantity: number) => {
-        if (newQuantity <= 0) {
-            await deleteCartItem(userId!, item.item_id); 
-            await getAllCartItems(userId!); 
+        if (newQuantity <= 0 || newQuantity == null || isNaN(newQuantity)) {
+            handleRemoveItem(item.item_id);
 
         } else {
             await updateCartItem(userId!, item.item_id, { ...item, quantity: newQuantity }); 
