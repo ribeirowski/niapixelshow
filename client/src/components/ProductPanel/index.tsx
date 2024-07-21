@@ -71,7 +71,12 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ ProductInfo, onAd
             sx={{ width: 80, mr: 2 }}
             InputProps={{ inputProps: { min: 1 } }}
           />
-          <Button variant="contained" color="primary" onClick={handleAddToCart}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddToCart}
+            sx={{ width: '100%', py: 1, textAlign: 'center' }} // Aumenta o botão e centraliza o texto
+          >
             Adicionar ao Carrinho
           </Button>
         </Box>

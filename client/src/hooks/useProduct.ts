@@ -91,3 +91,4 @@ const useProduct = (): UseProductsInterface<Product> => {
 };
 
 export default useProduct;
+export type { Product };

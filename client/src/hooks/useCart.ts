@@ -44,7 +44,6 @@ const useCart = (): UseCartInterface => {
 
     const createCartItem = async (userId: string, cartData: CartItem) => {
         await handleApiCall(api.post<{ data: CartItem }>(`/cart/${userId}`, cartData));
-        await getAllCartItems(userId);
     };
 
     const updateCartItem = async (userId: string, itemId: string, cartData: Partial<CartItem>) => {

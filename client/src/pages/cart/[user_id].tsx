@@ -1,8 +1,8 @@
-import React, { use, useEffect, useState } from 'react';
-import { Box, Button, Container, Typography, Snackbar, Alert, TextField } from '@mui/material';
-import useCart, { CartItem } from '@/hooks/useCart';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Container, Typography, Snackbar, Alert, TextField, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useAuth, useUser } from '@/hooks';
+import { useAuth } from '@/hooks';
+import useCart, { CartItem } from '@/hooks/useCart';
 
 const CartPage: React.FC = () => {
     const router = useRouter();
@@ -40,16 +40,25 @@ const CartPage: React.FC = () => {
     const handleQuantityChange = async (item: CartItem, newQuantity: number) => {
         if (newQuantity <= 0 || newQuantity == null || isNaN(newQuantity)) {
             handleRemoveItem(item.item_id);
-
         } else {
             await updateCartItem(userId!, item.item_id, { ...item, quantity: newQuantity }); 
         }
         await getAllCartItems(userId!); 
     };
 
+    const handleSizeChange = async (item: CartItem, newSize: string) => {
+        await updateCartItem(userId!, item.item_id, { ...item, size: newSize });
+        await getAllCartItems(userId!);
+    };
+
     const handleRemoveItem = async (itemId: string) => {
         await deleteCartItem(userId!, itemId); 
         await getAllCartItems(userId!); 
+    };
+
+    const handleCheckout = () => {
+        // Adicione a lógica de finalização do pedido aqui
+        console.log('Finalizar pedido');
     };
 
     return (
@@ -71,6 +80,21 @@ const CartPage: React.FC = () => {
                                 <Typography variant="body2" component="p" color="text.secondary">{item.description}</Typography>
                                 <Typography variant="body1" component="p">R$ {item.price.toFixed(2)}</Typography>
                             </Box>
+                            <FormControl sx={{ width: 100, mr: 2 }}>
+                                <InputLabel id={`size-select-label-${item.item_id}`}>Tamanho</InputLabel>
+                                <Select
+                                    labelId={`size-select-label-${item.item_id}`}
+                                    value={item.size}
+                                    label="Tamanho"
+                                    onChange={(e: SelectChangeEvent<string>) => handleSizeChange(item, e.target.value as string)}
+                                >
+                                    {['PP', 'P', 'M', 'G', 'GG'].map((size) => (
+                                        <MenuItem key={size} value={size}>
+                                            {size}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                             <TextField
                                 label="Quantidade"
                                 type="number"
@@ -78,9 +102,9 @@ const CartPage: React.FC = () => {
                                 size="small"
                                 value={item.quantity}
                                 onChange={(e) => handleQuantityChange(item, parseInt(e.target.value))}
-                                sx={{ width: 80, mr: 2 }}
+                                sx={{ width: 100, mr: 2}}                                
                                 InputProps={{
-                                    inputProps: { min: 1 }
+                                    inputProps: { min: 1, style: { textAlign: 'center' } }
                                 }}
                             />
                             <Button variant="contained" color="secondary" onClick={() => handleRemoveItem(item.item_id)}>
@@ -88,6 +112,19 @@ const CartPage: React.FC = () => {
                             </Button>
                         </Box>
                     ))}
+                    <Box sx={{ mt: 4 }}>
+                        <Typography variant="h6" component="p" sx={{ textAlign: 'right' }}>
+                            Total: R$ {cart?.price.toFixed(2)}
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleCheckout}
+                            sx={{ mt: 2, width: '100%', py: 2 }}
+                        >
+                            Finalizar Pedido
+                        </Button>
+                    </Box>
                 </Box>
             )}
             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
