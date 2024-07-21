@@ -7,6 +7,7 @@ import ProductCard from '../ProductCard';
 import useProduct from '@/hooks/useProduct';
 import ProductDetailCard from '../ProductPanel';
 import { useAuth } from '@/hooks';
+import { useRouter } from 'next/router';
 import useCart, { CartItem } from '@/hooks/useCart';
 
 interface ProductItem {
@@ -31,6 +32,8 @@ const ProductCarousel: React.FC = () => {
   const { createCartItem } = useCart();
   const [userId, setUserId] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const router = useRouter();
+
 
   useEffect(() => {
     if (user && user.uid) {
@@ -75,6 +78,9 @@ const ProductCarousel: React.FC = () => {
     if (userId && selectedProduct) {
       createCartItem(userId, selectedProduct);
       setOpenSnackbar(true);
+    }
+    else {
+      router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
     }
   };
 
@@ -143,7 +149,16 @@ const ProductCarousel: React.FC = () => {
               />
               <Button
                 onClick={handleCloseModal}
-                sx={{ position: 'absolute', top: 30, right: 30 }}
+                sx={{ 
+                  position: 'absolute', 
+                  top: 30, 
+                  right: 30, 
+                  backgroundColor: 'red', 
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'darkred',
+                  },
+                }}
               >
                 Fechar
               </Button>
