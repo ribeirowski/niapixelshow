@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Box, Button, Container, Typography, Snackbar, Alert, TextField } from '@mui/material';
 import useCart, { CartItem } from '@/hooks/useCart';
 import { useRouter } from 'next/router';
+import { useAuth, useUser } from '@/hooks';
 
 const CartPage: React.FC = () => {
     const router = useRouter();
-    const userId = router.query.id as string; // Obtenha o userId da rota ou ajuste conforme necessário
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+    const { authenticated, logout, user } = useAuth();
+    const { cart, cartItems, getAllCartItems, updateCartItem, deleteCartItem, loading, error, resetError } = useCart();
+    const [userId, setUserId] = useState<string | null>(null);
 
-    const { cart, getAllCartItems, updateCartItem, deleteCartItem, loading, error, resetError } = useCart();
+    useEffect(() => {
+        if (user && user.uid) {
+            setUserId(user.uid);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (userId) {
@@ -32,16 +39,18 @@ const CartPage: React.FC = () => {
 
     const handleQuantityChange = async (item: CartItem, newQuantity: number) => {
         if (newQuantity <= 0) {
-            await deleteCartItem(userId, item.item_id);
+            await deleteCartItem(userId!, item.item_id); 
+            await getAllCartItems(userId!); 
+
         } else {
-            await updateCartItem(userId, item.item_id, { ...item, quantity: newQuantity });
+            await updateCartItem(userId!, item.item_id, { ...item, quantity: newQuantity }); 
         }
-        await getAllCartItems(userId);
+        await getAllCartItems(userId!); 
     };
 
     const handleRemoveItem = async (itemId: string) => {
-        await deleteCartItem(userId, itemId);
-        await getAllCartItems(userId);
+        await deleteCartItem(userId!, itemId); 
+        await getAllCartItems(userId!); 
     };
 
     return (
@@ -49,13 +58,13 @@ const CartPage: React.FC = () => {
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }}>
                 Carrinho de Compras
             </Typography>
-            {cart.length === 0 ? (
+            {cartItems.length === 0 ? (
                 <Typography variant="h6" component="p" sx={{ textAlign: 'center', color: 'text.secondary' }}>
                     Seu carrinho está vazio.
                 </Typography>
             ) : (
                 <Box>
-                    {cart.map((item) => (
+                    {cartItems.map((item) => (
                         <Box key={item.item_id} sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                             <Box component="img" src={item.image} alt={item.name} sx={{ width: 100, height: 100, borderRadius: 1, mr: 2 }} />
                             <Box sx={{ flexGrow: 1 }}>

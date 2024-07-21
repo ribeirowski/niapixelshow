@@ -1,37 +1,29 @@
 import { useState, useCallback } from 'react';
 import api from '@/services/api';
+import { z } from 'zod';
+import { CartItem as CartItemSchema, Cart as CartSchema } from '../types/CartTypes';
 
-interface CartItem {
-    image?: string;
-    name: string;
-    description: string;
-    price: number;
-    status: boolean;
-    category: {
-        name: string;
-        description?: string;
-    };
-    promotionId?: string;
-    quantity: number;
-    size: string;
-    item_id: string;
-}
+export type CartItem = z.infer<typeof CartItemSchema>;
+export type Cart = z.infer<typeof CartSchema>;
 
-interface UseCartInterface<T> {
-    cartData: T | null;
-    cart: T[];
-    createCartItem: (userId: string, cartData: T) => Promise<void>;
-    updateCartItem: (userId: string, cartId: string, cartData: Partial<T>) => Promise<void>;
-    deleteCartItem: (userId: string, cartId: string) => Promise<void>;
+interface UseCartInterface {
+    cartData: CartItem | null;
+    cartItems: CartItem[];
+    cart: Cart | null;
+    createCartItem: (userId: string, cartData: CartItem) => Promise<void>;
+    updateCartItem: (userId: string, itemId: string, cartData: Partial<CartItem>) => Promise<void>;
+    deleteCartItem: (userId: string, itemId: string) => Promise<void>;
+    deleteCart: (userId: string) => Promise<void>;
     getAllCartItems: (userId: string) => Promise<void>;
     loading: boolean;
     error: string | null;
     resetError: () => void;
 }
 
-const useCart = (): UseCartInterface<CartItem> => {
+const useCart = (): UseCartInterface => {
     const [cartData, setCartData] = useState<CartItem | null>(null);
-    const [cart, setCart] = useState<CartItem[]>([]);
+    const [cart, setCart] = useState<Cart | null > (null);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -51,24 +43,31 @@ const useCart = (): UseCartInterface<CartItem> => {
     };
 
     const createCartItem = async (userId: string, cartData: CartItem) => {
-        const response = await handleApiCall(api.post<{ data: CartItem }>(`/cart/${userId}`, cartData));
+        await handleApiCall(api.post<{ data: CartItem }>(`/cart/${userId}`, cartData));
         await getAllCartItems(userId);
     };
 
-    const updateCartItem = async (userId: string, cartId: string, cartData: Partial<CartItem>) => {
-        const response = await handleApiCall(api.patch<{ data: CartItem }>(`/cart/${userId}/${cartId}`, cartData));
+    const updateCartItem = async (userId: string, itemId: string, cartData: Partial<CartItem>) => {
+        const response = await handleApiCall(api.put<{ data: CartItem }>(`/cart/${userId}/${itemId}`, cartData));
         setCartData(response as CartItem);
         await getAllCartItems(userId);
     };
 
-    const deleteCartItem = async (userId: string, cartId: string) => {
-        await handleApiCall(api.delete<{ data: CartItem }>(`/cart/${userId}/${cartId}`));
+    const deleteCartItem = async (userId: string, itemId: string) => {
+        await handleApiCall(api.delete<{ data: CartItem }>(`/cart/${userId}/${itemId}`));
         await getAllCartItems(userId);
+    };
+
+    const deleteCart = async (userId: string) => {
+        await handleApiCall(api.delete<{ data: CartItem }>(`/cart/${userId}`));
+        setCart(null);
+        setCartItems([]);
     };
 
     const getAllCartItems = async (userId: string) => {
         const response = await handleApiCall(api.get<{ data: CartItem[] }>(`/cart/${userId}`));
-        setCart(response as CartItem[]);
+        setCart(response as Cart);
+        setCartItems(response.items as CartItem[]);
     };
 
     const resetError = () => setError(null);
@@ -76,9 +75,11 @@ const useCart = (): UseCartInterface<CartItem> => {
     return {
         cartData,
         cart,
+        cartItems,
         createCartItem,
         updateCartItem,
         deleteCartItem,
+        deleteCart,
         getAllCartItems,
         loading,
         error,
@@ -87,4 +88,4 @@ const useCart = (): UseCartInterface<CartItem> => {
 };
 
 export default useCart;
-export type { CartItem, UseCartInterface };
+export type { UseCartInterface };
