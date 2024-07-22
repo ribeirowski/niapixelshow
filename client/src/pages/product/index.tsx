@@ -3,7 +3,7 @@ import { Box, Button, Typography, Modal } from '@mui/material';
 import ProductCarousel from '@/components/ProductCarouselAdmin';
 import Link from 'next/link'; 
 
-
+// Componente da página de produtos
 const ProductPage: React.FC = () => {
   return (
     <Box>
