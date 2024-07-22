@@ -22,6 +22,7 @@ const CategoriesPage: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false); // estado para controlar a tela de edição
     const [editCategoryName, setEditCategoryName] = useState('');
     const [editCategoryDescription, setEditCategoryDescription] = useState('');
+    const [originalCategoryName, setOriginalCategoryName] = useState(''); // variável para armazenar o nome original da categoria
 
     useEffect(() => {
         getAllCategories(); // carregar categorias ao iniciar
@@ -36,13 +37,12 @@ const CategoriesPage: React.FC = () => {
     };
 
     const handleUpdateCategory = async () => {
-        await updateCategory(editCategoryName, { name: editCategoryName, description: editCategoryDescription });
+        await updateCategory(originalCategoryName, { name: editCategoryName, description: editCategoryDescription });
         setEditCategoryName('');
         setEditCategoryDescription('');
         setIsEditing(false); // Esconder a tela de edição após atualizar a categoria
         await getAllCategories(); // Atualizar a lista de categorias
     };
-    
 
     const handleDeleteCategory = async (categoryName: string) => {
         await deleteCategory(categoryName);
@@ -50,6 +50,7 @@ const CategoriesPage: React.FC = () => {
     };
 
     const handleEditClick = (categoryName: string, categoryDescription: string) => {
+        setOriginalCategoryName(categoryName); // armazenar o nome original da categoria
         setEditCategoryName(categoryName);
         setEditCategoryDescription(categoryDescription);
         setIsEditing(true);
@@ -76,7 +77,7 @@ const CategoriesPage: React.FC = () => {
                         <li className={styles.listItem} key={category.name}>
                             <h3>{category.name}</h3>
                             <p>{category.description}</p>
-                            <button className={styles.button} onClick={() => handleEditClick(category.name, category.description || '')}>Atualizar</button>
+                            <button className={styles.button} onClick={() => handleEditClick(category.name, category.description || '')}>Editar</button>
                             <button className={styles.button} onClick={() => handleDeleteCategory(category.name)}>Excluir</button>
                         </li>
                     ))}
