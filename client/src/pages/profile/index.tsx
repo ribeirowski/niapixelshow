@@ -30,26 +30,26 @@ const Profile: React.FC = () => {
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', p: 4, boxShadow: 3 }}>
-            <Typography variant="h4" component="h1" color="secondary" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', mb: 4, mt: 1 }}>
+            <Typography variant="h4" component="h1" color="secondary.main" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', mb: 4, mt: 1 }}>
                 Perfil do Usuário
             </Typography>
             {userData && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, px: 4, mb: 1 }}>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Nome:</Typography>
-                        <Typography variant="body1" color="secondary">{userData.name || "-"}</Typography>
+                        <Typography variant="body1" color="secondary.main" sx={{ fontWeight: 600 }}>Nome:</Typography>
+                        <Typography variant="body1" color="secondary.main">{userData.name || "-"}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Email:</Typography>
-                        <Typography variant="body1" color="secondary">{userData.email || "-"}</Typography>
+                        <Typography variant="body1" color="secondary.main" sx={{ fontWeight: 600 }}>Email:</Typography>
+                        <Typography variant="body1" color="secondary.main">{userData.email || "-"}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Telefone:</Typography>
-                        <Typography variant="body1" color="secondary">{userData.phone || "-"}</Typography>
+                        <Typography variant="body1" color="secondary.main" sx={{ fontWeight: 600 }}>Telefone:</Typography>
+                        <Typography variant="body1" color="secondary.main">{userData.phone || "-"}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'left' }}>
-                        <Typography variant="body1" color="secondary" sx={{ fontWeight: 600 }}>Endereço:</Typography>
-                        <Typography variant="body1" color="secondary">{userData.address || "-"}</Typography>
+                        <Typography variant="body1" color="secondary.main" sx={{ fontWeight: 600 }}>Endereço:</Typography>
+                        <Typography variant="body1" color="secondary.main">{userData.address || "-"}</Typography>
                     </Box>
                     <Button onClick={handleEdit} variant="contained" color="primary" sx={{ alignSelf: 'end', marginTop: '1rem' }}>
                         Editar Perfil
