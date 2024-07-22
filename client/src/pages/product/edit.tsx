@@ -14,13 +14,12 @@ const EditProductPage: React.FC = () => {
     if (id && typeof id === "string") {
       // Aqui você pode buscar os dados do produto
       getProductById(id);
-      console.log(productData)
     }
   }, [id]);
 
   const handleSubmit = (data: any) => {
     if (id && typeof id === "string") {
-      updateProduct(id, data);
+      updateProduct(id, data).then(()=>{router.push(`/product`);})
     }
   };
 

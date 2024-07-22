@@ -53,7 +53,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   const handleDelete = () => {
     const id = router.query.id
     if (id && typeof id === "string") {
-      deleteProduct(id);
+      deleteProduct(id).then(()=>{router.push(`/product`);})
     }
   };
 
