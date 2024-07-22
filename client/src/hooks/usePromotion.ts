@@ -20,6 +20,7 @@ const usePromotion = (): UsePromotionReturn<PromotionSchema> => {
     } catch (err: any) {
       const errorMessage =
         err.response?.data.message || "Ocorreu um erro inesperado";
+        console.error("API Error Response: ", err.response?.data);
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
