@@ -2,29 +2,20 @@ import React from 'react';
 import Link from 'next/link';
 import { Box, Typography, Container, Button } from '@mui/material';
 import ProductForm from '@/components/ProductForm';
+import {useProduct} from '@/hooks'
+import { useRouter } from 'next/router';
 
 const CreateProductPage: React.FC = () => {
+  const router = useRouter()
+  const {createProduct} = useProduct();
+
   const handleSubmit = (data: any) => {
-    console.log('Produto cadastrado:', data);
-    // Adicione a lógica para salvar o produto
+    createProduct(data).then(()=>{router.push(`/product`);})
   };
 
   return (
     <Container maxWidth="md">
       <Box mt={4}>
-        <Typography 
-          variant="h4" 
-          gutterBottom 
-          sx={{ 
-            backgroundColor: 'white', 
-            borderRadius: 2, // Adiciona curvas nas bordas
-            padding: 2, // Adiciona espaçamento interno
-            textAlign: 'center',// Centraliza o texto
-            fontWeight: 'bold' 
-          }}
-        >
-          Cadastrar Produto
-        </Typography>
         <ProductForm onSubmit={handleSubmit} />
       </Box>
     </Container>
