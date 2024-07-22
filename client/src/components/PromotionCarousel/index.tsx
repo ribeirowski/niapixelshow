@@ -6,7 +6,7 @@ import { Box } from "@mui/material";
 import ProductCard from "../ProductCardAdmin";
 import useProduct from "@/hooks/useProduct";
 
-const ProductCarousel: React.FC = () => {
+const PromotionCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
 
   useEffect(() => {
@@ -53,7 +53,6 @@ const ProductCarousel: React.FC = () => {
         {products.map((product) => (
           <ProductCard
             key={product.id} // Adicione a propriedade key aqui
-            id={product.id}
             name={product.name}
             price={product.price}
             //discount={product.discount}
@@ -66,4 +65,4 @@ const ProductCarousel: React.FC = () => {
   );
 };
 
-export default ProductCarousel;
+export default PromotionCarousel;

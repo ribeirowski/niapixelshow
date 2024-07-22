@@ -19,16 +19,16 @@ export interface Product {
 
 // Interface para o hook useProduct
 interface UseProductsInterface<T> {
-    productData: T | null;
-    products: T[];
-    createProduct: (productData: T) => Promise<void>;
-    updateProduct: (productId: string, productData: Partial<T>) => Promise<void>;
-    getProductById: (productId: string) => Promise<void>;
-    deleteProduct: (productId: string) => Promise<void>;
-    getAllProducts: () => Promise<void>;
-    loading: boolean;
-    error: string | null;
-    resetError: () => void;
+  productData: T | null;
+  products: T[];
+  createProduct: (productData: T) => Promise<void>;
+  updateProduct: (productId: string, productData: Partial<T>) => Promise<void>;
+  getProductById: (productId: string) => Promise<void>;
+  deleteProduct: (productId: string) => Promise<void>;
+  getAllProducts: () => Promise<void>;
+  loading: boolean;
+  error: string | null;
+  resetError: () => void;
 }
 
 // Hook personalizado para lidar com operações de produto
@@ -95,18 +95,18 @@ const useProduct = (): UseProductsInterface<Product> => {
         setError(null);
     };
 
-    return {
-        productData,
-        products,
-        createProduct,
-        updateProduct,
-        getProductById,
-        deleteProduct,
-        getAllProducts,
-        loading,
-        error,
-        resetError,
-    };
+  return {
+    productData,
+    products,
+    createProduct,
+    updateProduct,
+    getProductById,
+    deleteProduct,
+    getAllProducts,
+    loading,
+    error,
+    resetError,
+  };
 };
 
 export default useProduct;

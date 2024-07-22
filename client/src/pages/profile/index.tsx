@@ -1,32 +1,32 @@
-import React, { useEffect } from 'react';
-import { Container, Typography, Box, Button } from '@mui/material';
-import useUser from '@/hooks/useUser';
-import { withProtectedRoute } from '@/components';
-import useAuth from '@/hooks/useAuth';
-import { useRouter } from 'next/router';
+import React, { useEffect } from "react";
+import { Container, Typography, Box, Button } from "@mui/material";
+import useUser from "@/hooks/useUser";
+import { withProtectedRoute } from "@/components";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/router";
 
 const Profile: React.FC = () => {
-    const router = useRouter();
-    const { user } = useAuth();
-    const { userData, getUserById, loading, error } = useUser();
+  const router = useRouter();
+  const { user } = useAuth();
+  const { userData, getUserById, loading, error } = useUser();
 
-    useEffect(() => {
-        if (user && user.uid) {
-            getUserById(user.uid);
-        }
-    }, [user, getUserById]);
-
-    if (loading) {
-        return <p>Loading...</p>;
+  useEffect(() => {
+    if (user && user.uid) {
+      getUserById(user.uid);
     }
+  }, [user, getUserById]);
 
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-    const handleEdit = () => {
-        router.push(`/profile/edit-user/${user?.uid}`);
-    };
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  const handleEdit = () => {
+    router.push(`/profile/edit-user/${user?.uid}`);
+  };
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', p: 4, boxShadow: 3 }}>

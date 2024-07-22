@@ -1,4 +1,4 @@
-import withProtectedRoute from './ProtectedRoutes';
+import withProtectedRoute from "./ProtectedRoutes";
 import Navbar from "./NavBar";
 import Footer from "./Footer";
 import ProductCard from './ProductCard';
@@ -21,4 +21,3 @@ export {
     OrderTable,
     ConfirmationModal
 };
-
