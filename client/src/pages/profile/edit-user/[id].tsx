@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
 import { Box, Button, Container, IconButton, TextField, Typography, FormControlLabel, Checkbox } from '@mui/material';
-import { userSchema } from '@/types';
+import { userSchemaWithoutPassword, userSchemaWithPassword, UpdateUserWithoutPasswordSchemaType, UpdateUserWithPasswordSchemaType } from '@/types';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import z from 'zod';
 import { ConfirmationModal } from '@/components';
-
-const UpdateUserSchema = userSchema.partial().extend({
-    password: z
-    .string()
-    .min(8, { message: 'A senha deve ter no mínimo 8 caracteres' })
-    .optional(),
-});
-
-type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>;
 
 const EditUser: React.FC = () => {
     const router = useRouter();
@@ -38,12 +28,27 @@ const EditUser: React.FC = () => {
     };
 
     const {
-        control,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm<UpdateUserSchemaType>({
-        resolver: zodResolver(UpdateUserSchema),
+        control: controlWithoutPassword,
+        handleSubmit: handleSubmitWithoutPassword,
+        formState: { errors: errorsWithoutPassword },
+        reset: resetWithoutPassword,
+    } = useForm<UpdateUserWithoutPasswordSchemaType>({
+        resolver: zodResolver(userSchemaWithoutPassword),
+        defaultValues: {
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+        }
+    });
+
+    const {
+        control: controlWithPassword,
+        handleSubmit: handleSubmitWithPassword,
+        formState: { errors: errorsWithPassword },
+        reset: resetWithPassword,
+    } = useForm<UpdateUserWithPasswordSchemaType>({
+        resolver: zodResolver(userSchemaWithPassword),
         defaultValues: {
             name: '',
             email: '',
@@ -61,22 +66,21 @@ const EditUser: React.FC = () => {
 
     useEffect(() => {
         if (userData) {
-            reset({
+            const defaultValues = {
                 name: userData.name,
                 email: userData.email,
                 phone: userData.phone || '',
                 address: userData.address || '',
                 password: '',
-            });
+            };
+            resetWithoutPassword(defaultValues);
+            resetWithPassword(defaultValues);
         }
-    }, [userData, reset]);
+    }, [userData, resetWithoutPassword, resetWithPassword]);
 
-    const onSubmit = async (data: UpdateUserSchemaType) => {
+    const onSubmit = async (data: UpdateUserWithoutPasswordSchemaType | UpdateUserWithPasswordSchemaType) => {
         setIsUpdating(true);
         try {
-            if (!changePassword) {
-                delete data.password; // Remove a senha dos dados enviados se a opção de alterar senha não estiver marcada
-            }
             console.log('Submitting data:', data);
             await updateUser(id, data);
             router.push('/profile');
@@ -91,7 +95,7 @@ const EditUser: React.FC = () => {
         setOpenModal(true);
     };
 
-    const handleSave = async (data: UpdateUserSchemaType) => {
+    const handleSave = async (data: UpdateUserWithoutPasswordSchemaType | UpdateUserWithPasswordSchemaType) => {
         setModalAction('save');
         setOpenModal(true);
     };
@@ -108,32 +112,40 @@ const EditUser: React.FC = () => {
             }
             setIsDeleting(false);
         } else if (modalAction === 'save') {
-            handleSubmit(onSubmit)();
+            if (changePassword) {
+                handleSubmitWithPassword(onSubmit)();
+            } else {
+                handleSubmitWithoutPassword(onSubmit)();
+            }
         }
     };
+
+    const renderField = (name: string, label: string, placeholder: string, control: any, errors: FieldErrors<any>, type: string = "text") => (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+                <TextField
+                    {...field}
+                    label={label}
+                    placeholder={placeholder}
+                    type={type}
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors[name]}
+                />
+            )}
+        />
+    );
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }}>
                 Editar Usuário
             </Typography>
-            <Box component="form" onSubmit={handleSubmit(handleSave)} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mx: 6 }}>
-                <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Nome"
-                            placeholder='Digite seu novo nome'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.name}
-                            helperText={errors.name?.message}
-                        />
-                    )}
-                />
+            <Box component="form" onSubmit={handleSubmitWithoutPassword(handleSave)} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mx: 6 }}>
+                {renderField("name", "Nome", "Digite seu novo nome", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
                 <TextField
                     label="Email"
                     fullWidth
@@ -141,38 +153,8 @@ const EditUser: React.FC = () => {
                     InputLabelProps={{ shrink: !!userData?.email }}
                     disabled
                 />
-                <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Telefone"
-                            placeholder='Digite seu novo telefone'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.phone}
-                            helperText={errors.phone?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    name="address"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Endereço"
-                            placeholder='Digite seu novo endereço'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.address}
-                            helperText={errors.address?.message}
-                        />
-                    )}
-                />
+                {renderField("phone", "Telefone", "Digite seu novo telefone", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
+                {renderField("address", "Endereço", "Digite seu novo endereço", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
                 <FormControlLabel
                     control={<Checkbox checked={changePassword} onChange={(e) => setChangePassword(e.target.checked)} />}
                     label="Alterar Senha"
@@ -181,7 +163,7 @@ const EditUser: React.FC = () => {
                 {changePassword && (
                     <Controller
                         name="password"
-                        control={control}
+                        control={controlWithPassword}
                         render={({ field }) => (
                             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <TextField
@@ -191,8 +173,8 @@ const EditUser: React.FC = () => {
                                     variant="outlined"
                                     placeholder="Digite sua nova senha"
                                     fullWidth
-                                    error={!!errors.password}
-                                    helperText={errors.password?.message}
+                                    error={!!errorsWithPassword.password}
+                                    helperText={errorsWithPassword.password?.message}
                                 />
                                 <IconButton
                                     aria-label="toggle password visibility"

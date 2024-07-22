@@ -38,11 +38,7 @@ const Navbar: React.FC = () => {
     const handleLogout = () => {
         logout();
         handleClose();
-        if (userData?.is_admin === false){
-            router.push('/home/user');
-        } else {
-            router.push('/home/admin');
-        }
+        router.push('/home/user');
     };
 
     const handleLogin = async () => {
@@ -65,7 +61,7 @@ const Navbar: React.FC = () => {
         if (user && user.uid) {
             router.push(`/cart/${user.uid}`);
         } else {
-            router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
+            router.push('/sign-in');
         }
     };
     const handleAdmin = () => {

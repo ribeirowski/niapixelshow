@@ -45,3 +45,17 @@ export const UpdateUserSchema = userSchema.partial({
 
 export type UserSchema = z.infer<typeof userSchema>;
 export type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>;
+
+export const userSchemaWithoutPassword = z.object({
+    name: z.string().nonempty('O nome não pode ser vazio').regex(/^[a-zA-Z\u00C0-\u017F\s]+$/, 'O nome deve conter apenas letras'),
+    phone: z.string().regex(/^\+?[0-9]+$/, 'O número de telefone deve conter apenas números').optional().or(z.literal('')),
+    email: z.string().nonempty('O email não pode ser vazio').email('Endereço de email inválido'),
+    address: z.string().optional(),
+});
+
+export const userSchemaWithPassword = userSchemaWithoutPassword.extend({
+    password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
+});
+
+export type UpdateUserWithoutPasswordSchemaType = z.infer<typeof userSchemaWithoutPassword>;
+export type UpdateUserWithPasswordSchemaType = z.infer<typeof userSchemaWithPassword>;
