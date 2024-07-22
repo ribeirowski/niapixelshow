@@ -1,39 +1,6 @@
-import { useState, useCallback } from "react";
-import api from "@/services/api";
-
-interface Order {
-  id: string;
-  email: string;
-  item: string;
-  description: string;
-  qtd: number;
-  price: number;
-  status: string;
-  date: string;
-  addr: string;
-}
-
-interface UseOrderInterface<T> {
-  orderData: T | null;
-  orders: T[];
-  createOrder: (orderData: T) => Promise<void>;
-  updateOrder: (orderId: string, orderData: Partial<T>) => Promise<void>;
-  getOrderById: (orderId: string) => Promise<void>;
-  deleteOrder: (orderId: string) => Promise<void>;
-  getAllOrders: () => Promise<void>;
-  getStats: () => Promise<void>;
-  exportOrders: () => Promise<void>;
-  filterOrdersByDate: (startDate: string, endDate: string) => Promise<void>;
-  filterOrders: (
-    atribute: string,
-    func: string,
-    filter: string,
-    email: string
-  ) => Promise<void>;
-  loading: boolean;
-  error: string | null;
-  resetError: () => void;
-}
+import { useState, useCallback } from 'react';
+import api from '@/services/api';
+import { Order, UseOrderInterface } from '@/types';
 
 const useOrder = (): UseOrderInterface<Order> => {
   const [orderData, setOrderData] = useState<Order | null>(null);
@@ -41,26 +8,33 @@ const useOrder = (): UseOrderInterface<Order> => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleApiCall = async <T>(
-    apiCall: Promise<{ data: T }>
-  ): Promise<T> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await apiCall;
-      return response.data;
-    } catch (err: any) {
-      const errorMessage =
-        err.response?.data.message || "Ocorreu um erro inesperado";
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const createOrder = async (orderData: Order) => {
-    await handleApiCall(api.post<{ data: Order }>("/order", orderData));
-  };
+    const handleApiCall = async <T,>(apiCall: Promise<{ data: T }>): Promise<T> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await apiCall;
+            return response.data;
+        } catch (err: any) {
+            const errorMessage = err.response?.data.message || 'Ocorreu um erro inesperado';
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const createOrder = async (orderData: Order) => {
+        const order = {
+            email: orderData.email,
+            item: orderData.item,
+            description: orderData.description,
+            qtd: orderData.qtd,
+            price: orderData.price,
+            status: orderData.status,
+            date: orderData.date,
+            addr: orderData.addr,
+        } 
+        await handleApiCall(api.post<{ data: Order }>('/order', order));
+    };
 
   const updateOrder = async (orderId: string, orderData: Partial<Order>) => {
     await handleApiCall(

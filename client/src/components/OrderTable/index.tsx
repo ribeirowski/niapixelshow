@@ -1,27 +1,7 @@
-import React from "react";
-import {
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-} from "@mui/material";
-import { useRouter } from "next/router";
-
-interface Order {
-  id: string;
-  email: string;
-  item: string;
-  description: string;
-  qtd: number;
-  price: number;
-  status: string;
-  date: string;
-  addr: string;
-}
+import React from 'react';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material';
+import { useRouter } from 'next/router';
+import { Order } from '@/types';
 
 const OrderTable: React.FC<Order[]> = (orders) => {
   const router = useRouter();

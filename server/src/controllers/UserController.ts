@@ -106,8 +106,13 @@ class UserController {
         return res.status(403).json({ message: "Permission denied" });
       }
 
-      // Atualiza as informações do usuário no Firestore
-      await firestoreDB.collection("users").doc(userId).update(userData);
+            // Fazer o hash da senha caso ela tenha sido alterada
+            if (userData.password) {
+                userData.password = await hash(userData.password, 6);
+            }
+
+            // Atualiza as informações do usuário no Firestore
+            await firestoreDB.collection('users').doc(userId).update(userData);
 
       res.status(200).json({ message: "User updated successfully" });
       return next();

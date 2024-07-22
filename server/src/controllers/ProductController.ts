@@ -71,10 +71,10 @@ class ProductController {
       const { name, description, price, status, category } = req.body;
       // Verifica se o preço é um número positivo
 
-      // Verifica se todos os campos estão preenchidos
-      if (!name || !description || !price || !status || !category) {
-        throw new HttpException(400, "Todos os campos devem ser preenchidos");
-      }
+            // Verifica se todos os campos estão preenchidos
+            if (!name || !description || !price || (status === undefined || status=== null) || !category ) {
+                throw new HttpException(400, "Todos os campos devem ser preenchidos")
+            }
 
       if (price < 0) {
         throw new Error("O preço deve ser um número positivo");

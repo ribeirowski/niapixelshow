@@ -12,17 +12,17 @@ const AdminHome = () => {
     getAllOrders();
   }, [getAllOrders]);
 
-  const handleProduct = () => {
-    router.push("/home/admin/products");
-  };
-
-  const handleCategory = () => {
-    router.push("/home/admin/categories");
-  };
 
   const handlePromotion = () => {
     router.push("/home/admin/promotions");
   };
+    const handleProduct = () => {
+        router.push('/product');
+    };
+
+    const handleCategory = () => {
+        router.push('/categoriespage');
+    };
 
   const handlePayment = () => {
     router.push("/home/admin/payment");

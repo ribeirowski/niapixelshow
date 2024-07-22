@@ -12,7 +12,8 @@ OrderRouter.route("/all").get(
   OrderController.readAll
 ); // Rota para buscar todos os pedidos
 
-OrderRouter.route("/stats").get(OrderController.getStats); // Rota para buscar estatísticas de pedidos
+OrderRouter.route('/stats')
+    .get(isAuthenticated, isAdmin, OrderController.getStats); // Rota para buscar estatísticas de pedidos
 
 OrderRouter.route("/export").get(
   isAuthenticated,

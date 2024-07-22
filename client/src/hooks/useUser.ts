@@ -3,9 +3,10 @@ import api from "@/services/api";
 import { UserSchema, UseUserReturn } from "@/types";
 
 const useUser = (): UseUserReturn<UserSchema> => {
-  const [userData, setUserData] = useState<UserSchema | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+    const [userData, setUserData] = useState<UserSchema | null>(null);
+    const [users, setUsers] = useState<UserSchema[]> ([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
   const handleApiCall = async <T>(
     apiCall: Promise<{ data: T }>
@@ -43,13 +44,17 @@ const useUser = (): UseUserReturn<UserSchema> => {
     setUserData(response);
   }, []);
 
-  const getUserByEmail = useCallback(async (userEmail: string) => {
-    const response = await handleApiCall<{ data: UserSchema }>(
-      api.get(`/user/email/${userEmail}`)
-    );
-    // @ts-ignore
-    setUserData(response);
-  }, []);
+    const getUserByEmail = useCallback(async (userEmail: string) => {
+        const response = await handleApiCall<{ data: UserSchema }>(api.get(`/user/email/${userEmail}`));
+        // @ts-ignore
+        setUserData(response);
+    }, []);
+
+    const getAllUsers = useCallback(async () => {
+        const response = await handleApiCall<{ data: UserSchema[]}>(api.get(`/user/all`));
+        // @ts-ignore
+        setUsers(response);
+    }, [])
 
   const deleteUser = async (userId: string) => {
     await handleApiCall(api.delete(`/user/${userId}`));
@@ -59,17 +64,19 @@ const useUser = (): UseUserReturn<UserSchema> => {
     setError(null);
   };
 
-  return {
-    userData,
-    createUser,
-    updateUser,
-    getUserById,
-    deleteUser,
-    loading,
-    error,
-    resetError,
-    getUserByEmail,
-  };
+    return {
+        userData,
+        users,
+        createUser,
+        updateUser,
+        getUserById,
+        deleteUser,
+        loading,
+        error,
+        resetError,
+        getUserByEmail,
+        getAllUsers,
+    };
 };
 
 export default useUser;

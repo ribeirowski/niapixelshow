@@ -16,15 +16,16 @@ const Navbar: React.FC = () => {
   const { userData, getUserById } = useUser();
   const router = useRouter();
 
-  useEffect(() => {
-    if (user && user.uid) {
-      getUserById(user.uid);
-    }
-  }, [user, getUserById]);
+    useEffect(() => {
+        if (user && user.uid) {
+            getUserById(user.uid);
+        }
+    }, [user, getUserById]);
+    
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,15 +35,11 @@ const Navbar: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    logout();
-    handleClose();
-    if (userData?.is_admin === false) {
-      router.push("/home/user");
-    } else {
-      router.push("/home/admin");
-    }
-  };
+    const handleLogout = () => {
+        logout();
+        handleClose();
+        router.push('/home/user');
+    };
 
   const handleLogin = async () => {
     handleClose();
@@ -60,10 +57,17 @@ const Navbar: React.FC = () => {
     handleClose();
   };
 
-  const handleAdmin = () => {
-    router.push("/home/admin");
-    handleClose();
-  };
+    const handleCart = () => {
+        if (user && user.uid) {
+            router.push(`/cart/${user.uid}`);
+        } else {
+            router.push('/sign-in');
+        }
+    };
+    const handleAdmin = () => {
+        router.push('/home/admin');
+        handleClose();
+    }
 
   const isAdmin = () => {
     if (userData?.is_admin === true) {
@@ -73,133 +77,102 @@ const Navbar: React.FC = () => {
     }
   };
 
-  return (
-    <AppBar
-      position="static"
-      style={{
-        backgroundColor: "#DA0037",
-        borderRadius: "1rem",
-        marginTop: "2rem",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ color: "#EDEDED", fontWeight: "700" }}
-          >
-            Nia Pixel Show
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              sx={{
-                "& .MuiTab-root": {
-                  color: "#EDEDED",
-                  fontWeight: "regular",
-                  fontSize: "1rem",
-                  mx: "1.3rem",
-                  "&:hover": {
-                    color: "#FFFFFF",
-                    fontWeight: "600",
-                  },
-                },
-                "& .Mui-selected": {
-                  fontWeight: "600",
-                  borderRadius: "6px",
-                },
-              }}
-            >
-              <Tab
-                label="Inicio"
-                onClick={() => router.push("/")}
-                disableRipple
-              />
-              <Tab
-                label="Sobre nós"
-                onClick={() => router.push("/about")}
-                disableRipple
-              />
-              <Tab
-                label="Contato"
-                onClick={() => router.push("/contact")}
-                disableRipple
-              />
-            </Tabs>
-          </Box>
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <IconButton aria-label="cart" sx={{ color: "#EDEDED" }}>
-              <ShoppingCartIcon />
-            </IconButton>
-            <IconButton
-              aria-label="account"
-              sx={{ color: "#EDEDED" }}
-              onClick={handleMenu}
-            >
-              <AccountCircleIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-              sx={{
-                "& .MuiPaper-root": {
-                  backgroundColor: "#DA0037",
-                  color: "#EDEDED",
-                  borderRadius: "8px",
-                },
-                "& .MuiMenuItem-root": {
-                  py: "4px",
-                  px: "20px",
-                  borderRadius: "8px",
-                  mx: "8px",
-                  "&:hover": {
-                    color: "#FFFFFF",
-                    backgroundColor: "#C3002F",
-                    borderRadius: "6px",
-                    fontWeight: "500",
-                  },
-                  fontWeight: "400",
-                  fontSize: "14px",
-                  justifyContent: "center",
-                },
-              }}
-            >
-              {authenticated ? (
-                isAdmin() ? (
-                  <>
-                    <MenuItem onClick={handleProfile}>Perfil</MenuItem>
-                    <MenuItem onClick={handleAdmin}>Admin</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={handleProfile}>Perfil</MenuItem>
-                    <MenuItem onClick={handleOrders}>Pedidos</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </>
-                )
-              ) : (
-                <MenuItem onClick={handleLogin}>Login</MenuItem>
-              )}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+    return (
+        <AppBar position="static" style={{ backgroundColor: '#DA0037', borderRadius: '1rem', marginTop: '2rem' }}>
+            <Container maxWidth='lg'>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant="h6" noWrap component="div" sx={{ color: '#EDEDED', fontWeight: '700' }}>
+                        Nia Pixel Show
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                        <Tabs value={value} onChange={handleChange} sx={{
+                            '& .MuiTab-root': {
+                                color: '#EDEDED', 
+                                fontWeight: 'regular', 
+                                fontSize: '1rem',
+                                mx: '1.3rem',
+                                '&:hover': {
+                                    color: '#FFFFFF',
+                                    fontWeight: '600',
+                                },
+                            },
+                            '& .Mui-selected': { 
+                                fontWeight: '600', 
+                                borderRadius: '6px',
+                            },
+                        }}>
+                            <Tab label="Inicio" onClick={() => router.push('/')} disableRipple />
+                            <Tab label="Sobre nós" onClick={() => router.push('/aboutuspage')} disableRipple />
+                            <Tab label="Contato" onClick={() => router.push('/contact')} disableRipple />
+                        </Tabs>
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: '1rem' }}>
+                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart}>
+                            <ShoppingCartIcon />
+
+                        </IconButton>
+                        <IconButton aria-label="account" sx={{ color: '#EDEDED' }} onClick={handleMenu}>
+                            <AccountCircleIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                            sx={{
+                                '& .MuiPaper-root': {
+                                    backgroundColor: '#DA0037',
+                                    color: '#EDEDED',
+                                    borderRadius: '8px',
+                                },
+                                '& .MuiMenuItem-root': {
+                                    py: '4px',
+                                    px: '20px',
+                                    borderRadius: '8px', 
+                                    mx: '8px',
+                                    '&:hover': {
+                                        color: '#FFFFFF',
+                                        backgroundColor: '#C3002F',
+                                        borderRadius: '6px',
+                                        fontWeight: '500',
+                                    },
+                                    fontWeight: '400',
+                                    fontSize: '14px',
+                                    justifyContent: 'center',
+                                }
+                            }}
+                        >
+                            {authenticated ? (
+                                isAdmin() ? (
+                                    <>
+                                    <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+                                    <MenuItem onClick={handleAdmin}>Dashboard</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    </>
+                                ) : (
+                                    <>
+                                    <MenuItem onClick={handleProfile}>Perfil</MenuItem>
+                                    <MenuItem onClick={handleOrders}>Pedidos</MenuItem>
+                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    </>
+                                )
+                            ) : (
+                                <MenuItem onClick={handleLogin}>Login</MenuItem>
+                            )}
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
+    );
 };
 
 export default Navbar;
