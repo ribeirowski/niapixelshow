@@ -12,7 +12,10 @@ import z from 'zod';
 import { ConfirmationModal } from '@/components';
 
 const UpdateUserSchema = userSchema.partial().extend({
-    password: z.string().optional()
+    password: z
+    .string()
+    .min(8, { message: 'A senha deve ter no mínimo 8 caracteres' })
+    .optional(),
 });
 
 type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>;
