@@ -18,7 +18,7 @@ const AdminHome = () => {
     };
 
     const handleCategory = () => {
-        router.push('/admin/categoriespage');
+        router.push('/categoriespage');
     };
 
     const handlePromotion = () => {
@@ -34,10 +34,9 @@ const AdminHome = () => {
             <h1>ADMIN</h1>
             <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'center' }}>
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleProduct}>Produtos</Button>
-                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained">Categorias</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleCategory}>Categorias</Button>
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained">Promoções</Button>
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handlePayment}>Pagamento</Button>
-                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleCategory}>Categorias</Button>
             </div>
             <h1>HISTÓRICO DE PEDIDOS</h1>
             {loading ? (
