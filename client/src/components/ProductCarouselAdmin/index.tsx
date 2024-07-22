@@ -53,6 +53,7 @@ const ProductCarousel: React.FC = () => {
         {products.map((product) => (
           <ProductCard
             key={product.id} // Adicione a propriedade key aqui
+            id={product.id}
             name={product.name}
             price={product.price}
             //discount={product.discount}

@@ -18,7 +18,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   const [page, setPage] = useState(0);
 
   const router = useRouter();
-  const {getProductById, deleteProduct } = useProduct();
+  const {deleteProduct } = useProduct();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
