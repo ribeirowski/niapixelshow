@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, Grid, MenuItem, Select, InputLabel, FormControl, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
-import { useUser, useOrder } from '@/hooks';
+import useOrder from '@/hooks/useOrder';
+import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/router';
 
 const PaymentManagement = () => {
@@ -52,8 +53,6 @@ const PaymentManagement = () => {
     if (error) {
         return <p>Error: {error}</p>;
     }
-
-    var val: string
 
     return (
         <Container maxWidth="lg" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', p: 4, boxShadow: 3 }}>

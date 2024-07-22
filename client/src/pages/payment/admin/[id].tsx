@@ -1,15 +1,19 @@
 import React, {  useEffect, useState } from 'react';
 import { Container, Typography, Box, Button, Grid, MenuItem, Select, InputLabel, FormControl  } from '@mui/material';
-import { useOrder, useUser } from '@/hooks';
+import useOrder from '@/hooks/useOrder';
+import useUser from '@/hooks/useUser';
+import useEmail from '@/hooks/useEmail';
 import { withProtectedRoute } from '@/components';
 import { useRouter } from 'next/router';
+import { Order } from '@/types';
 
 const OrderDetails: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
     const { orderData, getOrderById, updateOrder, loading, error } = useOrder();
-    const { userData, getUserByEmail} = useUser()
-    const [status, setStatus] = useState<string>('Aguardando Pagamento');
+    const { userData, getUserByEmail} = useUser();
+    const { sendEmail } = useEmail();
+    const [status, setStatus] = useState<string>('');
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -29,7 +33,12 @@ const OrderDetails: React.FC = () => {
 
     const handleConfirm = () => {
         updateOrder(id as string, {status: status});
-        // falta fazer mandar o email
+        if(status === 'Pago'){
+            sendEmail({order: orderData as Order, name: userData?.name as string, stat: 'Confirmação'}, orderData?.email as string)
+        }
+        else if(status === 'Erro no Pagamento'){
+            sendEmail({order: orderData as Order, name: userData?.name as string, stat: 'Erro'}, orderData?.email as string)
+        }
         router.back();
     };
 
