@@ -132,16 +132,6 @@ class PromotionController {
         return res.status(400).json({ message: "Promotion not found" });
       }
 
-      // Verifica se a data de início é anterior à data de término
-      // @ts-ignore
-      if (
-        new Date(promotionData.start_date) > new Date(promotionData.end_date)
-      ) {
-        return res
-          .status(400)
-          .json({ message: "Start date must be before end date" });
-      }
-
       // Verifica se a porcentagem de desconto é um número positivo entre 0 e 100
       // @ts-ignore
       if (promotionData.discount <= 0 && promotionData.discount > 100) {
