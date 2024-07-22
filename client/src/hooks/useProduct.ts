@@ -60,7 +60,7 @@ const useProduct = (): UseProductsInterface<Product> => {
     };
 
     const updateProduct = async (productId: string, productData: Partial<Product>) => {
-        await handleApiCall(api.patch<{ data: Product }>(`/product/${productId}`, productData));
+        await handleApiCall(api.put<{ data: Product }>(`/product/${productId}`, productData));
     };
 
     const getProductById = useCallback(async (productId: string) => {
