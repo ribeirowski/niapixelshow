@@ -18,10 +18,11 @@ const UserHome = () => {
         }}
       >
         <PhotoCarousel images={images} />
-        <h1>Produtos</h1>
+        <h1 style={{ fontSize: '2rem', color: 'white' }}>Produtos</h1>
         <ProductCarousel />
       </div>
     </div>
+  
   );
 };
 
