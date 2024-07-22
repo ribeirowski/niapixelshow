@@ -23,83 +23,34 @@ const AdminHome = () => {
     router.push("/categoriespage");
   };
 
-  const handlePayment = () => {
-    router.push("/home/admin/payment");
-  };
+    const handlePayment = () => {
+        router.push('/payment/admin');
+    };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "2rem",
-      }}
-    >
-      <h1>ADMIN</h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          gap: "2rem",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          onClick={handleProduct}
-          style={{
-            backgroundColor: "#FFFFFF",
-            color: "#121212",
-            fontWeight: 800,
-          }}
-          variant="contained"
-        >
-          Produtos
-        </Button>
-        <Button
-          onClick={handleCategory}
-          style={{
-            backgroundColor: "#FFFFFF",
-            color: "#121212",
-            fontWeight: 800,
-          }}
-          variant="contained"
-        >
-          Categorias
-        </Button>
-        <Button
-          onClick={handlePromotion}
-          style={{
-            backgroundColor: "#FFFFFF",
-            color: "#121212",
-            fontWeight: 800,
-          }}
-          variant="contained"
-        >
-          Promoções
-        </Button>
-        <Button
-          onClick={handlePayment}
-          style={{
-            backgroundColor: "#FFFFFF",
-            color: "#121212",
-            fontWeight: 800,
-          }}
-          variant="contained"
-        >
-          Pagamento
-        </Button>
-      </div>
-      <h1>HISTÓRICO DE PEDIDOS</h1>
-      {loading ? (
-        <Typography>Carregando...</Typography>
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
-      ) : (
-        OrderTable(orders)
-      )}
-    </div>
-  );
+    const statsPage = () => {
+        router.push('/stats/stats');
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
+            <h1>ADMIN</h1>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'center' }}>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleProduct}>Produtos</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleCategory}>Categorias</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained">Promoções</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handlePayment}>Pagamento</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={statsPage}>Estatísticas</Button>
+            </div>
+            <h1>HISTÓRICO DE PEDIDOS</h1>
+            {loading ? (
+                <Typography>Carregando...</Typography>
+            ) : error ? (
+                <Typography color="error">{error}</Typography>
+            ) : (
+                OrderTable(orders)
+            )}
+        </div>
+    );
 };
 
 export default AdminHome;
