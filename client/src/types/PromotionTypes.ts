@@ -15,52 +15,38 @@ export interface UsePromotionReturn<T = any> {
   resetError: () => void;
 }
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+const dateValidation = z.
+  string().
+  refine((val) => {
+    const date = val.split("/");
+    return (
+      date.length === 3 &&
+      date[0].length === 2 &&
+      date[1].length === 2 &&
+      date[2].length === 4
+    );
+  });
 
-// Função auxiliar para converter uma string no formato dd/mm/yyyy para um objeto Date
-const parseDateString = (dateString: string): Date => {
-  const [day, month, year] = dateString.split("/").map(Number);
-  return new Date(year, month - 1, day);
-};
+const discountValidation = z
+  .string()
+  .refine(
+    (val) => !isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 100,
+    {
+      message: "O desconto deve ser um número de 1 até 100",
+    }
+  )
+  .transform((val) => Number(val));
 
 export const promotionSchema = z.object({
   name: z.string({ message: "O nome não pode ser vazio" }),
-  discount: z
-    .number({ message: "O desconto deve ser um número" })
-    .int({ message: "O desconto deve ser um número de 1 até 100" })
-    .min(1, { message: "O desconto deve ser um número de 1 até 100" })
-    .max(100, { message: "O desconto deve ser um número de 1 até 100" }),
-  start_date: z
-    .string({
-      message:
-        "A data de início deve ser uma data válida no formato dd/mm/yyyy",
-    })
-    .refine(
-      (date) => {
-        const parsedDate = parseDateString(date);
-        return parsedDate >= today;
-      },
-      { message: "A data de início deve ser maior ou igual a data atual" }
-    )
-    .transform(parseDateString),
-  end_date: z
-    .string({
-      message:
-        "A data de término deve ser uma data válida no formato dd/mm/yyyy",
-    })
-    .refine(
-      (date) => {
-        const parsedDate = parseDateString(date);
-        return parsedDate > today;
-      },
-      { message: "A data de término deve ser maior que a data atual" }
-    )
-    .transform(parseDateString),
+  discount: discountValidation,
+  //string em formato de dd/mm/yyyy e que seja uma data válida
+  start_date: dateValidation,
+  end_date: dateValidation,
   active: z.boolean().default(true),
   product_id: z.string({ message: "O id do produto não pode ser vazio" }),
 });
 
-export type PromotionSchema = z.infer<typeof promotionSchema>;
-
 export const UpdatePromotion = promotionSchema.partial();
+
+export type PromotionSchema = z.infer<typeof promotionSchema>;
