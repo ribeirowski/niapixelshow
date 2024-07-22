@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormControl, IconButton } from '@mui/material';
+import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormControl, IconButton, Snackbar, Alert } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/router';
 import { Product, useProduct } from '@/hooks';
 
 // Componente de formulário de produto
-const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean, productData?: Product }> = ({ onSubmit, edit = false, productData }) => {
+const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean, productData?: Product}> = ({ onSubmit, edit = false, productData, onDelete }) => {
   // Estado para armazenar os dados do formulário
   const [formData, setFormData] = useState<Product>(productData ? productData : {
     name: '',
@@ -20,6 +20,10 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   
   // Estado para controlar a página do formulário (0: Formulário, 1: Upload de Foto)
   const [page, setPage] = useState(0);
+
+  // Estados para controlar o Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const router = useRouter();
   const { deleteProduct } = useProduct(); // Hook personalizado para operações de produto
@@ -62,8 +66,19 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   const handleDelete = () => {
     const id = router.query.id;
     if (id && typeof id === "string") {
-      deleteProduct(id).then(() => { router.push(`/product`); });
+      deleteProduct(id).then(() => {
+        setSnackbarMessage('Produto excluído com sucesso!');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          router.push(`/product`);
+        }, 2000); // 2 segundos de atraso antes de redirecionar
+      });
     }
+  };
+
+  // Função para fechar o Snackbar
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -179,6 +194,12 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
           </Box>
         </>
       )}
+      {/* Snackbar para exibir mensagens de sucesso */}
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
