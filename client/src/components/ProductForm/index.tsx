@@ -2,24 +2,10 @@ import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormControl, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/router';
+import { Product } from '@/hooks';
 
-interface Category {
-  name: string;
-  description?: string;
-}
-
-interface FormData {
-  image?: string;
-  id?: string;
-  name: string;
-  description: string;
-  price: number;
-  status: boolean;
-  category: Category;
-}
-
-const ProductForm: React.FC<{ onSubmit: (data: FormData) => void, edit?: boolean }> = ({ onSubmit, edit = false }) => {
-  const [formData, setFormData] = useState<FormData>({
+const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean, productData?: Product }> = ({ onSubmit, edit = false, productData }) => {
+  const [formData, setFormData] = useState<Product>( productData? productData: {
     name: '',
     description: '',
     price: 0,
@@ -29,6 +15,7 @@ const ProductForm: React.FC<{ onSubmit: (data: FormData) => void, edit?: boolean
       description: ''
     }
   });
+  const [page, setPage] = useState(0);
 
   const router = useRouter();
 
@@ -58,8 +45,33 @@ const ProductForm: React.FC<{ onSubmit: (data: FormData) => void, edit?: boolean
     router.push(`/product/uploadPhoto?origin=${edit ? 'edit' : 'create'}`);
   };
 
+  const handleUpload = () => {
+    console.log('Foto enviada!');
+    // Adicione a lógica para enviar a foto
+  };
+
+  const handleSave = () => {
+    console.log('Produto salvo!');
+    // Adicione a lógica para salvar o produto
+  };
+
+  const handleDelete = () => {
+    console.log('Produto excluído!');
+    // Adicione a lógica para excluir o produto
+  };
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ backgroundColor: 'white', mt: 4, p: 4, borderRadius: 1, boxShadow: 3, mx: 'auto' }}>
+      { page == 0? <>
+      <Typography variant="h4" 
+        gutterBottom 
+        sx={{ 
+          padding: 2, // Adiciona espaçamento interno
+          textAlign: 'center', // Centraliza o texto
+          fontWeight: 'bold'
+        }}>
+        {edit? "Editar Produto": "Cadastrar Produto"}
+      </Typography>
       <Box display="flex" alignItems="center" mb={2}>
         <IconButton 
           onClick={() => router.back()} 
@@ -130,10 +142,44 @@ const ProductForm: React.FC<{ onSubmit: (data: FormData) => void, edit?: boolean
         </Select>
       </FormControl>
       <Box textAlign="center" mt={4}>
-        <Button type="submit" variant="contained" sx={{ backgroundColor: "black", color: "white" }}>
+        <Button type="button" variant="contained" sx={{ backgroundColor: "black", color: "white" }} onClick={()=>{setPage(1)}}>
           PRÓXIMO
         </Button>
-      </Box>
+      </Box></>
+      : 
+      <>
+      <Typography variant="h4" 
+          gutterBottom 
+          sx={{ 
+            padding: 2, // Adiciona espaçamento interno
+            textAlign: 'center', // Centraliza o texto
+            fontWeight: 'bold'
+          }}>
+          Upload da Foto do Produto
+        </Typography>
+        <Box mt={4} textAlign="center">
+          <input type="file" accept="image/*"/>
+          <Button variant="contained" color="primary" onClick={handleUpload} sx={{ mt: 2}}>
+            Enviar Foto
+          </Button>
+          {!edit ? (
+            <Box mt={2}>
+            <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2, mt:20}}>
+              Cadastrar Produto
+            </Button>
+            </Box>
+          ) : (
+            <Box mt={2}>
+              <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2, mt:20 }}>
+                Salvar Produto
+              </Button>
+              <Button variant="contained" color="error" onClick={handleDelete} sx={{ mt:20 }}>
+                Excluir Produto
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </>}
     </Box>
   );
 };
