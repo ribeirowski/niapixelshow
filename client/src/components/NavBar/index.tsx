@@ -106,7 +106,7 @@ const Navbar: React.FC = () => {
                             },
                         }}>
                             <Tab label="Inicio" onClick={() => router.push('/')} disableRipple />
-                            <Tab label="Sobre nós" onClick={() => router.push('/about')} disableRipple />
+                            <Tab label="Sobre nós" onClick={() => router.push('/aboutuspage')} disableRipple />
                             <Tab label="Contato" onClick={() => router.push('/contact')} disableRipple />
                         </Tabs>
                     </Box>
