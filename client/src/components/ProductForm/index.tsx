@@ -154,6 +154,20 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
           }}>
           Upload da Foto do Produto
         </Typography>
+        <Box display="flex" alignItems="center" mb={2}>
+        <IconButton 
+          onClick={() => setPage(0)} 
+          sx={{ 
+            mr: 2, 
+            color: 'black', 
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.1)', 
+            }
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+      </Box>
         <Box mt={4} textAlign="center">
           <input type="file" accept="image/*"/>
           <Button variant="contained" color="primary" onClick={handleUpload} sx={{ mt: 2}}>
