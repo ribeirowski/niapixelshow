@@ -2,7 +2,11 @@ import useUser from "./useUser";
 import useAuth, { AuthProvider } from "./useAuth";
 import useProduct, { Product } from "./useProduct";
 import useCart, { CartItem, UseCartInterface } from "./useCart";
-
-export { useUser, useAuth, AuthProvider, useProduct, useCart, useOrder};
-export type { CartItem, UseCartInterface, Product };
+import useCategories from "./useCategories";
 import useOrder from "./useOrder";
+import usePromotion from "./usePromotion";
+
+export { useUser, useAuth, AuthProvider, useProduct, useOrder, usePromotion };
+
+export { useUser, useAuth, AuthProvider, useProduct, useCart, useOrder, useCategories };
+export type { CartItem, UseCartInterface, Product };

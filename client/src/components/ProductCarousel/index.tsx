@@ -122,7 +122,7 @@ const ProductCarousel: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: '100%' }}>
+    <Box sx={{ maxWidth: "100%" }}>
       <Slider {...settings}>
         {products.map((product) => (
           <ProductCard
