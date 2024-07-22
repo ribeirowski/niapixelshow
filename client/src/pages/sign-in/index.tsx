@@ -1,43 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Container, TextField, Typography, Snackbar, Alert, IconButton, Stack } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { loginSchema, LoginSchema } from '../../types/AuthTypes';
-import { useAuth } from '@/hooks';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import React, { useState, useEffect } from "react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+  IconButton,
+  Stack,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { loginSchema, LoginSchema } from "../../types/AuthTypes";
+import { useAuth } from "@/hooks";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Login: React.FC = () => {
-    const router = useRouter();
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
-    const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
+  const [showPassword, setShowPassword] = useState(false);
 
-    const { login, loading, error, authenticated } = useAuth();
+  const { login, loading, error, authenticated } = useAuth();
 
-    const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
-    };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
-    const handleClickShowPassword = () => {
-        setShowPassword((prev) => !prev);
-    };
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
-    const {
-        control,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-        clearErrors,
-    } = useForm<LoginSchema>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            email: '',
-            password: '',
-        }
-    });
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    clearErrors,
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
     useEffect(() => {
         if (authenticated) {
@@ -45,24 +57,24 @@ const Login: React.FC = () => {
         }
     }, [authenticated, router]);
 
-    useEffect(() => {
-        if (error) {
-            setSnackbarMessage(error);
-            setSnackbarSeverity('error');
-            setOpenSnackbar(true);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
+  }, [error]);
 
-    const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
-        await login(data.email, data.password);
+  const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    await login(data.email, data.password);
 
-        if (!error) {
-            setSnackbarMessage('Login bem sucedido!');
-            setSnackbarSeverity('success');
-            setOpenSnackbar(true);
-            reset();
-        }
-    };
+    if (!error) {
+      setSnackbarMessage("Login bem sucedido!");
+      setSnackbarSeverity("success");
+      setOpenSnackbar(true);
+      reset();
+    }
+  };
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3 }}>

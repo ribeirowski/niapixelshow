@@ -11,10 +11,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ConfirmationModal } from '@/components';
 
 const EditUser: React.FC = () => {
-    const router = useRouter();
-    const { id } = router.query as { id: string };
-    const { user } = useAuth();
-    const { getUserById, updateUser, deleteUser, userData, loading } = useUser();
+  const router = useRouter();
+  const { id } = router.query as { id: string };
+  const { user } = useAuth();
+  const { getUserById, updateUser, deleteUser, userData, loading } = useUser();
 
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -23,9 +23,9 @@ const EditUser: React.FC = () => {
     const [openModal, setOpenModal] = useState(false);
     const [modalAction, setModalAction] = useState<'delete' | 'save'>('save');
 
-    const handleClickShowPassword = () => {
-        setShowPassword((prev) => !prev);
-    };
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
     const {
         control: controlWithoutPassword,
@@ -58,11 +58,11 @@ const EditUser: React.FC = () => {
         }
     });
 
-    useEffect(() => {
-        if (user && id) {
-            getUserById(id);
-        }
-    }, [id, getUserById, user]);
+  useEffect(() => {
+    if (user && id) {
+      getUserById(id);
+    }
+  }, [id, getUserById, user]);
 
     useEffect(() => {
         if (userData) {

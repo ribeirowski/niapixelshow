@@ -1,7 +1,7 @@
-import React from 'react';
-import Slider from 'react-slick';
-import { Box } from '@mui/material';
-import { StaticImageData } from 'next/image';
+import React from "react";
+import Slider from "react-slick";
+import { Box } from "@mui/material";
+import { StaticImageData } from "next/image";
 
 interface PhotoCarouselProps {
   images: (string | StaticImageData)[];
@@ -16,14 +16,14 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ images }) => {
   };
 
   return (
-    <Box sx={{ width: '78rem', margin: 'auto' }}>
+    <Box sx={{ width: "78rem", margin: "auto" }}>
       <Slider {...settings}>
         {images.map((image, index) => (
           <Box key={index} sx={{ padding: 2 }}>
             <img
-              src={typeof image === 'string' ? image : image.src}
+              src={typeof image === "string" ? image : image.src}
               alt={`Slide ${index}`}
-              style={{ width: '100%', height: '20rem', borderRadius: '0.5rem' }}
+              style={{ width: "100%", height: "20rem", borderRadius: "0.5rem" }}
             />
           </Box>
         ))}

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Tabs, Tab, Box, Container, Menu, MenuItem } from '@mui/material';
-import { useRouter } from 'next/router';
-import { useAuth, useUser } from '@/hooks';
+import React, { useState, useEffect } from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Tabs, Tab, Box, Container, Menu, MenuItem } from "@mui/material";
+import { useRouter } from "next/router";
+import { useAuth, useUser } from "@/hooks";
 
 const Navbar: React.FC = () => {
-    const [value, setValue] = useState<number>(0);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { authenticated, logout, loading, user } = useAuth();
-    const { userData, getUserById } = useUser();
-    const router = useRouter();
+  const [value, setValue] = useState<number>(0);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { authenticated, logout, loading, user } = useAuth();
+  const { userData, getUserById } = useUser();
+  const router = useRouter();
 
     useEffect(() => {
         if (user && user.uid) {
@@ -27,13 +27,13 @@ const Navbar: React.FC = () => {
         setValue(newValue);
     };
 
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
     const handleLogout = () => {
         logout();
@@ -41,21 +41,21 @@ const Navbar: React.FC = () => {
         router.push('/home/user');
     };
 
-    const handleLogin = async () => {
-        handleClose();
-        await new Promise(resolve => setTimeout(resolve, 100));
-        router.push('/sign-in');
-    };
+  const handleLogin = async () => {
+    handleClose();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    router.push("/sign-in");
+  };
 
-    const handleProfile = () => {
-        router.push('/profile');
-        handleClose();
-    };
+  const handleProfile = () => {
+    router.push("/profile");
+    handleClose();
+  };
 
-    const handleOrders = () => {
-        router.push(`/orders/user/${userData?.email}`)
-        handleClose();
-    }
+  const handleOrders = () => {
+    router.push(`/orders/user/${userData?.email}`);
+    handleClose();
+  };
 
     const handleCart = () => {
         if (user && user.uid) {
@@ -69,13 +69,13 @@ const Navbar: React.FC = () => {
         handleClose();
     }
 
-    const isAdmin = () => {
-        if (userData?.is_admin === true) {
-            return true;
-        } else {
-            return false;
-        }
+  const isAdmin = () => {
+    if (userData?.is_admin === true) {
+      return true;
+    } else {
+      return false;
     }
+  };
 
     return (
         <AppBar position="static" style={{ backgroundColor: '#DA0037', borderRadius: '1rem', marginTop: '2rem' }}>

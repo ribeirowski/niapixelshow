@@ -1,10 +1,10 @@
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import React, { useEffect } from 'react';
-import Slider from 'react-slick';
-import { Box } from '@mui/material';
-import ProductCard from '../ProductCardAdmin';
-import useProduct from '@/hooks/useProduct';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import React, { useEffect } from "react";
+import Slider from "react-slick";
+import { Box } from "@mui/material";
+import ProductCard from "../ProductCardAdmin";
+import useProduct from "@/hooks/useProduct";
 
 const ProductCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
@@ -48,7 +48,7 @@ const ProductCarousel: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: '100%' }}>
+    <Box sx={{ maxWidth: "100%" }}>
       <Slider {...settings}>
         {products.map((product) => (
           <ProductCard
