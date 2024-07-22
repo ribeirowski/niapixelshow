@@ -42,17 +42,11 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
       ...formData,
       price: parseFloat(formData.price.toString()),  // Ensure price is a number
     });
-    router.push(`/product/uploadPhoto?origin=${edit ? 'edit' : 'create'}`);
   };
 
   const handleUpload = () => {
     console.log('Foto enviada!');
     // Adicione a lógica para enviar a foto
-  };
-
-  const handleSave = () => {
-    console.log('Produto salvo!');
-    // Adicione a lógica para salvar o produto
   };
 
   const handleDelete = () => {
@@ -164,13 +158,13 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
           </Button>
           {!edit ? (
             <Box mt={2}>
-            <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2, mt:20}}>
+            <Button type="submit" variant="contained" color="success" sx={{ mr: 2, mt:20}}>
               Cadastrar Produto
             </Button>
             </Box>
           ) : (
             <Box mt={2}>
-              <Button variant="contained" color="success" onClick={handleSave} sx={{ mr: 2, mt:20 }}>
+              <Button type="submit" variant="contained" color="success" sx={{ mr: 2, mt:20 }}>
                 Salvar Produto
               </Button>
               <Button variant="contained" color="error" onClick={handleDelete} sx={{ mt:20 }}>
