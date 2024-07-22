@@ -48,8 +48,8 @@ class ProductController {
             
 
             // Verifica se todos os campos estão preenchidos
-            if (!name || !description || !price || !status || !category ) {
-                throw new HttpException(400, "Todos os campos devem ser preenchidos");
+            if (!name || !description || !price || (status === undefined || status=== null) || !category ) {
+                throw new HttpException(400, "Todos os campos devem ser preenchidos")
             }
 
             if (price < 0) {
