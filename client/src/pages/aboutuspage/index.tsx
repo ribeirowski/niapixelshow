@@ -1,69 +1,53 @@
 import React from 'react';
 import { Container, Box, Typography } from '@mui/material';
+import styles from './aboutuspage.module.css'; 
 
 const AboutUsPage: React.FC = () => {
   return (
     <Container
-      maxWidth="lg"
-      sx={{
-        mt: 4,
-        mb: 4,
-        bgcolor: '#fff',
-        borderRadius: '8px', // Adiciona bordas arredondadas
-        boxShadow: 3, // Adiciona uma sombra sutil para destacar o container
-      }}
+      maxWidth="md"
+      className={styles.container} // Adiciona a classe do CSS
     >
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ color: '#C8102E' }}>
-          Sobre Nós
-        </Typography>
+      <Box className={styles.header}>
+        <Typography variant="h4" component="h1">Sobre Nós</Typography>
+      </Box>
+
+      <Box className={styles.content}>
         <img
-          src="https://via.placeholder.com/1200x400" // Substitua pelo URL da sua imagem
+          src="https://via.placeholder.com/1200x400" 
           alt="Sobre Nós"
-          style={{
-            borderRadius: '8px',
-            width: '100%',
-            height: 'auto',
-            marginTop: '16px', // Espaçamento entre o título e a imagem
-            marginBottom: '16px', // Espaçamento abaixo da imagem
-          }}
+          className={styles.image} // Classe para estilos da imagem
         />
       </Box>
-      <Box sx={{ mb: 4, px: 2 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#C8102E' }}>
-          Nossa Missão
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: '#000' }}>
+      
+      <Box className={styles.section}>
+        <Typography variant="h5" component="h2">Nossa Missão</Typography>
+        <Typography variant="body1" paragraph>
           aloaloalo.
         </Typography>
       </Box>
-      <Box sx={{ mb: 4, px: 2 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#C8102E' }}>
-          Nossa História
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: '#000' }}>
-          nhenhe.
+
+      <Box className={styles.section}>
+        <Typography variant="h5" component="h2">Nossa História</Typography>
+        <Typography variant="body1" paragraph>
+        Fundada em 2022, a Niapixelshow nasceu no coração do Centro de Informática da Universidade Federal de Pernambuco. A ideia surgiu quando Nathália uma estudante, apaixonada  por tecnologia e inovação, percebeu uma lacuna de fardamento do Centro.
         </Typography>
       </Box>
-      <Box sx={{ mb: 4, px: 2 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#C8102E' }}>
-          Nossos Valores
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: '#000' }}>
-          <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-            <li style={{ marginBottom: '8px' }}>L</li>
-            <li style={{ marginBottom: '8px' }}>i</li>
-            <li style={{ marginBottom: '8px' }}>g</li>
-            <li style={{ marginBottom: '8px' }}>i</li>
-            <li>a</li>
+
+      <Box className={styles.section}>
+        <Typography variant="h5" component="h2">Nossos Valores</Typography>
+        <Typography variant="body1" paragraph>
+          <ul className={styles.list}>
+            <li>Cultura</li>
+            <li>Arte</li>
+            <li>Inovação</li>
           </ul>
         </Typography>
       </Box>
-      <Box sx={{ mb: 4, px: 2 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#C8102E' }}>
-          Nossa Equipe
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ color: '#000' }}>
+
+      <Box className={styles.section}>
+        <Typography variant="h5" component="h2">Nossa Equipe</Typography>
+        <Typography variant="body1" paragraph>
           hihi.
         </Typography>
       </Box>

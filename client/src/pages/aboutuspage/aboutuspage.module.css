@@ -1,0 +1,35 @@
+.container {
+    background-color: #fff;
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    padding: 20px; /* Espaçamento interno */
+    margin-top: 20px; /* Espaçamento superior */
+    margin-bottom: 20px; /* Espaçamento inferior */
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .image {
+    border-radius: 8px; /* Bordas arredondadas na imagem */
+    width: 100%;
+    height: auto;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  .list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .list li {
+    margin-bottom: 8px;
+  }
+  
