@@ -8,7 +8,7 @@ const EditProductPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { productData, getProductById } = useProduct();
+  const { productData, getProductById, updateProduct } = useProduct();
 
   useEffect(() => {
     if (id && typeof id === "string") {
@@ -19,8 +19,9 @@ const EditProductPage: React.FC = () => {
   }, [id]);
 
   const handleSubmit = (data: any) => {
-    console.log('Produto editado:', data);
-    // Adicione a lógica para atualizar o produto
+    if (id && typeof id === "string") {
+      updateProduct(id, data);
+    }
   };
 
   return (
