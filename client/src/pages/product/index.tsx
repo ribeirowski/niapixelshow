@@ -7,7 +7,7 @@ import Link from 'next/link';
 const ProductPage: React.FC = () => {
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Produtos</Typography>
+      <Typography variant="h4" gutterBottom  sx={{ color:'white', padding: 2, textAlign: 'center', fontWeight: 'bold' }}>Produtos</Typography>
       <ProductCarousel />
       <Link href="/product/create" passHref>
       <Button 
