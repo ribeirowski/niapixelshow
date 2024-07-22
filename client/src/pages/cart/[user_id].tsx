@@ -3,6 +3,7 @@ import { Box, Button, Container, Typography, Snackbar, Alert, TextField, FormCon
 import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks';
 import useCart, { CartItem } from '@/hooks/useCart';
+import { Order } from '@/types';
 
 const CartPage: React.FC = () => {
     const router = useRouter();
@@ -58,7 +59,9 @@ const CartPage: React.FC = () => {
 
     const handleCheckout = () => {
         // Adicione a lógica de finalização do pedido aqui
+        
         console.log('Finalizar pedido');
+        router.push(`/payment/user`)
     };
 
     return (
