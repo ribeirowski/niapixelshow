@@ -26,7 +26,11 @@ const AdminHome = () => {
     };
 
     const handlePayment = () => {
-        router.push('/payment/admin')
+        router.push('/payment/admin');
+    };
+
+    const statsPage = () => {
+        router.push('/stats/stats');
     }
 
     return (
@@ -37,6 +41,7 @@ const AdminHome = () => {
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handleCategory}>Categorias</Button>
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained">Promoções</Button>
                 <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={handlePayment}>Pagamento</Button>
+                <Button style={{ backgroundColor: "#FFFFFF", color: "#121212", fontWeight: 800 }} variant="contained" onClick={statsPage}>Estatísticas</Button>
             </div>
             <h1>HISTÓRICO DE PEDIDOS</h1>
             {loading ? (

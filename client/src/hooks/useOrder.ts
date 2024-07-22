@@ -56,7 +56,7 @@ const useOrder = (): UseOrderInterface <Order> => {
     }, []);
 
     const getStats = useCallback(async () => {
-        await handleApiCall(api.get('/order/stats'));
+        await handleApiCall(api.get(`/order/stats?year=0000&end=$00`));
     }, []);
 
     const exportOrders = useCallback(async () => {
