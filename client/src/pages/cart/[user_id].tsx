@@ -39,10 +39,9 @@ const CartPage: React.FC = () => {
 
     const handleQuantityChange = async (item: CartItem, newQuantity: number) => {
         if (newQuantity <= 0 || newQuantity == null || isNaN(newQuantity)) {
-            handleRemoveItem(item.item_id);
-        } else {
-            await updateCartItem(userId!, item.item_id, { ...item, quantity: newQuantity }); 
+            newQuantity = 1;
         }
+        await updateCartItem(userId!, item.item_id, { ...item, quantity: newQuantity }); 
         await getAllCartItems(userId!); 
     };
 
@@ -63,11 +62,11 @@ const CartPage: React.FC = () => {
 
     return (
         <Container maxWidth="md" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3 }}>
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }}>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: '#171717', mb: 4, mt: 1 }}>
                 Carrinho de Compras
             </Typography>
             {cartItems.length === 0 ? (
-                <Typography variant="h6" component="p" sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                <Typography variant="h6" component="p" sx={{ textAlign: 'center', color: '#171717' }}>
                     Seu carrinho está vazio.
                 </Typography>
             ) : (
@@ -76,20 +75,21 @@ const CartPage: React.FC = () => {
                         <Box key={item.item_id} sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                             <Box component="img" src={item.image} alt={item.name} sx={{ width: 100, height: 100, borderRadius: 1, mr: 2 }} />
                             <Box sx={{ flexGrow: 1 }}>
-                                <Typography variant="h6" component="p">{item.name}</Typography>
-                                <Typography variant="body2" component="p" color="text.secondary">{item.description}</Typography>
-                                <Typography variant="body1" component="p">R$ {item.price.toFixed(2)}</Typography>
+                                <Typography variant="h6" component="p" sx={{ color: '#171717' }}>{item.name}</Typography>
+                                <Typography variant="body2" component="p" sx={{ color: '#171717' }}>{item.description}</Typography>
+                                <Typography variant="body1" component="p" sx={{ color: '#171717' }}>R$ {item.price.toFixed(2)}</Typography>
                             </Box>
                             <FormControl sx={{ width: 100, mr: 2 }}>
-                                <InputLabel id={`size-select-label-${item.item_id}`}>Tamanho</InputLabel>
+                                <InputLabel id={`size-select-label-${item.item_id}`} sx={{ color: '#171717' }}>Tamanho</InputLabel>
                                 <Select
                                     labelId={`size-select-label-${item.item_id}`}
                                     value={item.size}
                                     label="Tamanho"
                                     onChange={(e: SelectChangeEvent<string>) => handleSizeChange(item, e.target.value as string)}
+                                    sx={{ color: '#171717' }}
                                 >
                                     {['PP', 'P', 'M', 'G', 'GG'].map((size) => (
-                                        <MenuItem key={size} value={size}>
+                                        <MenuItem key={size} value={size} sx={{ color: '#171717' }}>
                                             {size}
                                         </MenuItem>
                                     ))}
@@ -102,9 +102,9 @@ const CartPage: React.FC = () => {
                                 size="small"
                                 value={item.quantity}
                                 onChange={(e) => handleQuantityChange(item, parseInt(e.target.value))}
-                                sx={{ width: 100, mr: 2}}                                
+                                sx={{ width: 100, mr: 2, '& .MuiInputBase-input': { color: '#171717' }, '& .MuiInputLabel-root': { color: '#171717' } }}                                
                                 InputProps={{
-                                    inputProps: { min: 1, style: { textAlign: 'center' } }
+                                    inputProps: { min: 1, style: { textAlign: 'center', color: '#171717' } }
                                 }}
                             />
                             <Button variant="contained" color="secondary" onClick={() => handleRemoveItem(item.item_id)}>
@@ -113,7 +113,7 @@ const CartPage: React.FC = () => {
                         </Box>
                     ))}
                     <Box sx={{ mt: 4 }}>
-                        <Typography variant="h6" component="p" sx={{ textAlign: 'right' }}>
+                        <Typography variant="h6" component="p" sx={{ textAlign: 'right', color: '#171717' }}>
                             Total: R$ {cart?.price.toFixed(2)}
                         </Typography>
                         <Button

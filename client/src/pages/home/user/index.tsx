@@ -10,13 +10,14 @@ const images = [
 const UserHome = () => {
 
     return (
-    <div>
+      <div>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem'}}>
         <PhotoCarousel images={images} />
-        <h1>Produtos</h1>
+        <h1 style={{ fontSize: '2rem', color: 'white' }}>Produtos</h1>
         <ProductCarousel />
       </div>
     </div>
+  
   );
 };
 

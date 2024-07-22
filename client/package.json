@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/poppins": "^5.0.14",
@@ -29,6 +32,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.1.0",
     "@cucumber/cucumber": "^10.6.0",
     "@playwright/test": "^1.44.0",
     "@types/node": "^20",
@@ -36,6 +40,8 @@
     "@types/react-dom": "^18",
     "@types/react-slick": "^0.23.13",
     "autoprefixer": "^10.4.19",
+    "cypress": "^13.13.1",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "ts-node": "^10.9.2",
