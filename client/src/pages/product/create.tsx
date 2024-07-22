@@ -12,19 +12,6 @@ const CreateProductPage: React.FC = () => {
   return (
     <Container maxWidth="md">
       <Box mt={4}>
-        <Typography 
-          variant="h4" 
-          gutterBottom 
-          sx={{ 
-            backgroundColor: 'white', 
-            borderRadius: 2, // Adiciona curvas nas bordas
-            padding: 2, // Adiciona espaçamento interno
-            textAlign: 'center',// Centraliza o texto
-            fontWeight: 'bold' 
-          }}
-        >
-          Cadastrar Produto
-        </Typography>
         <ProductForm onSubmit={handleSubmit} />
       </Box>
     </Container>
