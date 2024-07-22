@@ -24,7 +24,17 @@ const useOrder = (): UseOrderInterface <Order> => {
         }
     };
     const createOrder = async (orderData: Order) => {
-        await handleApiCall(api.post<{ data: Order }>('/order', orderData));
+        const order = {
+            email: orderData.email,
+            item: orderData.item,
+            description: orderData.description,
+            qtd: orderData.qtd,
+            price: orderData.price,
+            status: orderData.status,
+            date: orderData.date,
+            addr: orderData.addr,
+        } 
+        await handleApiCall(api.post<{ data: Order }>('/order', order));
     };
 
     const updateOrder = async (orderId: string, orderData: Partial<Order>) => {

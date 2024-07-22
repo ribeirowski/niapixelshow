@@ -3,6 +3,8 @@ import { Box, Button, Container, Typography, Snackbar, Alert, TextField, FormCon
 import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks';
 import useCart, { CartItem } from '@/hooks/useCart';
+import useOrder from '@/hooks/useOrder';
+import useUser from '@/hooks/useUser';
 
 const CartPage: React.FC = () => {
     const router = useRouter();
@@ -10,12 +12,15 @@ const CartPage: React.FC = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
     const { authenticated, logout, user } = useAuth();
-    const { cart, cartItems, getAllCartItems, updateCartItem, deleteCartItem, loading, error, resetError } = useCart();
+    const { cart, cartItems, getAllCartItems, updateCartItem, deleteCartItem, deleteCart, loading, error, resetError } = useCart();
     const [userId, setUserId] = useState<string | null>(null);
+    const { createOrder } = useOrder();
+    const { userData, getUserById } = useUser();
 
     useEffect(() => {
         if (user && user.uid) {
             setUserId(user.uid);
+            getUserById(user.uid);
         }
     }, [user]);
 
@@ -32,6 +37,14 @@ const CartPage: React.FC = () => {
             setOpenSnackbar(true);
         }
     }, [error]);
+
+    const getDate = (): string => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Adiciona 1 porque os meses são indexados em 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
@@ -56,9 +69,29 @@ const CartPage: React.FC = () => {
         await getAllCartItems(userId!); 
     };
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         // Adicione a lógica de finalização do pedido aqui
+        cartItems.map(async (item) => {
+            const order = {
+                id: '',
+                email: userData?.email as string,
+                item: item.name,
+                description: item.description,
+                qtd: item.quantity,
+                price: item.price,
+                status: 'Aguardando Pagamento',
+                date: getDate(),
+                addr: userData?.address as string
+            };
+            createOrder(order);
+        });
+
+        setSnackbarMessage('Todos os pedidos foram realizados!');
+        setSnackbarSeverity('success');
+        setOpenSnackbar(true);
+        deleteCart(userId as string);
         console.log('Finalizar pedido');
+        router.push(`/payment/user`)
     };
 
     return (

@@ -41,7 +41,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         if (authenticated) {
-            router.push('/profile');
+            router.push('/');
         }
     }, [authenticated, router]);
 
@@ -135,7 +135,7 @@ const Login: React.FC = () => {
                     {isSubmitting || loading ? 'Logando...' : 'Login'}
                 </Button>
                 <Stack direction="row" justifyContent="center" alignItems="center" spacing={1} mt={3}>
-                    <Typography variant="body2" color="secondary">Não tem uma conta?</Typography>
+                    <Typography variant="body2" color="secondary.main">Não tem uma conta?</Typography>
                     <Link href="/sign-up" passHref>
                         <Typography variant="body2" color="primary" sx={{ fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>
                             Cadastre-se
