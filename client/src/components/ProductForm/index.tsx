@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, MenuItem, Select, InputLabel, FormControl, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/router';
-import { Product } from '@/hooks';
+import { Product, useProduct } from '@/hooks';
 
 const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean, productData?: Product }> = ({ onSubmit, edit = false, productData }) => {
   const [formData, setFormData] = useState<Product>( productData? productData: {
@@ -18,6 +18,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   const [page, setPage] = useState(0);
 
   const router = useRouter();
+  const {getProductById, deleteProduct } = useProduct();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
@@ -50,8 +51,10 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   };
 
   const handleDelete = () => {
-    console.log('Produto excluído!');
-    // Adicione a lógica para excluir o produto
+    const id = router.query.id
+    if (id && typeof id === "string") {
+      deleteProduct(id);
+    }
   };
 
   return (
@@ -167,7 +170,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
               <Button type="submit" variant="contained" color="success" sx={{ mr: 2, mt:20 }}>
                 Salvar Produto
               </Button>
-              <Button variant="contained" color="error" onClick={handleDelete} sx={{ mt:20 }}>
+              <Button type="button" variant="contained" color="error" onClick={handleDelete} sx={{ mt:20 }}>
                 Excluir Produto
               </Button>
             </Box>
