@@ -39,6 +39,9 @@ export const userSchema = z.object({
         .default(false),
 });
 
-export type UserSchema = z.infer<typeof userSchema>;
+export const UpdateUserSchema = userSchema.partial({
+    password: true // A senha agora é opcional para UpdateUserSchema
+});
 
-export const UpdateUser = userSchema.partial();
+export type UserSchema = z.infer<typeof userSchema>;
+export type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>;

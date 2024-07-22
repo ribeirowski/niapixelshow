@@ -7,6 +7,7 @@ import ProductCarousel from './ProductCarousel';
 import ProductCarouselAdmin from './ProductCarouselAdmin';
 import PhotoCarousel from './PhotoCarousel';
 import OrderTable from './OrderTable';
+import ConfirmationModal from './ConfirmPopUp';
 
 export { 
     Navbar,
@@ -17,6 +18,7 @@ export {
     withProtectedRoute,
     ProductCardAdmin,
     ProductCarouselAdmin,
-    OrderTable
+    OrderTable,
+    ConfirmationModal
 };
 
