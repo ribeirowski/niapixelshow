@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/router';
-import { Box, Button, Container, IconButton, TextField, Typography } from '@mui/material';
-import { userSchema, UserSchema } from '@/types';
+import { Box, Button, Container, IconButton, TextField, Typography, FormControlLabel, Checkbox } from '@mui/material';
+import { userSchemaWithoutPassword, userSchemaWithPassword, UpdateUserWithoutPasswordSchemaType, UpdateUserWithPasswordSchemaType } from '@/types';
 import useUser from '@/hooks/useUser';
 import { useAuth } from '@/hooks';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
+import { ConfirmationModal } from '@/components';
 
 const EditUser: React.FC = () => {
     const router = useRouter();
@@ -19,31 +19,43 @@ const EditUser: React.FC = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [changePassword, setChangePassword] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [modalAction, setModalAction] = useState<'delete' | 'save'>('save');
 
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
 
     const {
-        control,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
-    } = useForm<UserSchema>({
-        resolver: zodResolver(userSchema),
+        control: controlWithoutPassword,
+        handleSubmit: handleSubmitWithoutPassword,
+        formState: { errors: errorsWithoutPassword },
+        reset: resetWithoutPassword,
+    } = useForm<UpdateUserWithoutPasswordSchemaType>({
+        resolver: zodResolver(userSchemaWithoutPassword),
         defaultValues: {
-            name: userData?.name || '',
-            email: userData?.email || '',
-            phone: userData?.phone || '',
-            address: userData?.address || '',
-            password: '',
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
         }
     });
 
-    const [inputFocus, setInputFocus] = useState({
-        name: false,
-        phone: false,
-        address: false,
+    const {
+        control: controlWithPassword,
+        handleSubmit: handleSubmitWithPassword,
+        formState: { errors: errorsWithPassword },
+        reset: resetWithPassword,
+    } = useForm<UpdateUserWithPasswordSchemaType>({
+        resolver: zodResolver(userSchemaWithPassword),
+        defaultValues: {
+            name: '',
+            email: '',
+            phone: '',
+            address: '',
+            password: '',
+        }
     });
 
     useEffect(() => {
@@ -54,16 +66,22 @@ const EditUser: React.FC = () => {
 
     useEffect(() => {
         if (userData) {
-            reset({
-                ...userData,
-                password: ''
-            });
+            const defaultValues = {
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone || '',
+                address: userData.address || '',
+                password: '',
+            };
+            resetWithoutPassword(defaultValues);
+            resetWithPassword(defaultValues);
         }
-    }, [userData, reset]);
+    }, [userData, resetWithoutPassword, resetWithPassword]);
 
-    const onSubmit = async (data: UserSchema) => {
+    const onSubmit = async (data: UpdateUserWithoutPasswordSchemaType | UpdateUserWithPasswordSchemaType) => {
         setIsUpdating(true);
         try {
+            console.log('Submitting data:', data);
             await updateUser(id, data);
             router.push('/profile');
         } catch (error) {
@@ -71,9 +89,20 @@ const EditUser: React.FC = () => {
         }
         setIsUpdating(false);
     };
-    
+
     const handleDelete = async () => {
-        if (typeof id === 'string' && confirm('Tem certeza que deseja deletar este usuário?')) {
+        setModalAction('delete');
+        setOpenModal(true);
+    };
+
+    const handleSave = async (data: UpdateUserWithoutPasswordSchemaType | UpdateUserWithPasswordSchemaType) => {
+        setModalAction('save');
+        setOpenModal(true);
+    };
+
+    const handleConfirm = async () => {
+        setOpenModal(false);
+        if (modalAction === 'delete') {
             setIsDeleting(true);
             try {
                 await deleteUser(id);
@@ -82,37 +111,41 @@ const EditUser: React.FC = () => {
                 console.error('Error deleting user:', error);
             }
             setIsDeleting(false);
+        } else if (modalAction === 'save') {
+            if (changePassword) {
+                handleSubmitWithPassword(onSubmit)();
+            } else {
+                handleSubmitWithoutPassword(onSubmit)();
+            }
         }
     };
 
-    // Handle field focus changes
-    const handleFocus = (field: keyof typeof inputFocus) => {
-        setInputFocus(prev => ({ ...prev, [field]: true }));
-    };
+    const renderField = (name: string, label: string, placeholder: string, control: any, errors: FieldErrors<any>, type: string = "text") => (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+                <TextField
+                    {...field}
+                    label={label}
+                    placeholder={placeholder}
+                    type={type}
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors[name]}
+                />
+            )}
+        />
+    );
 
     return (
         <Container maxWidth="sm" sx={{ backgroundColor: 'background.paper', borderRadius: '1rem', py: 4, boxShadow: 3 }}>
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }}>
                 Editar Usuário
             </Typography>
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mx: 6 }}>
-                <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            onFocus={() => handleFocus('name')}
-                            label="Nome"
-                            placeholder='Digite seu novo nome'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.name}
-                            helperText={errors.name?.message}
-                        />
-                    )}
-                />
+            <Box component="form" onSubmit={handleSubmitWithoutPassword(handleSave)} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mx: 6 }}>
+                {renderField("name", "Nome", "Digite seu novo nome", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
                 <TextField
                     label="Email"
                     fullWidth
@@ -120,75 +153,56 @@ const EditUser: React.FC = () => {
                     InputLabelProps={{ shrink: !!userData?.email }}
                     disabled
                 />
-                <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            onFocus={() => handleFocus('phone')}
-                            label="Telefone"
-                            placeholder='Digite seu novo telefone'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.phone}
-                            helperText={errors.phone?.message}
-                        />
-                    )}
+                {renderField("phone", "Telefone", "Digite seu novo telefone", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
+                {renderField("address", "Endereço", "Digite seu novo endereço", changePassword ? controlWithPassword : controlWithoutPassword, changePassword ? errorsWithPassword : errorsWithoutPassword)}
+                <FormControlLabel
+                    control={<Checkbox checked={changePassword} onChange={(e) => setChangePassword(e.target.checked)} />}
+                    label="Alterar Senha"
+                    sx={{ color: 'secondary.main', '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }} // Adicionando estilo para diminuir o tamanho da fonte do label
                 />
-                <Controller
-                    name="address"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            onFocus={() => handleFocus('address')}
-                            label="Endereço"
-                            placeholder='Digite seu novo endereço'
-                            InputLabelProps={{ shrink: true }}
-                            variant="outlined"
-                            fullWidth
-                            error={!!errors.address}
-                            helperText={errors.address?.message}
-                        />
-                    )}
-                />
-                <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                        <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                            <TextField
-                                {...field}
-                                type={showPassword ? 'text' : 'password'}
-                                label="Senha"
-                                variant="outlined"
-                                placeholder="Digite sua nova senha"
-                                fullWidth
-                                error={!!errors.password}
-                                helperText={errors.password?.message}
-                                defaultValue="" // Garante que não há valor inicial
-                            />
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                sx={{ color: '#444444', position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </Box>
-                    )}
-                />
+                {changePassword && (
+                    <Controller
+                        name="password"
+                        control={controlWithPassword}
+                        render={({ field }) => (
+                            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <TextField
+                                    {...field}
+                                    type={showPassword ? 'text' : 'password'}
+                                    label="Senha"
+                                    variant="outlined"
+                                    placeholder="Digite sua nova senha"
+                                    fullWidth
+                                    error={!!errorsWithPassword.password}
+                                    helperText={errorsWithPassword.password?.message}
+                                />
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    sx={{ color: '#444444', position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </Box>
+                        )}
+                    />
+                )}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <Button type="button" onClick={handleDelete} variant="outlined" color="primary" sx={{ px: 4, py: 1 }} disabled={isDeleting}>
                         {isDeleting ? 'Deletando...' : 'Deletar'}
                     </Button>
                     <Button type="submit" variant="contained" color="primary" sx={{ px: 4, py: 1 }} disabled={isUpdating}>
-                        {isUpdating ? 'Confirmando...' : 'Confirmar'}
+                        {isUpdating ? 'Salvando...' : 'Salvar'}
                     </Button>
                 </Box>
             </Box>
+            <ConfirmationModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                onConfirm={handleConfirm}
+                title={modalAction === 'delete' ? 'Confirmar Exclusão' : 'Confirmar Salvar'}
+                description={modalAction === 'delete' ? 'Tem certeza de que deseja excluir este usuário?' : 'Tem certeza de que deseja salvar as alterações?'}
+            />
         </Container>
     );
 };
