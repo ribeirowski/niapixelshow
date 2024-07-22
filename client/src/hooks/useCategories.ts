@@ -48,10 +48,8 @@ const useCategories = (): UseCategoryInterface<Category> => {
 
     const updateCategory = useCallback(async (categoryName: string, categoryData: Partial<Category>) => {
         const response = await handleApiCall(api.put<{ data: Category }>(`/category/${categoryName}`, categoryData));
-        if (response) {
-            await getAllCategories(); // Atualiza a lista de categorias após a atualização
-            setCategoryData(response as Category); // Atualiza os dados da categoria
-        }
+        await getAllCategories(); // Atualiza a lista de categorias após a atualização
+        setCategoryData(response as Category); // Atualiza os dados da categoria
     }, [handleApiCall]);
 
     const getCategoryByName = useCallback(async (categoryName: string) => {

@@ -36,12 +36,13 @@ const CategoriesPage: React.FC = () => {
     };
 
     const handleUpdateCategory = async () => {
-        await updateCategory(editCategoryName, { description: editCategoryDescription });
+        await updateCategory(editCategoryName, { name: editCategoryName, description: editCategoryDescription });
         setEditCategoryName('');
         setEditCategoryDescription('');
-        setIsEditing(false); // esconder a tela de edição após atualizar a categoria
-        await getAllCategories(); // atualizar lista de categorias
+        setIsEditing(false); // Esconder a tela de edição após atualizar a categoria
+        await getAllCategories(); // Atualizar a lista de categorias
     };
+    
 
     const handleDeleteCategory = async (categoryName: string) => {
         await deleteCategory(categoryName);
