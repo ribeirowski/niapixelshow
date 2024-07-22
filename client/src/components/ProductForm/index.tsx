@@ -147,8 +147,8 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
               value={formData.status}
               onChange={handleChange}
             >
-              <MenuItem value={true}>Sim</MenuItem>
-              <MenuItem value={false}>Não</MenuItem>
+              <MenuItem component="option" value={"true"}>Sim</MenuItem>
+              <MenuItem component="option" value={"false"}>Não</MenuItem>
             </Select>
           </FormControl>
           <Box textAlign="center" mt={4}>
