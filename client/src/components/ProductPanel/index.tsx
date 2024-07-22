@@ -53,6 +53,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ ProductInfo, onAd
             value={selectedSize}
             onChange={handleSizeChange}
             label="Tamanho"
+            data-cy="size-select"
           >
             {['PP', 'P', 'M', 'G', 'GG'].map((size) => (
               <MenuItem key={size} value={size}>
@@ -66,6 +67,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ ProductInfo, onAd
             type="number"
             variant="outlined"
             size="small"
+            data-cy="quantity-input"
             value={quantity}
             onChange={handleQuantityChange}
             sx={{ width: 80, mr: 2 }}
@@ -74,6 +76,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ ProductInfo, onAd
           <Button
             variant="contained"
             color="primary"
+            data-cy="addCart"
             onClick={handleAddToCart}
             sx={{ width: '100%', py: 1, textAlign: 'center' }} // Aumenta o botão e centraliza o texto
           >
