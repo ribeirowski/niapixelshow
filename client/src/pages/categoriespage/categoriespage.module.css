@@ -1,3 +1,5 @@
+/* categoriespage.module.css */
+
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -22,8 +24,9 @@
     margin-bottom: 20px;
 }
 
-.createCategory, .categoryList {
+.categoryList {
     margin-top: 20px;
+    margin-bottom: 20px; 
     padding: 20px;
     border: 1px solid #000;
     border-radius: 8px;
@@ -51,17 +54,22 @@
 }
 
 .button {
-    background-color: #f00;
+    background-color: #f00; /* Cor de fundo padrão */
     color: #fff;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
+    transition: background-color 0.3s ease; /* Adiciona uma transição suave */
 }
 
 .button:hover {
-    background-color: #c00;
+    background-color: #c00; /* Cor de fundo ao passar o mouse */
+}
+
+.button:active {
+    background-color: #a00; /* Cor de fundo quando clicado */
 }
 
 .listItem {
