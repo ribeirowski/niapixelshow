@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import theme from "../../../../styles/theme";
 import { useRouter } from "next/router";
-import { useParams } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -46,7 +45,6 @@ const UpdatePromotion: React.FC = () => {
     defaultValues: {
       name: "",
       discount: 0,
-      //product_id: "",
       start_date: "",
       end_date: "",
     },
@@ -135,6 +133,7 @@ const UpdatePromotion: React.FC = () => {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="name-input"
                 />
               )}
             />
@@ -151,10 +150,11 @@ const UpdatePromotion: React.FC = () => {
                   helperText={errors.discount?.message}
                   sx={{ width: "20rem" }}
                   inputProps={{ min: 1, max: 100 }}
+                  data-cy="discount-input"
                 />
               )}
             />
-            {/* <Controller
+            <Controller
               name="product_id"
               control={control}
               render={({ field }) => (
@@ -166,6 +166,7 @@ const UpdatePromotion: React.FC = () => {
                   error={!!errors.product_id}
                   helperText={errors.product_id?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="product_id"
                 >
                   {products.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
@@ -174,7 +175,7 @@ const UpdatePromotion: React.FC = () => {
                   ))}
                 </TextField>
               )}
-            /> */}
+            />
             <Controller
               name="start_date"
               control={control}
@@ -186,6 +187,7 @@ const UpdatePromotion: React.FC = () => {
                   error={!!errors.start_date}
                   helperText={errors.start_date?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="start-date-input"
                 />
               )}
             />
@@ -200,6 +202,7 @@ const UpdatePromotion: React.FC = () => {
                   error={!!errors.end_date}
                   helperText={errors.end_date?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="end-date-input"
                 />
               )}
             />
@@ -212,6 +215,7 @@ const UpdatePromotion: React.FC = () => {
                   marginTop: "2rem",
                 }}
                 variant="contained"
+                data-cy="save-promotion"
               >
                 Atualizar
               </Button>

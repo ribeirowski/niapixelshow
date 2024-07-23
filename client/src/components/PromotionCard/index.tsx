@@ -64,6 +64,7 @@ const PromotionCard: React.FC<Props> = ({
       <CardActions>
         <Link href={`/admin/promotions/edit/${promotionId}`} passHref>
           <Button
+            data-cy={`id-edit-${promotionId}`}
             size="small"
             color="secondary"
             variant="contained"
@@ -77,6 +78,7 @@ const PromotionCard: React.FC<Props> = ({
           color="error"
           variant="contained"
           onClick={handleDelete}
+          data-cy={`id-delete-${promotionId}`}
         >
           Excluir
         </Button>

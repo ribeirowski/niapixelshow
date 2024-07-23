@@ -53,6 +53,7 @@ const PromotionCarousel: React.FC = () => {
       <Slider {...settings}>
         {filteredProducts.map((product) => (
           <PromotionCard
+            data-cy="edit-promotion"
             key={product.id} // Adicione a propriedade key aqui
             promotionId={product.promotionId}
             name={product.name}
