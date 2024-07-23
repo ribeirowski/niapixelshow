@@ -77,7 +77,7 @@ const CartPage: React.FC = () => {
                 item: item.name,
                 description: item.description,
                 qtd: item.quantity,
-                price: item.price,
+                price: item.price*item.quantity,
                 status: 'Aguardando Pagamento',
                 date: getDate(),
                 addr: userData?.address as string

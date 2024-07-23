@@ -55,9 +55,15 @@ const useOrder = (): UseOrderInterface<Order> => {
   };
 
   const getAllOrders = useCallback(async () => {
-    const response = await handleApiCall<{ data: Order[] }>(
-      api.get("/order/all")
-    );
+    var response
+    try{
+      response = await handleApiCall<{ data: Order[] }>(
+        api.get("/order/all")
+      );
+    }
+    catch{
+      response = []
+    }
     // @ts-ignore
     setOrders(response);
   }, []);
@@ -83,11 +89,16 @@ const useOrder = (): UseOrderInterface<Order> => {
 
   const filterOrders = useCallback(
     async (atribute: string, func: string, filter: string, email: string) => {
-      const response = await handleApiCall<{ data: Order[] }>(
-        api.get(
-          `/order/filter/${atribute}?func=${func}&filter=${filter}&email=${email}`
-        )
-      );
+      var response
+      try{
+        response = await handleApiCall<{ data: Order[] }>(
+          api.get(
+            `/order/filter/${atribute}?func=${func}&filter=${filter}&email=${email}`
+          )
+        );}
+        catch{
+          response = []
+        }
       // @ts-ignore
       setOrders(response);
     },
