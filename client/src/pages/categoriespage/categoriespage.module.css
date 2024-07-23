@@ -4,6 +4,7 @@
     padding: 20px;
     background-color: #fff;
     color: #333;
+    border-radius: 10px;
 }
 
 .header {
@@ -49,7 +50,7 @@
     border: 1px solid #000;
     border-radius: 8px; /* Reduz o raio do canto arredondado */
     font-size: 14px; /* Ajusta o tamanho da fonte */
-    padding: 8px; /* Diminui o padding para reduzir a altura */
+    padding: 6px; /* Diminui o padding para reduzir a altura */
 }
 
 .button {

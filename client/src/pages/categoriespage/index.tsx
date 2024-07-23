@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useCategories } from '../../hooks';
-import { Box, Button, Container, TextField, Typography, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';import styles from './categoriespage.module.css';
+import { Box, Button, Container, TextField, Typography, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBack';
+import styles from './categoriespage.module.css';
 
 const CategoriesPage: React.FC = () => {
     const {
@@ -93,10 +95,19 @@ const CategoriesPage: React.FC = () => {
         setSnackbarOpen(false);
     };
 
-    return (
+    const handleGoBack = () => {
+        window.history.back();
+      };      
+
+      return (
         <Container maxWidth="md" className={styles.container}>
-            <Box className={styles.header}>
-                <Typography variant="h4" component="h1">Gerenciamento de Categorias</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <IconButton onClick={handleGoBack}>
+                    <ArrowBackIosIcon sx={{ color: 'black' }}/>
+                </IconButton>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: '700', textAlign: 'center', color: 'text.secondary', flexGrow: 1 }}>
+                Gerenciamento de Categorias
+                </Typography>
             </Box>
 
             {loading && <Typography>Carregando...</Typography>}
@@ -114,13 +125,13 @@ const CategoriesPage: React.FC = () => {
                         <li className={styles.listItem} key={category.name}>
                             <Typography variant="h6">{category.name}</Typography>
                             <Typography>{category.description}</Typography>
-                            <Button variant="contained" color="primary" onClick={() => handleEditClick(category.name, category.description || '')}>Editar</Button>
-                            <Button variant="contained" color="secondary" sx={{ ml: 1, borderRadius: '10px' }} onClick={() => handleOpenDeleteDialog(category.name)}>Excluir</Button>
+                            <Button variant="contained" color="primary" onClick={() => handleEditClick(category.name, category.description || '')}data-cy = {`id-edit-${category.name}`}>Editar</Button>
+                            <Button variant="contained" color="secondary" sx={{ ml: 1, borderRadius: '10px' }} onClick={() => handleOpenDeleteDialog(category.name)}data-cy = {`id-delete-${category.name}`}>Excluir</Button> 
                         </li>
                     ))}
                 </ul>
             </Box>
-            
+
             <Box className={styles.createCategory}>
                 <Button variant="contained" color="primary" onClick={() => setIsCreating(!isCreating)}>
                     {isCreating ? 'Cancelar' : 'Criar Categoria'}
@@ -129,6 +140,7 @@ const CategoriesPage: React.FC = () => {
                     <Box className={styles.createForm}>
                         <Typography variant="h6" component="h2">Nova Categoria</Typography>
                         <TextField
+                            name="Nome da Categoria"
                             className={styles.inputField}
                             type="text"
                             value={newCategoryName}
@@ -137,10 +149,10 @@ const CategoriesPage: React.FC = () => {
                             variant="outlined"
                             fullWidth
                             InputLabelProps={{
-                                style: { paddingLeft: '10px', paddingRight: '10px', background: '#fff' }
+                                style: { paddingLeft: '4px', paddingRight: '4px', background: '#fff' }
                             }}
                             InputProps={{
-                                style: { padding: '12px' }
+                                style: { padding: '2px' }
                             }}
                         />
                         <TextField
@@ -152,10 +164,10 @@ const CategoriesPage: React.FC = () => {
                             variant="outlined"
                             fullWidth
                             InputLabelProps={{
-                                style: { paddingLeft: '10px', paddingRight: '10px', background: '#fff' }
+                                style: { paddingLeft: '4px', paddingRight: '4px', background: '#fff' }
                             }}
                             InputProps={{
-                                style: { padding: '12px' }
+                                style: { padding: '2px' }
                             }}
                         />
                         <Button variant="contained" color="primary" onClick={handleCreateCategory}>
@@ -169,16 +181,17 @@ const CategoriesPage: React.FC = () => {
                 <Box className={styles.editCategory}>
                     <Typography variant="h6" component="h2" className={styles.editHeader}>Editar Categoria</Typography>
                     <TextField
+                        name="Nome da Categoria Novo"
                         className={styles.inputField}
                         label="Nome da Categoria"
                         value={editCategoryName}
                         onChange={(e) => setEditCategoryName(e.target.value)}
                         fullWidth
                         InputLabelProps={{
-                            style: { paddingLeft: '10px', paddingRight: '10px', background: '#fff' } 
+                            style: { paddingLeft: '4px', paddingRight: '4px', background: '#fff' } 
                         }}
                         InputProps={{
-                            style: { padding: '12px' }
+                            style: { padding: '2px' }
                         }}
                     />
                     <TextField
@@ -188,10 +201,10 @@ const CategoriesPage: React.FC = () => {
                         onChange={(e) => setEditCategoryDescription(e.target.value)}
                         fullWidth
                         InputLabelProps={{
-                            style: { paddingLeft: '10px', paddingRight: '10px', background: '#fff' }
+                            style: { paddingLeft: '4px', paddingRight: '4px', background: '#fff' }
                         }}
                         InputProps={{
-                            style: { padding: '12px' }
+                            style: { padding: '2px' }
                         }}
                     />
                     <Button variant="contained" color="primary" onClick={handleUpdateCategory}>
@@ -219,7 +232,7 @@ const CategoriesPage: React.FC = () => {
                     <Button onClick={handleCloseDeleteDialog} color="primary" sx={{ borderRadius: '10px' }}>
                         Cancelar
                     </Button>
-                    <Button onClick={handleConfirmDelete} color="secondary" variant="contained" autoFocus sx={{ borderRadius: '10px' }}>
+                    <Button onClick={handleConfirmDelete} data-cy = "tag" color="secondary" variant="contained" autoFocus sx={{ borderRadius: '10px' }}>
                         Excluir
                     </Button>
                 </DialogActions>
