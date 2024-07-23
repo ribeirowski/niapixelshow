@@ -9,10 +9,9 @@ Given('que estou logado como {string}, com senha {string}', (username, password)
   cy.get('button[type="submit"]').click();
 });
 
-
-When('eu acessar a página {string}', (page) => {
-  cy.visit('/product/create');
-});
+Given('que estou na página {string}', (page) => {
+    cy.visit(`/${page}`);
+  });
 
 When('preencher os campos nome {string}, descrição {string}, preço {string}, status {string} e categoria {string}', (name: string, description: string, price: string, status: string, category: string) => {
   cy.get('input[name="name"]').type(name);
@@ -35,7 +34,7 @@ Then('eu devo ver uma mensagem de confirmação {string}', (message) => {
   cy.get('.MuiAlert-message').should('contain', message);
 });
 
-Then('o novo produto com nome {string}, descrição {string}, preço {string}, status {string} e categoria {string} deve aparecer na lista de produtos cadastrados', (name, description, price, status, category) => {
+Then('o novo produto com nome {string}, descrição {string}, preço {string}, status {string} e categoria {string} deve aparecer na lista de produtos cadastrados', (name:string, description:string, price:string, status:string, category:string) => {
   cy.visit('/product'); // Ajustar a URL se necessário
   cy.contains(name).should('be.visible');
   cy.contains(description).should('be.visible');
@@ -43,3 +42,25 @@ Then('o novo produto com nome {string}, descrição {string}, preço {string}, s
   cy.contains(status === 'Sim' ? 'true' : 'false').should('be.visible');
   cy.contains(category).should('be.visible');
 });
+
+  Given('que eu tenho um produto cadastrado', () => {
+    cy.request('/product') // Ajustar o endpoint conforme necessário
+      .its('body')
+      .then((products) => {
+        if (products.length > 0) {
+          const product = products[0]; // Pega o primeiro produto da lista
+          cy.wrap(product).as('product');
+        } else {
+          throw new Error('Nenhum produto encontrado.');
+        }
+      });
+  });
+
+  When('clicar na opção {string} do produto com nome {string}', (option:string, productName:string) => {
+    cy.contains(productName).parents('div[id="product-card"]').find('button').contains(option).click();
+  });
+
+    When('alterar os campos nome para {string} e preço para {string}', (name:string, price:string) =>{
+            cy.get('input[name="name"]').clear().type(name);
+            cy.get('input[name="price"]').clear().type(price);
+    });

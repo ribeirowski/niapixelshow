@@ -28,7 +28,7 @@ const ProductCardAdmin: React.FC<Props> = ({ name, price, discount, image, id, o
       };
 
     return(
-        <div style={{display:'flex', flexDirection:'column', gap:'1rem', alignItems:'center'}}>
+        <div id="product-card" style={{display:'flex', flexDirection:'column', gap:'1rem', alignItems:'center'}}>
             <ProductCard
             name={name}
             price={price}
@@ -37,8 +37,7 @@ const ProductCardAdmin: React.FC<Props> = ({ name, price, discount, image, id, o
             onClick={onClick}
             />
             <Link href={"/product/edit?id="+id} passHref>
-            <Button variant="contained" 
-        
+            <Button variant="contained"
         sx={{ backgroundColor:"black", display: 'block', margin: '10px auto'}} // Centering the button
       >
                 EDITAR PRODUTO
