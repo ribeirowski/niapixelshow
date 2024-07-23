@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
         }
     };
     const handleAdmin = () => {
-        router.push('/home/admin');
+        router.push('/admin');
         handleClose();
     }
 
@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
             <Container maxWidth='lg'>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="h6" noWrap component="div" sx={{ color: '#EDEDED', fontWeight: '700' }}>
-                        Nia Pixel Show
+                        niapixelshow
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
                         <Tabs value={value} onChange={handleChange} sx={{
@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
                         </Tabs>
                     </Box>
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart}>
+                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart} data-cy="cart-icon">
                             <ShoppingCartIcon />
 
                         </IconButton>

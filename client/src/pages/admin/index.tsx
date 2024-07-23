@@ -13,7 +13,7 @@ const AdminHome = () => {
   }, [getAllOrders]);
 
   const handlePromotion = () => {
-    router.push("/home/admin/promotions");
+    router.push("/admin/promotions");
   };
   const handleProduct = () => {
     router.push("/product");
@@ -78,6 +78,7 @@ const AdminHome = () => {
             fontWeight: 800,
           }}
           variant="contained"
+          onClick={handlePromotion}
         >
           Promoções
         </Button>

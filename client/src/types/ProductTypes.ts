@@ -27,3 +27,5 @@ export const Product = z.object({
   promotionId: z.string().optional(),
   image: z.string().optional(),
 });
+
+export type ProductSchemaType = z.infer<typeof Product>;
