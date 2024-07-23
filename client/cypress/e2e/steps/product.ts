@@ -1,5 +1,15 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
+Given('que estou deslogado', () => {
+  cy.visit("/product");
+  cy.get('body').then(($body) => {
+      cy.get('button[aria-label="account"]').click();
+      if ($body.find('button:contains("Logout")').length) {
+        cy.contains("Logout").click();
+      } 
+  });
+});
+
 Given('que estou logado como {string}, com senha {string}', (username, password) => {
   cy.intercept('POST', '/auth/login').as('loginRequest');
   cy.visit('/sign-in');

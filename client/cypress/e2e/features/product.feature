@@ -44,3 +44,11 @@ Scenario: Cadastrar um novo produto com campo não preenchido
   And seleciono a opção "PRÓXIMO"
   And seleciono a opção "Cadastrar Produto"
   Then eu devo ver uma mensagem de erro "Por favor, preencha todos os campos obrigatórios."
+
+Scenario: Cadastrar um novo produto sem estar logado
+  Given que estou deslogado
+  Given que estou na página "product/create"
+  When preencher os campos nome "Camisa Nova", descrição "Algodão", preço "50", status "Sim" e categoria "Camisa"
+  And seleciono a opção "PRÓXIMO"
+  And seleciono a opção "Cadastrar Produto"
+  Then eu devo ver uma mensagem de confirmação "Não foi possível cadastrar o produto!"
