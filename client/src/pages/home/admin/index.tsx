@@ -78,6 +78,7 @@ const AdminHome = () => {
             fontWeight: 800,
           }}
           variant="contained"
+          onClick={handlePromotion}
         >
           Promoções
         </Button>

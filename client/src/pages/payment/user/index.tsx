@@ -11,7 +11,7 @@ const PaymentPage = () => {
     const [paymentCode] = useState<string>('00020101021126430014br.gov.bcb.pix0121nathyre2002@gmail.com5204000053039865802BR5923NATHALIA REZENDE COELHO6007ARACAJU62070503***6304A3A7'); // Substitua pelo código real
 
     const handleBack = () => {
-        router.back();
+        router.push('/home/user');
     };
 
     if (loading) {

@@ -34,7 +34,6 @@ const ProductCarousel: React.FC = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const router = useRouter();
 
-
   useEffect(() => {
     if (user && user.uid) {
         setUserId(user.uid);
@@ -73,14 +72,14 @@ const ProductCarousel: React.FC = () => {
   };
 
   const handleAddToCart = (quantity: number, size: string) => {
-    selectedProduct!.quantity = quantity;
-    selectedProduct!.size = size;
-    if (userId && selectedProduct) {
-      createCartItem(userId, selectedProduct);
-      setOpenSnackbar(true);
-    }
-    else {
-      router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
+    if (selectedProduct) {
+      const updatedProduct = { ...selectedProduct, quantity, size };
+      if (userId) {
+        createCartItem(userId, updatedProduct);
+        setOpenSnackbar(true);
+      } else {
+        router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
+      }
     }
   };
 
@@ -94,6 +93,10 @@ const ProductCarousel: React.FC = () => {
 
   if (error) {
     return <p>Ocorreu um erro: {error}</p>;
+  }
+
+  if (!loading && products.length === 0) {
+    return <p>Nenhum produto disponível</p>;
   }
 
   const settings = {
@@ -127,9 +130,7 @@ const ProductCarousel: React.FC = () => {
         {products.map((product) => (
           <ProductCard
             key={product.id}
-            name={product.name}
-            price={product.price}
-            image={product.image}
+            product={product}
             onClick={() => handleProductClick(product)}
             dataCy={`product-card-${product.name}`}
           />
