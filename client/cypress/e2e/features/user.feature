@@ -1,7 +1,7 @@
 Feature: Usuário
 
     Scenario: Usuário se cadastra no e-commerce
-    Given o usuário está na página de "Cadastro do Usuário" e insere os dados nome "Enio Henrick", e-mail "eniohenrick.17@gmail.com", telefone "81999999999", endereço "rua das uvas, 12" e senha "12345678"
+    Given o usuário está na página de "Cadastro do Usuário" e insere os dados nome "Enio Henrick", e-mail "eniohenrick.20@gmail.com", telefone "81999999999", endereço "rua das uvas, 12" e senha "12345678"
     When ele aperta o botão1 "Cadastrar"
     Then ele pode ver a mensagem de confirmação de cadastro "Usuário criado com sucesso!"
 
