@@ -75,6 +75,7 @@ Given ('ele tem um pedido no carrinho com uma camisa {string} de tamanho {string
     cy.get('[data-cy="size-select"]').click();
     cy.contains('li', size).click();
     cy.get('[data-cy="addCart"]').click();
+    cy.get('[data-cy="addCart"]').click();
     cy.get('[data-cy="close-modal').click();
     cy.get('[data-cy="cart-icon"]').click();
 });
