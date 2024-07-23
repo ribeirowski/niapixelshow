@@ -67,8 +67,10 @@ Given('que eu tenho um produto cadastrado', () => {
 });
 
 When('clicar na opção {string} do produto com nome {string}', (option, productName) => {
-  cy.contains(productName).parents('div[id="product-card"]').find('button').contains(option).click();
+  cy.contains(productName).parents('div[id="product-card"]').find('button').contains(option).click({ force: true });
+  cy.wait(5000);
 });
+
 
 When('alterar os campos nome para {string} e preço para {string}', (name:string, price:string) => {
   if (name != "") {
