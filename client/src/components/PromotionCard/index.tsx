@@ -1,5 +1,12 @@
 import React from "react";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { usePromotion } from "@/hooks";
 import { useRouter } from "next/router";
@@ -9,7 +16,7 @@ interface Props {
   price: number;
   discount?: number;
   image?: string;
-  id?: string;
+  promotionId?: string; // Updated from id to promotionId
   onClick: () => void;
 }
 
@@ -18,66 +25,66 @@ const PromotionCard: React.FC<Props> = ({
   price,
   discount,
   image,
-  id,
+  promotionId,
   onClick,
 }) => {
   const router = useRouter();
+  const { deletePromotion, promotionData } = usePromotion();
 
-  const { deletePromotion } = usePromotion();
   const handleDelete = () => {
-    if (id && typeof id === "string") {
-      deletePromotion(id).then(() => {
+    if (promotionId) {
+      deletePromotion(promotionId).then(() => {
         router.reload();
       });
     }
   };
 
+  const handleEdit = () => {
+    router.push(`/admin/promotions/edit/${promotionId}`);
+  };
+
   return (
-    <div
-      id="promotion-card"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "1rem",
-          borderRadius: "8px",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
-        <h3>{name}</h3>
-        <p>Preço: {price}</p>
-        {discount && <p>Desconto: {discount}%</p>}
-        {image && <img src={image} alt={name} style={{ width: "100%" }} />}
-        <Button onClick={onClick}>Ver detalhes</Button>
-      </div>
-      <Link href={"/promotion/edit?id=" + id} passHref>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "black",
-            display: "block",
-            margin: "10px auto",
-          }} // Centering the button
-        >
-          EDITAR PROMOÇÃO
+    <Card sx={{ maxWidth: 345 }}>
+      {image && (
+        <CardMedia component="img" height="140" image={image} alt={name} />
+      )}
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+          {name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Preço: R${price.toFixed(2)}
+        </Typography>
+        {discount && (
+          <Typography variant="body2" color="text.secondary">
+            Desconto: {discount}%
+          </Typography>
+        )}
+      </CardContent>
+      <CardActions>
+        <Button size="small" color="primary" onClick={onClick}>
+          Ver detalhes
         </Button>
-      </Link>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleDelete}
-        sx={{ display: "block" }}
-      >
-        EXCLUIR PROMOÇÃO
-      </Button>
-    </div>
+        <Link href={`/admin/promotions/edit/${promotionId}`} passHref>
+          <Button
+            size="small"
+            color="secondary"
+            variant="contained"
+            onClick={handleEdit}
+          >
+            Editar
+          </Button>
+        </Link>
+        <Button
+          size="small"
+          color="error"
+          variant="contained"
+          onClick={handleDelete}
+        >
+          Excluir
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

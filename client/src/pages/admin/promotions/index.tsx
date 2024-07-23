@@ -7,7 +7,7 @@ const Promotions = () => {
   const router = useRouter();
 
   const handleCreatePromotion = () => {
-    router.push("/promotions/create");
+    router.push("/admin/promotions/create");
   };
 
   return (

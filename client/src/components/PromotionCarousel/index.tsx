@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick-theme.css";
 import React, { useEffect } from "react";
 import Slider from "react-slick";
 import { Box } from "@mui/material";
-import ProductCard from "../ProductCardAdmin";
+import PromotionCard from "../PromotionCard";
 import useProduct from "@/hooks/useProduct";
 
 const PromotionCarousel: React.FC = () => {
@@ -23,11 +23,10 @@ const PromotionCarousel: React.FC = () => {
 
   // Filtra os produtos onde promotionId é diferente de null
   const filteredProducts = products.filter((product) => product.promotionId !== null && product.promotionId !== undefined && product.promotionId !== "");
-
   const settings = {
     infinite: filteredProducts.length > 1,
     speed: 500,
-    slidesToShow: length > 1 ? 5 : filteredProducts.length,
+    slidesToShow: (filteredProducts.length > 1) ? 2 : filteredProducts.length,
     slidesToScroll: 1,
     responsive: [
       {
@@ -53,9 +52,9 @@ const PromotionCarousel: React.FC = () => {
     <Box sx={{ maxWidth: "100%" }}>
       <Slider {...settings}>
         {filteredProducts.map((product) => (
-          <ProductCard
+          <PromotionCard
             key={product.id} // Adicione a propriedade key aqui
-            id={product.id}
+            promotionId={product.promotionId}
             name={product.name}
             price={product.price}
             //discount={product.discount}
