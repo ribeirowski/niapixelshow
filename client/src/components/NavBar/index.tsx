@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
             <Container maxWidth='lg'>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography variant="h6" noWrap component="div" sx={{ color: '#EDEDED', fontWeight: '700' }}>
-                        Nia Pixel Show
+                        niapixelshow
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
                         <Tabs value={value} onChange={handleChange} sx={{

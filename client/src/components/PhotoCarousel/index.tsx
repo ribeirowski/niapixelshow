@@ -13,6 +13,7 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ images }) => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    adaptiveHeight: true,  // Adiciona essa linha
   };
 
   return (
@@ -23,7 +24,12 @@ const PhotoCarousel: React.FC<PhotoCarouselProps> = ({ images }) => {
             <img
               src={typeof image === "string" ? image : image.src}
               alt={`Slide ${index}`}
-              style={{ width: "100%", height: "20rem", borderRadius: "0.5rem" }}
+              style={{
+                width: "100%",
+                height: "20rem",  // Ajusta a altura conforme necessário
+                objectFit: "cover",  // Garante que a imagem cubra o espaço sem repetição
+                borderRadius: "0.5rem"
+              }}
             />
           </Box>
         ))}
