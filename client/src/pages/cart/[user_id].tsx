@@ -105,7 +105,7 @@ const CartPage: React.FC = () => {
             ) : (
                 <Box>
                     {cartItems.map((item) => (
-                        <Box key={item.item_id} sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                        <Box key={item.item_id} sx={{ display: 'flex', alignItems: 'center', mb: 3 }} data-cy={`product-box-${item.name}`}>
                             <Box component="img" src={item.image} alt={item.name} sx={{ width: 100, height: 100, borderRadius: 1, mr: 2 }} />
                             <Box sx={{ flexGrow: 1 }}>
                                 <Typography variant="h6" component="p" sx={{ color: '#171717' }}>{item.name}</Typography>
@@ -120,6 +120,7 @@ const CartPage: React.FC = () => {
                                     label="Tamanho"
                                     onChange={(e: SelectChangeEvent<string>) => handleSizeChange(item, e.target.value as string)}
                                     sx={{ color: '#171717' }}
+                                    data-cy = {`size-select-${item.name}`}
                                 >
                                     {['PP', 'P', 'M', 'G', 'GG'].map((size) => (
                                         <MenuItem key={size} value={size} sx={{ color: '#171717' }}>
@@ -139,8 +140,9 @@ const CartPage: React.FC = () => {
                                 InputProps={{
                                     inputProps: { min: 1, style: { textAlign: 'center', color: '#171717' } }
                                 }}
+                                data-cy={`quantity-input-${item.name}`}
                             />
-                            <Button variant="contained" color="secondary" onClick={() => handleRemoveItem(item.item_id)}>
+                            <Button variant="contained" color="secondary" onClick={() => handleRemoveItem(item.item_id)} data-cy={`remove-box-${item.name}`}>
                                 Remover
                             </Button>
                         </Box>
