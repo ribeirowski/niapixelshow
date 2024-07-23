@@ -11,7 +11,7 @@ beforeEach(() => {
 })
 
 Given("o usuário está na pagina dashboard", function () {
-    cy.visit('/home/admin');
+    cy.visit('/admin');
 });
 
 When('clica no botão \"Estatísticas\"', () => {
@@ -52,6 +52,6 @@ When('clica no botão "Reset"', () => {
     cy.get('#resetButton').click({force: true});
 });
 
-Then("a tabela de produtos tem produtos totais", function () {
+Then("a tabela de produtos agora tem produtos totais", function () {
     cy.get('#tableText').should('have.text', 'Estatísticas de produtos - Total');
 });
