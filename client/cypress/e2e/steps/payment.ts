@@ -10,7 +10,7 @@ Given('eu estou logado com email {string} e senha {string}', ( email: string, pa
 });
 
 Given('eu adicionei o produto {string} de tamanho {string} e quantidade {string} ao carrinho', (product: string, size: string, quantity: string) => {
-    cy.get('[data-cy="product-card-'+product+'"]').first().click()
+    cy.get('[data-cy="product-card-'+product+'"]').first().click({force: true})
     cy.get('[data-cy="quantity-input"]').clear().type(`${quantity}`);
     cy.get('[data-cy="size-select"]').click();
     cy.contains('li', size).click();
