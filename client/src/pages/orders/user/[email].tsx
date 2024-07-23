@@ -61,11 +61,12 @@ const OrderDetails: React.FC = () => {
           <FormControl fullWidth>
             <InputLabel>Função</InputLabel>
             <Select
+              data-cy="func"
               value={func}
               onChange={(e) => setFunc(e.target.value)}
               label="Função"
             >
-              <MenuItem value="Igual a">Igual a</MenuItem>
+              <MenuItem id="same" value="Igual a">Igual a</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -76,13 +77,14 @@ const OrderDetails: React.FC = () => {
           <FormControl fullWidth>
             <InputLabel>Função</InputLabel>
             <Select
+              data-cy="func"
               value={func}
               onChange={(e) => setFunc(e.target.value)}
               label="Função"
             >
-              <MenuItem value="Igual a">Igual a</MenuItem>
-              <MenuItem value="Acima de">Antes de</MenuItem>
-              <MenuItem value="Abaixo de">Depois de</MenuItem>
+              <MenuItem id="same" value="Igual a">Igual a</MenuItem>
+              <MenuItem id="high" value="Acima de">Antes de</MenuItem>
+              <MenuItem id="low" value="Abaixo de">Depois de</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -93,13 +95,14 @@ const OrderDetails: React.FC = () => {
           <FormControl fullWidth>
             <InputLabel>Função</InputLabel>
             <Select
+              data-cy="func"
               value={func}
               onChange={(e) => setFunc(e.target.value)}
               label="Função"
             >
-              <MenuItem value="Igual a">Igual a</MenuItem>
-              <MenuItem value="Acima de">Maior que</MenuItem>
-              <MenuItem value="Abaixo de">Menor que</MenuItem>
+              <MenuItem id="same" value="Igual a">Igual a</MenuItem>
+              <MenuItem id="high" value="Acima de">Maior que</MenuItem>
+              <MenuItem id="low" value="Abaixo de">Menor que</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -115,6 +118,7 @@ const OrderDetails: React.FC = () => {
           <FormControl fullWidth>
             <InputLabel>Status</InputLabel>
             <Select
+              data-cy="value"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               label="Status"
@@ -132,6 +136,7 @@ const OrderDetails: React.FC = () => {
       return (
         <Grid item xs={12} md={4}>
           <TextField
+            data-cy="value"
             label={atribute === "date" ? "YYYY-MM-DD" : "Preço"}
             variant="outlined"
             fullWidth
@@ -144,6 +149,7 @@ const OrderDetails: React.FC = () => {
       return (
         <Grid item xs={12} md={4}>
           <TextField
+            data-cy="value"
             label="Nome do Produto"
             variant="outlined"
             fullWidth
@@ -185,14 +191,15 @@ const OrderDetails: React.FC = () => {
           <FormControl fullWidth>
             <InputLabel>Atributo</InputLabel>
             <Select
+              data-cy="atribute"
               value={atribute}
               onChange={(e) => setAtribute(e.target.value)}
               label="Atributo"
             >
-              <MenuItem value="status">Status</MenuItem>
-              <MenuItem value="date">Data</MenuItem>
-              <MenuItem value="item">Nome do Produto</MenuItem>
-              <MenuItem value="price">Preço</MenuItem>
+              <MenuItem id="stat" value="status">Status</MenuItem>
+              <MenuItem id="date" value="date">Data</MenuItem>
+              <MenuItem id="name" value="item">Nome do Produto</MenuItem>
+              <MenuItem id="price" value="price">Preço</MenuItem>
             </Select>
           </FormControl>
         </Grid>

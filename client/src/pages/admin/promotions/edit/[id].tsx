@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import theme from "../../../../../styles/theme";
+import theme from "../../../../styles/theme";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -22,23 +22,39 @@ import { promotionSchema } from "@/types";
 
 type PromotionFormInputs = z.infer<typeof promotionSchema>;
 
-const CreatePromotion: React.FC = () => {
-  const { createPromotion } = usePromotion();
+const UpdatePromotion: React.FC = () => {
+  const router = useRouter();
+  const { updatePromotion, getPromotionById, promotionData } = usePromotion();
   const { products, getAllProducts } = useProduct();
+  const { id } = router.query;
 
   useEffect(() => {
     getAllProducts();
-  }, []);
-
-  const router = useRouter();
+    if (id) {
+      getPromotionById(id as string);
+    }
+  }, [getPromotionById, id, getAllProducts]);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<PromotionFormInputs>({
     resolver: zodResolver(promotionSchema),
+    defaultValues: {
+      name: "",
+      discount: 0,
+      start_date: "",
+      end_date: "",
+    },
   });
+
+  useEffect(() => {
+    if (promotionData) {
+      reset(promotionData);
+    }
+  }, [promotionData, reset]);
 
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<PromotionFormInputs | null>(null);
@@ -54,18 +70,17 @@ const CreatePromotion: React.FC = () => {
   };
 
   const handleConfirm = async () => {
-    if (formData) {
+    if (formData && id) {
       try {
-        // Formatted data is already in the correct format since dates are strings
         const formattedData = {
           ...formData,
         };
 
         console.log("Formatted Data: ", formattedData);
-        await createPromotion(formattedData);
-        console.log("Promoção cadastrada com sucesso!");
+        await updatePromotion(id as string, formattedData);
+        console.log("Promoção atualizada com sucesso!");
         setOpen(false);
-        router.push("/home/admin/promotions");
+        router.push("/admin/promotions");
       } catch (error) {
         console.error(error);
       }
@@ -95,7 +110,9 @@ const CreatePromotion: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <h2 style={{ color: "#121212", margin: "1.5rem" }}>CRIAR PROMOÇÃO</h2>
+          <h2 style={{ color: "#121212", margin: "1.5rem" }}>
+            ATUALIZAR PROMOÇÃO
+          </h2>
           <form
             onSubmit={handleSubmit(onSubmit)}
             style={{
@@ -108,7 +125,6 @@ const CreatePromotion: React.FC = () => {
             <Controller
               name="name"
               control={control}
-              defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -117,6 +133,7 @@ const CreatePromotion: React.FC = () => {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="name-input"
                 />
               )}
             />
@@ -133,13 +150,13 @@ const CreatePromotion: React.FC = () => {
                   helperText={errors.discount?.message}
                   sx={{ width: "20rem" }}
                   inputProps={{ min: 1, max: 100 }}
+                  data-cy="discount-input"
                 />
               )}
             />
             <Controller
               name="product_id"
               control={control}
-              defaultValue=""
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -149,6 +166,7 @@ const CreatePromotion: React.FC = () => {
                   error={!!errors.product_id}
                   helperText={errors.product_id?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="product_id"
                 >
                   {products.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
@@ -169,6 +187,7 @@ const CreatePromotion: React.FC = () => {
                   error={!!errors.start_date}
                   helperText={errors.start_date?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="start-date-input"
                 />
               )}
             />
@@ -183,6 +202,7 @@ const CreatePromotion: React.FC = () => {
                   error={!!errors.end_date}
                   helperText={errors.end_date?.message}
                   sx={{ width: "20rem" }}
+                  data-cy="end-date-input"
                 />
               )}
             />
@@ -195,8 +215,9 @@ const CreatePromotion: React.FC = () => {
                   marginTop: "2rem",
                 }}
                 variant="contained"
+                data-cy="save-promotion"
               >
-                Cadastrar
+                Atualizar
               </Button>
             </ThemeProvider>
           </form>
@@ -207,14 +228,14 @@ const CreatePromotion: React.FC = () => {
           <DialogTitle>Confirmação</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Você tem certeza de que deseja cadastrar essa promoção?
+              Você tem certeza de que deseja atualizar essa promoção?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
               Cancelar
             </Button>
-            <Button onClick={handleConfirm} color="primary" autoFocus>
+            <Button color="primary" autoFocus onClick={handleConfirm}>
               Confirmar
             </Button>
           </DialogActions>
@@ -224,4 +245,4 @@ const CreatePromotion: React.FC = () => {
   );
 };
 
-export default CreatePromotion;
+export default UpdatePromotion;
