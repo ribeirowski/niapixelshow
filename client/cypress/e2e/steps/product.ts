@@ -60,7 +60,11 @@ Then('o novo produto com nome {string}, descrição {string}, preço {string}, s
     cy.contains(productName).parents('div[id="product-card"]').find('button').contains(option).click();
   });
 
-    When('alterar os campos nome para {string} e preço para {string}', (name:string, price:string) =>{
+  When('alterar os campos nome para {string} e preço para {string}', (name:string, price:string) =>{
             cy.get('input[name="name"]').clear().type(name);
             cy.get('input[name="price"]').clear().type(price);
     });
+
+  Then('o novo produto com nome {string} deve desaparecer na lista de produtos cadastrados', (name:string, description:string, price:string, status:string, category:string) => {
+        cy.visit('/product'); // Ajustar a URL se necessário
+      });
