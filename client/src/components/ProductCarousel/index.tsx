@@ -149,6 +149,7 @@ const ProductCarousel: React.FC = () => {
                 onAddToCart={handleAddToCart}
               />
               <Button
+                name={'Fechar'}
                 onClick={handleCloseModal}
                 sx={{ 
                   position: 'absolute', 

@@ -150,6 +150,7 @@ const CartPage: React.FC = () => {
                             Total: R$ {cart?.price.toFixed(2)}
                         </Typography>
                         <Button
+                            name={'finalizar_pedido'}
                             variant="contained"
                             color="primary"
                             onClick={handleCheckout}
