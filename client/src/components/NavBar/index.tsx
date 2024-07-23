@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
                         </Tabs>
                     </Box>
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart}>
+                        <IconButton aria-label="cart" sx={{ color: '#EDEDED' }} onClick={handleCart} data-cy="cart-icon">
                             <ShoppingCartIcon />
 
                         </IconButton>

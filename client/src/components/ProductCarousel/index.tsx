@@ -160,6 +160,7 @@ const ProductCarousel: React.FC = () => {
                     backgroundColor: 'darkred',
                   },
                 }}
+                data-cy="close-modal"
               >
                 Fechar
               </Button>
