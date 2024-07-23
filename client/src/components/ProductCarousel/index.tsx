@@ -1,13 +1,14 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { Box, Modal, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { Box, Modal, Button, Snackbar, Alert } from '@mui/material';
 import ProductCard from '../ProductCard';
 import useProduct from '@/hooks/useProduct';
 import ProductDetailCard from '../ProductPanel';
 import { useAuth } from '@/hooks';
 import useCart, { CartItem } from '@/hooks/useCart';
+import { usePromotion } from '@/hooks';
 
 interface ProductItem {
   image?: string;
@@ -21,26 +22,47 @@ interface ProductItem {
     description?: string;
   };
   promotionId?: string;
+  discount?: number; // Adicionado para incluir o desconto
 }
 
 const ProductCarousel: React.FC = () => {
   const { products, getAllProducts, loading, error } = useProduct();
+  const { getPromotionById } = usePromotion();
   const [selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const { user } = useAuth();
   const { createCartItem } = useCart();
   const [userId, setUserId] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [promotions, setPromotions] = useState<{ [id: string]: number }>({});
 
   useEffect(() => {
     if (user && user.uid) {
-        setUserId(user.uid);
+      setUserId(user.uid);
     }
   }, [user]);
 
   useEffect(() => {
     getAllProducts();
   }, [getAllProducts]);
+
+  // useEffect(() => {
+  //   const fetchPromotions = async () => {
+  //     if (products) {
+  //       const map: { [id: string]: number } = {};
+  //       for (const product of products) {
+  //         if (product.promotionId) {
+  //           const promotionData = await getPromotionById(product.promotionId);
+  //           if (promotionData) {
+  //             map[product.id as string] = promotionData.discount;
+  //           }
+  //         }
+  //       }
+  //       setPromotions(map);
+  //     }
+  //   };
+  //   fetchPromotions();
+  // }, [products, getPromotionById]);
 
   const handleProductClick = (product: ProductItem) => {
     const { id, name, description, price, category, promotionId, status, image } = product;
@@ -57,6 +79,7 @@ const ProductCarousel: React.FC = () => {
         description: category.description,
       },
       promotionId: promotionId,
+      discount: promotions[id as string] || 0,
       quantity: 1,
       size: 'M',
     };
@@ -70,11 +93,13 @@ const ProductCarousel: React.FC = () => {
   };
 
   const handleAddToCart = (quantity: number, size: string) => {
-    selectedProduct!.quantity = quantity;
-    selectedProduct!.size = size;
-    if (userId && selectedProduct) {
-      createCartItem(userId, selectedProduct);
-      setOpenSnackbar(true);
+    if (selectedProduct) {
+      selectedProduct.quantity = quantity;
+      selectedProduct.size = size;
+      if (userId) {
+        createCartItem(userId, selectedProduct);
+        setOpenSnackbar(true);
+      }
     }
   };
 
@@ -118,15 +143,18 @@ const ProductCarousel: React.FC = () => {
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Slider {...settings}>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            name={product.name}
-            price={product.price}
-            image={product.image}
-            onClick={() => handleProductClick(product)}
-          />
-        ))}
+        {products
+          .filter((product) => product.promotionId && promotions[product.id as string] !== undefined)
+          .map((product) => (
+            <ProductCard
+              key={product.id}
+              name={product.name}
+              price={product.price}
+              discount={promotions[product.id as string]}
+              image={product.image}
+              onClick={() => handleProductClick(product)}
+            />
+          ))}
       </Slider>
       <Modal
         open={openModal}

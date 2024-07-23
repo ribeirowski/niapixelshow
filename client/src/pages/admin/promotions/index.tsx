@@ -20,7 +20,7 @@ const Promotions = () => {
       }}
     >
       <h1>ADMIN</h1>
-      <ProductCarouselAdmin />
+      
       <Button
         style={{
           backgroundColor: "#FFFFFF",
