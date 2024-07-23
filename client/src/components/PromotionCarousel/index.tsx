@@ -11,7 +11,6 @@ const PromotionCarousel: React.FC = () => {
 
   useEffect(() => {
     getAllProducts();
-    console.log(products);
   }, [getAllProducts]);
 
   if (loading) {
@@ -22,18 +21,21 @@ const PromotionCarousel: React.FC = () => {
     return <p>Ocorreu um erro: {error}</p>;
   }
 
+  // Filtra os produtos onde promotionId é diferente de null
+  const filteredProducts = products.filter((product) => product.promotionId !== null && product.promotionId !== undefined && product.promotionId !== "");
+
   const settings = {
-    infinite: products.length > 1,
+    infinite: filteredProducts.length > 1,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: length > 1 ? 5 : filteredProducts.length,
     slidesToScroll: 1,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: products.length > 1 ? 2 : products.length,
+          slidesToShow: filteredProducts.length > 1 ? 2 : filteredProducts.length,
           slidesToScroll: 1,
-          infinite: products.length > 1,
+          infinite: filteredProducts.length > 1,
           dots: true,
         },
       },
@@ -50,9 +52,10 @@ const PromotionCarousel: React.FC = () => {
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Slider {...settings}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard
             key={product.id} // Adicione a propriedade key aqui
+            id={product.id}
             name={product.name}
             price={product.price}
             //discount={product.discount}

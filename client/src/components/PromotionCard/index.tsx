@@ -1,8 +1,7 @@
 import React from "react";
-import { ProductCard } from "@/components";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { useProduct } from "@/hooks";
+import { usePromotion } from "@/hooks";
 import { useRouter } from "next/router";
 
 interface Props {
@@ -14,7 +13,7 @@ interface Props {
   onClick: () => void;
 }
 
-const ProductCardAdmin: React.FC<Props> = ({
+const PromotionCard: React.FC<Props> = ({
   name,
   price,
   discount,
@@ -24,10 +23,10 @@ const ProductCardAdmin: React.FC<Props> = ({
 }) => {
   const router = useRouter();
 
-  const { deleteProduct } = useProduct();
+  const { deletePromotion } = usePromotion();
   const handleDelete = () => {
     if (id && typeof id === "string") {
-      deleteProduct(id).then(() => {
+      deletePromotion(id).then(() => {
         router.reload();
       });
     }
@@ -35,7 +34,7 @@ const ProductCardAdmin: React.FC<Props> = ({
 
   return (
     <div
-      id="product-card"
+      id="promotion-card"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -43,14 +42,22 @@ const ProductCardAdmin: React.FC<Props> = ({
         alignItems: "center",
       }}
     >
-      <ProductCard
-        name={name}
-        price={price}
-        discount={discount}
-        image={image}
-        onClick={onClick}
-      />
-      <Link href={"/product/edit?id=" + id} passHref>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          padding: "1rem",
+          borderRadius: "8px",
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
+        <h3>{name}</h3>
+        <p>Preço: {price}</p>
+        {discount && <p>Desconto: {discount}%</p>}
+        {image && <img src={image} alt={name} style={{ width: "100%" }} />}
+        <Button onClick={onClick}>Ver detalhes</Button>
+      </div>
+      <Link href={"/promotion/edit?id=" + id} passHref>
         <Button
           variant="contained"
           sx={{
@@ -59,7 +66,7 @@ const ProductCardAdmin: React.FC<Props> = ({
             margin: "10px auto",
           }} // Centering the button
         >
-          EDITAR PRODUTO
+          EDITAR PROMOÇÃO
         </Button>
       </Link>
       <Button
@@ -68,10 +75,10 @@ const ProductCardAdmin: React.FC<Props> = ({
         onClick={handleDelete}
         sx={{ display: "block" }}
       >
-        EXCLUIR PRODUTO
+        EXCLUIR PROMOÇÃO
       </Button>
     </div>
   );
 };
 
-export default ProductCardAdmin;
+export default PromotionCard;
