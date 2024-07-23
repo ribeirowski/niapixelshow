@@ -60,8 +60,12 @@ When('clicar na opção {string} do produto com nome {string}', (option, product
   cy.contains(productName).parents('div[id="product-card"]').find('button').contains(option).click();
 });
 
-When('alterar os campos nome para {string} e preço para {string}', (name, price) => {
-  cy.get('input[name="name"]').clear().type(name);
+When('alterar os campos nome para {string} e preço para {string}', (name:string, price:string) => {
+  if (name != "") {
+    cy.get('input[name="name"]').clear().type(name);
+  } else {
+    cy.get('input[name="name"]').clear();
+  }
   cy.get('input[name="price"]').clear().type(price);
 });
 
