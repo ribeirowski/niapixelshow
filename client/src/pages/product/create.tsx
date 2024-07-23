@@ -12,6 +12,7 @@ const CreateProductPage: React.FC = () => {
   // Estados para controlar o Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "info" | "warning">("success");
 
   // Função para lidar com o fechamento do Snackbar
   const handleSnackbarClose = () => {
@@ -22,12 +23,17 @@ const CreateProductPage: React.FC = () => {
   const handleSubmit = (data: any) => {
     // Chama a função createProduct e, em seguida, redireciona para a página de produtos
     createProduct(data).then(() => {
+      setSnackbarSeverity("success")
       setSnackbarMessage('Produto cadastrado com sucesso!');
       setSnackbarOpen(true);
       setTimeout(() => {
         router.push(`/product`);
       }, 2000);
-    });
+    }).catch(()=>{
+      setSnackbarSeverity("error");
+      setSnackbarMessage('Não foi possível cadastrar o produto!');
+      setSnackbarOpen(true);
+    })
   };
 
   return (
@@ -38,7 +44,7 @@ const CreateProductPage: React.FC = () => {
       </Box>
       {/* Snackbar para exibir mensagens de sucesso */}
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

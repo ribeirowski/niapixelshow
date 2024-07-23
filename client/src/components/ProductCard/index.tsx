@@ -14,6 +14,7 @@ interface ProductCardProps {
   discount?: number;
   image?: string;
   onClick: () => void;
+  dataCy?: string; // Novo prop para data-cy
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -22,6 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   discount,
   image,
   onClick,
+  dataCy, 
 }) => {
   const oldPrice = discount
     ? (price / (1 - discount / 100)).toFixed(2)
@@ -30,6 +32,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <ButtonBase
       onClick={onClick}
       sx={{ display: "block", textAlign: "initial" }}
+      data-cy={dataCy} 
     >
       <Card sx={{ width: 200, borderRadius: 1.6, height: 280 }}>
         <CardMedia component="img" height="180" image={image} alt={name} />

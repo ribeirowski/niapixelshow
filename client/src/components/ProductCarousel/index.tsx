@@ -131,6 +131,7 @@ const ProductCarousel: React.FC = () => {
             price={product.price}
             image={product.image}
             onClick={() => handleProductClick(product)}
+            dataCy={`product-card-${product.name}`}
           />
         ))}
       </Slider>
@@ -159,6 +160,7 @@ const ProductCarousel: React.FC = () => {
                     backgroundColor: 'darkred',
                   },
                 }}
+                data-cy="close-modal"
               >
                 Fechar
               </Button>
@@ -170,6 +172,7 @@ const ProductCarousel: React.FC = () => {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
+        data-cy = "snackbar"
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
