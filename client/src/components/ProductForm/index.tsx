@@ -24,6 +24,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   // Estados para controlar o Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error" | "info" | "warning">("success");
   const [errors, setErrors] = useState<any>({});
 
   const router = useRouter();
@@ -72,6 +73,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
       });
     } else {
       setErrors(formErrors);
+      setSnackbarSeverity("warning")
       setSnackbarMessage('Por favor, preencha todos os campos obrigatórios.');
       setSnackbarOpen(true);
     }
@@ -216,7 +218,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
       )}
       {/* Snackbar para exibir mensagens de sucesso */}
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity="warning" sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
