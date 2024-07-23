@@ -43,3 +43,11 @@ When('ele seleciona a opção "Excluir" na categoria {string}', (name: string) =
 Then('ele aperta o botão "Excluir" e a categoria deletada some da lista de categorias.', () => {
     cy.get(`[data-cy="tag"]`).contains('Excluir').click();
 });
+
+Given('não adiciona nenhum nome e confirma', () => {
+    cy.get('button').contains('Criar').click();
+});
+
+Then('ele recebe uma mensagem de erro.', () => {
+     cy.get('[data-cy="error-tag"]').should('be.visible').and('contain', 'O nome da categoria é obrigatório!');
+});

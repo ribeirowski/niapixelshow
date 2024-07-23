@@ -239,7 +239,7 @@ const CategoriesPage: React.FC = () => {
             </Dialog>
 
             <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-                <Alert onClose={handleSnackbarClose} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} data-cy = "error-tag" severity="error" sx={{ width: '100%' }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>

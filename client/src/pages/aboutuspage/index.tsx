@@ -9,7 +9,7 @@ const AboutUsPage: React.FC = () => {
       className={styles.container} // Adiciona a classe do CSS
     >
       <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: '700', textAlign: 'center', color: 'text.primary', mb: 4, mt: 1 }} >Sobre Nós</Typography>
-      
+
       <Box className={styles.section}>
         <Typography variant="h5" component="h2">Nossa Missão</Typography>
         <Typography variant="body1" paragraph>
@@ -48,7 +48,7 @@ const AboutUsPage: React.FC = () => {
         <Typography variant="body1" paragraph>
           <ul className={styles.list}>
             <li>Ênio Henrique;</li>
-            <li>Felipe;</li>
+            <li>Felipe Maciel;</li>
             <li>Lígia Ferro Braga Laurindo de Cerqueira Padilha;</li>
             <li>Lucas Alexandre de Carvalho Paiva;</li>
             <li>Nathália Rezende Coelho;</li>
