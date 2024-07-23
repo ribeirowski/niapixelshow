@@ -124,3 +124,6 @@ const useProduct = (): UseProductsInterface<Product> => {
 
 export default useProduct;
 export type { Product };
+function getAllPromotions() {
+  throw new Error("Function not implemented.");
+}

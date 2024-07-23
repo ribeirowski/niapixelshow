@@ -1,13 +1,13 @@
 import React from "react";
-import ProductCarouselAdmin from "@/components/ProductCarouselAdmin";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
+import { PromotionCarousel } from "@/components";
 
 const Promotions: React.FC = () => {
   const router = useRouter();
 
   const handleCreatePromotion = () => {
-    router.push("/home/admin/promotions/create");
+    router.push("/admin/promotions/create");
   };
 
   return (
@@ -20,7 +20,7 @@ const Promotions: React.FC = () => {
       }}
     >
       <h1>ADMIN</h1>
-      <ProductCarouselAdmin />
+      <PromotionCarousel />
       <Button
         style={{
           backgroundColor: "#FFFFFF",

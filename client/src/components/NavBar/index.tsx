@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
         }
     };
     const handleAdmin = () => {
-        router.push('/home/admin');
+        router.push('/admin');
         handleClose();
     }
 
