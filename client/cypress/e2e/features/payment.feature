@@ -2,7 +2,7 @@ Feature: Pagamento
 
 Scenario: Visualizar qrcode para pagamento via PIX
     Given eu estou logado com email "tjgc@cin.ufpe.br" e senha "Thiago2604"
-    And eu adicionei o produto "carinha feliz" de tamanho "G" e quantidade "2" ao carrinho
+    And eu adicionei o produto "Camisa Preta" de tamanho "G" e quantidade "2" ao carrinho
     When estou na página "Carrinho de Compras"
     And seleciono a opção de "finalizar pedido"
     Then estou na página "Pagamento"
@@ -10,7 +10,7 @@ Scenario: Visualizar qrcode para pagamento via PIX
 
 Scenario: Visualizar qrcode para pagamento via PIX
     Given eu estou logado com email "tjgc@cin.ufpe.br" e senha "Thiago2604"
-    And eu adicionei o produto "carinha feliz" de tamanho "G" e quantidade "2" ao carrinho
+    And eu adicionei o produto "Camisa Preta" de tamanho "G" e quantidade "2" ao carrinho
     When estou na página "Carrinho de Compras"
     And seleciono a opção de "finalizar pedido"
     Then estou na página "Pagamento"
