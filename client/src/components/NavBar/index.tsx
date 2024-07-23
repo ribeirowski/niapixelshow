@@ -103,7 +103,7 @@ const Navbar: React.FC = () => {
                         }}>
                             <Tab label="Inicio" onClick={() => router.push('/')} disableRipple />
                             <Tab label="Sobre nós" onClick={() => router.push('/aboutuspage')} disableRipple />
-                            <Tab label="Contato" onClick={() => router.push('/contact')} disableRipple />
+                            <Tab label="Contato" onClick={() => router.push('/contacts/contact')} disableRipple />
                         </Tabs>
                     </Box>
                     <Box sx={{ display: 'flex', gap: '1rem' }}>
