@@ -83,6 +83,7 @@ const AdminHome = () => {
           Promoções
         </Button>
         <Button
+          name={'pay'}
           style={{
             backgroundColor: "#FFFFFF",
             color: "#121212",

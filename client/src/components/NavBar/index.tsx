@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
                         niapixelshow
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                        <Tabs value={value} onChange={handleChange} sx={{
+                        <Tabs data-cy = {'select_navbar'} value={value} onChange={handleChange} sx={{
                             '& .MuiTab-root': {
                                 color: '#EDEDED', 
                                 fontWeight: 'regular', 
