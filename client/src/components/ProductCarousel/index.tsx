@@ -96,13 +96,12 @@ const ProductCarousel: React.FC = () => {
 
   const handleAddToCart = (quantity: number, size: string) => {
     if (selectedProduct) {
-      selectedProduct.quantity = quantity;
-      selectedProduct.size = size;
+      const updatedProduct = { ...selectedProduct, quantity, size };
       if (userId) {
-        createCartItem(userId, selectedProduct);
+        createCartItem(userId, updatedProduct);
         setOpenSnackbar(true);
       } else {
-        router.push("/sign-in"); // Redireciona para a página de login se o userId não estiver disponível
+        router.push('/sign-in'); // Redireciona para a página de login se o userId não estiver disponível
       }
     }
   };
@@ -117,6 +116,10 @@ const ProductCarousel: React.FC = () => {
 
   if (error) {
     return <p>Ocorreu um erro: {error}</p>;
+  }
+
+  if (!loading && products.length === 0) {
+    return <p>Nenhum produto disponível</p>;
   }
 
   const settings = {
@@ -150,10 +153,7 @@ const ProductCarousel: React.FC = () => {
         {products.map((product) => (
           <ProductCard
             key={product.id}
-            name={product.name}
-            price={product.price}
-            image={product.image}
-            discount={ product.promotionId ? 10 : 0 }
+            product={product}
             onClick={() => handleProductClick(product)}
             dataCy={`product-card-${product.name}`}
           />

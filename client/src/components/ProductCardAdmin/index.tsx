@@ -1,63 +1,43 @@
-import React from "react";
-import { ProductCard } from "@/components";
-import { Button } from "@mui/material";
-import Link from "next/link";
-import { useProduct } from "@/hooks";
-import { useRouter } from "next/router";
+import React from 'react';
+import { ProductCard } from '@/components';
+import { Button } from '@mui/material';
+import Link from 'next/link';
+import { useProduct } from '@/hooks';
+import { useRouter } from 'next/router';
+import { Product } from '@/hooks/useProduct';
 
 interface Props {
-  name: string;
-  price: number;
-  discount?: number;
-  image?: string;
-  id?: string;
+  product: Product;
   onClick: () => void;
 }
 
-const ProductCardAdmin: React.FC<Props> = ({
-  name,
-  price,
-  discount,
-  image,
-  id,
-  onClick,
-}) => {
+const ProductCardAdmin: React.FC<Props> = ({ product, onClick }) => {
   const router = useRouter();
-
   const { deleteProduct } = useProduct();
+
   const handleDelete = () => {
-    if (id && typeof id === "string") {
-      deleteProduct(id).then(() => {
+    if (product.id && typeof product.id === 'string') {
+      deleteProduct(product.id).then(() => {
         router.reload();
       });
     }
   };
 
+  if (!product) {
+    return <p>Produto não encontrado</p>; // Ou retornar null ou um componente de loading
+  }
+
   return (
-    <div
-      id="product-card"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        alignItems: "center",
-      }}
-    >
+    <div id="product-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
       <ProductCard
-        name={name}
-        price={price}
-        discount={discount}
-        image={image}
+        product={product}
         onClick={onClick}
+        dataCy={`product-card-${product.name}`}
       />
-      <Link href={"/product/edit?id=" + id} passHref>
+      <Link href={`/product/edit?id=${product.id}`} passHref>
         <Button
           variant="contained"
-          sx={{
-            backgroundColor: "black",
-            display: "block",
-            margin: "10px auto",
-          }} // Centering the button
+          sx={{ backgroundColor: 'black', display: 'block', margin: '10px auto' }} // Centering the button
         >
           EDITAR PRODUTO
         </Button>
@@ -66,7 +46,7 @@ const ProductCardAdmin: React.FC<Props> = ({
         variant="contained"
         color="primary"
         onClick={handleDelete}
-        sx={{ display: "block" }}
+        sx={{ display: 'block' }}
       >
         EXCLUIR PRODUTO
       </Button>

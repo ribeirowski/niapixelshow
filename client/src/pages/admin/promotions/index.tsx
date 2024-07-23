@@ -1,9 +1,9 @@
 import React from "react";
-import { PromotionCarousel } from "@/components";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
+import { PromotionCarousel } from "@/components";
 
-const Promotions = () => {
+const Promotions: React.FC = () => {
   const router = useRouter();
 
   const handleCreatePromotion = () => {
@@ -30,7 +30,7 @@ const Promotions = () => {
         variant="contained"
         onClick={handleCreatePromotion}
       >
-        cadastrar nova promoção
+        Cadastrar nova promoção
       </Button>
     </div>
   );

@@ -62,9 +62,6 @@ const PromotionCard: React.FC<Props> = ({
         )}
       </CardContent>
       <CardActions>
-        <Button size="small" color="primary" onClick={onClick}>
-          Ver detalhes
-        </Button>
         <Link href={`/admin/promotions/edit/${promotionId}`} passHref>
           <Button
             size="small"
