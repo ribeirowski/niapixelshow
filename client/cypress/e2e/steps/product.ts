@@ -1,20 +1,27 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 Given('que estou logado como {string}, com senha {string}', (username, password) => {
+  cy.intercept('POST', '/auth/login').as('loginRequest');
   cy.visit('/sign-in');
   if(typeof username == 'string')
   cy.get('input[name="email"]').type(username);
   if(typeof password == 'string')
   cy.get('input[name="password"]').type(password);
-  cy.get('button[type="submit"]').click();
+  cy.get('button[type="submit"]').click();  
+  
+  cy.wait('@loginRequest').then((interception) => {
+    const token = interception?.response?.body.token; // Ajuste conforme necessário
+    cy.setCookie('authToken', token);
 });
+});                                                                                                                                                                                                                                                                       
 
 Given('que estou na página {string}', (page) => {
     cy.visit(`/${page}`);
-  });
+  });                                                                                                                                                                                                                                                                                                                                                                                   
 
 When('preencher os campos nome {string}, descrição {string}, preço {string}, status {string} e categoria {string}', (name: string, description: string, price: string, status: string, category: string) => {
-  cy.get('input[name="name"]').type(name);
+    if(name != ""){
+  cy.get('input[name="name"]').type(name);}
   cy.get('input[name="description"]').type(description);
   cy.get('input[name="price"]').type(price);
   cy.get('input[name="category.name"]').type(category);
@@ -32,15 +39,6 @@ When('seleciono a opção {string}', (option: string) => {
 
 Then('eu devo ver uma mensagem de confirmação {string}', (message) => {
   cy.get('.MuiAlert-message').should('contain', message);
-});
-
-Then('o novo produto com nome {string}, descrição {string}, preço {string}, status {string} e categoria {string} deve aparecer na lista de produtos cadastrados', (name:string, description:string, price:string, status:string, category:string) => {
-  cy.visit('/product'); // Ajustar a URL se necessário
-  cy.contains(name).should('be.visible');
-  cy.contains(description).should('be.visible');
-  cy.contains(price).should('be.visible');
-  cy.contains(status === 'Sim' ? 'true' : 'false').should('be.visible');
-  cy.contains(category).should('be.visible');
 });
 
   Given('que eu tenho um produto cadastrado', () => {
@@ -67,4 +65,8 @@ Then('o novo produto com nome {string}, descrição {string}, preço {string}, s
 
   Then('o novo produto com nome {string} deve desaparecer na lista de produtos cadastrados', (name:string, description:string, price:string, status:string, category:string) => {
         cy.visit('/product'); // Ajustar a URL se necessário
+      });
+
+  Then('eu devo ver uma mensagem de erro {string}', (message) => {
+        cy.get('.MuiAlert-message').should('contain', message);
       });

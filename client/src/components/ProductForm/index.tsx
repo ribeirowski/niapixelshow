@@ -63,6 +63,7 @@ const ProductForm: React.FC<{ onSubmit: (data: Product) => void, edit?: boolean,
   // Função para lidar com o envio do formulário
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    formData.status = (formData.status === "true");
     const formErrors = validateForm();
     if (Object.keys(formErrors).length === 0) {
       onSubmit({
