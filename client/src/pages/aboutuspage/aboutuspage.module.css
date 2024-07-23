@@ -40,4 +40,59 @@
     list-style-type: disc;
     margin-left: 20px;
   }
+
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
   
+  .flexContainer {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .textSection {
+    flex: 1; /* Ocupa metade do espaço disponível */
+    padding-right: 16px;
+  }
+  
+  .imageSection {
+    flex: 1; /* Ocupa metade do espaço disponível */
+  }
+
+  .section {
+    margin-bottom: 2rem;
+  }
+  
+  .flexContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+  
+  .textSection {
+    flex: 2;
+    padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .imageSection {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+  }
+  
+  .image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px; /* opcional, para bordas arredondadas */
+  }
+  
+  .list {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
