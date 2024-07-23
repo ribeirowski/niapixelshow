@@ -20,7 +20,8 @@ const Promotions: React.FC = () => {
       }}
     >
       <h1>ADMIN</h1>
-      <PromotionCarousel />
+      <PromotionCarousel data-cy="edit-promotion"
+      />
       <Button
         style={{
           backgroundColor: "#FFFFFF",

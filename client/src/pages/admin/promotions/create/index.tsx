@@ -144,8 +144,11 @@ const CreatePromotion: React.FC = () => {
                 <TextField
                   {...field}
                   select
+                  role="button"
+                  aria-haspopup="listbox"
                   label="ID do produto"
                   variant="outlined"
+                  data-cy="product_id"
                   error={!!errors.product_id}
                   helperText={errors.product_id?.message}
                   sx={{ width: "20rem" }}
@@ -203,7 +206,7 @@ const CreatePromotion: React.FC = () => {
         </div>
       </div>
       <ThemeProvider theme={theme}>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleClose} data-cy="modal">
           <DialogTitle>Confirmação</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -214,7 +217,7 @@ const CreatePromotion: React.FC = () => {
             <Button onClick={handleClose} color="primary">
               Cancelar
             </Button>
-            <Button onClick={handleConfirm} color="primary" autoFocus>
+            <Button data-cy="confirm" onClick={handleConfirm} color="primary" autoFocus>
               Confirmar
             </Button>
           </DialogActions>
