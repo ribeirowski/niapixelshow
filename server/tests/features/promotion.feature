@@ -1,46 +1,60 @@
 Feature: Gerenciamento de Promoções
 
   Scenario: Cadastro de Promoção
-    Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
-    And estou na página "promoções"
+    Given estou logado como administrador com email "nrc2@cin.ufpe.br", senha "nia12345"
     And não existem promoções cadastradas com a descrição "Promoção de Ano Novo"
-    When eu selecionar a opção de cadastrar uma nova promoção
-    And preencher o campo "data de início" com "2025-01-01"
-    And preencher o campo "data de término" com "2025-02-01"
-    And preencher o campo "descrição" com "Promoção de Ano Novo"
-    And preencher o campo "porcentagem" com "10"
-    And preencher o campo "produto" com "Camisa Cin"
-    Then a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções
+    And existem produtos cadastrados com o id "Camisa Cin"
+    When eu faço uma requisição POST para "/promotion" com os dados:
+      """
+      {
+        "start_date": "01/01/2025",
+        "end_date": "01/02/2025",
+        "name": "Promoção de Ano Novo",
+        "discount": 10,
+        "product_id": "Camisa Cin",
+        "active": true
+      }
+      """
+    Then a resposta deve ter status 201
+    And uma mensagem de sucesso "Promotion created successfully" deve ser retornada
 
   Scenario: Editar promoção
-    Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
-    And estou na página "promoções"
-    And existem promoções cadastradas com a descrição "Promoção de Ano Novo"
-    When eu selecionar a opção de editar a promoção "Promoção de Ano Novo"
-    And preencher o campo "data de início" com "2025-01-01"
-    And preencher o campo "data de término" com "2025-02-01"
-    And preencher o campo "descrição" com "Promoção de Ano Novo"
-    And preencher o campo "porcentagem" com "20"
-    And preencher o campo "produto" com "Camisa Cin"
-    Then a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções
+    Given estou logado como administrador com email "nrc2@cin.ufpe.br", senha "nia12345"
+    And existem produtos cadastrados com o nome "Camisa Cin"
+    And existem promoções cadastradas com o id "1", associadas ao produto "Camisa Cin"
+    When eu fizer uma requisição PATCH para "/promotion/1" com os dados:
+      """
+      {
+        "start_date": "01/01/2025",
+        "end_date": "01/02/2025",
+        "name": "Promoção de Ano Novo",
+        "discount": 20,
+        "product_id": "Camisa Cin",
+        "active": true
+        }
+      """
+    Then a resposta deve ter status 200
+    And uma mensagem de sucesso "Promotion updated successfully" deve ser retornada
+
+  Scenario: Listar promoções
+     Given estou logado como usuario com email "nrc2@cin.ufpe.br", senha "nia12345"
+     And existem promoções cadastradas
+     When eu fizer uma requisição GET para "/promotion"
+     Then o sistema deve retornar status 200
+     And a resposta deve ser uma lista com todas as promoções
+
+  Scenario: Listar promoção por id
+    Given estou logado como administrador com email "nrc2@cin.ufpe.br", senha "nia12345"
+    And existem promoções cadastradas com o id "1"
+    When eu fizer uma requisição GET para "/promotion/1"
+    Then o sistema deve retornar status 200
+    And a resposta deve ser a promoção com id "1"
 
   Scenario: Excluir promoção
-    Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
-    And estou na página "promoções"
-    And existem promoções cadastradas com a descrição "Promoção de Ano Novo"
-    When eu selecionar a opção de excluir a promoção "Promoção de Ano Novo"
-    Then a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções
-
-  Scenario: Cadastro de promoção com porcentagem menor que 0
-    Given estou logado como "administrador", com usuário "nathy" e senha "nia12345"
-    And estou na página "promoções"
-    And não existem promoções cadastradas com a descrição "Promoção de Ano Novo"
-    When eu selecionar a opção de cadastrar uma nova promoção
-    And preencher o campo "data de início" com "2025-01-01"
-    And preencher o campo "data de término" com "2025-02-01"
-    And preencher o campo "descrição" com "Promoção de Ano Novo"
-    And preencher o campo "porcentagem" com "-10"
-    And preencher o campo "produto" com "Camisa Cin"
-    Then a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções
-
-
+    Given estou logado como administrador com email "nrc2@cin.ufpe.br", senha "nia12345"
+    And existe um produto cadastrado com o nome "Camisetao"
+    And existem promoções cadastradas com o id "1", associadas ao produto "Camisetao"
+    When eu fizer uma requisição DELETE para "/promotion/1"
+    Then a resposta deve ter status 200
+    And uma mensagem de sucesso "Promotion deleted successfully" deve ser retornada
+    And o preço do produto associado à promoção deve ser atualizado

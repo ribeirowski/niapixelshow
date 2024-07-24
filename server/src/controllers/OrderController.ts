@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { firestoreDB } from '../services/firebaseAdmin'; // Importa a instância correta do Firestore
+import { firestoreDB } from '../services/firebase/firebaseAdmin'; // Importa a instância correta do Firestore
 import { Order, UpdateOrder } from '../DTOs';
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, orderBy } from 'firebase/firestore';
 import { request } from 'http';
@@ -16,10 +16,10 @@ class OrderController{
                 return res.status(400).json({ message: 'Todos os campos devem ser preenchidos' });
             }
             const orderData = Order.parse(req.body);
-            // Adiciona o novo produto ao Firestore
+            // Adiciona o novo pedido ao Firestore
             const orderRef = await firestoreDB.collection('orders').add(orderData);
 
-            res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, product: orderData });
+            res.status(201).json({ message: 'Pedido cadastrado com sucesso', id: orderRef.id, order: orderData });
             return next();
         } catch (error) {
             return next(error);
@@ -71,12 +71,24 @@ class OrderController{
     //GET STATS METHOD
     async getStats(req: Request, res: Response, next: NextFunction) {
         try {
+            const { year, month } = req.query;
+
             // Get all products or paid orders
             const allOrders = await firestoreDB.collection('orders').where("status", "==", "Pago").get();
-            const orders = allOrders.docs.map(doc => ({
+            const ordersRaw = allOrders.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+            
+            const orders = ordersRaw.map(element => {
+                const orderVar = Order.parse(element);
+                const compare = orderVar.date.split('-');
+                if((compare[0] === year && compare[1] === month) || year === "0000") {
+                    return orderVar;
+                }
+                return null;
+            }).filter(order => order != null);
+
             // Establish stats to be sent
             var totalValue = 0;
             var mostSold = 'none';
@@ -202,29 +214,85 @@ class OrderController{
     }
 
     //FILTER ALL METHOD
-    async filterAll(req: Request, res: Response, next: NextFunction){
+    async filterAll(req: Request, res: Response, next: NextFunction){ 
+        //Filtra todos os pedidos de um dado usuário de acordo com alguma característica
         try {
+            let query;
+            let allOrdersSnapshot;
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            const isDate = (str: string) => {
+                if(!dateRegex.test(str)){
+                    return false;
+                }
+                return true;
+            }
             const atribute = req.params.filtro;
-            const {func, filter} = req.body
-            if(func === 'Acima de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, ">" , filter).get();
+            const {func, filter, email} = req.query;
+            const filterString = typeof filter === 'string' ? filter : '';
+            var filt: string | Number;
+            if(Number.isNaN(parseFloat(filterString)) || isDate(filterString)){
+                filt = filterString
             }
-            else if(func === 'Abaixo de'){
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "<" , filter).get();
+            else {
+                filt = parseFloat(filterString)
             }
-            else{
-                var allOrders = await firestoreDB.collection('orders').where(atribute, "==" , filter).get();
+
+            if(email === ''){
+                if (func === 'Acima de') {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '>' , filt).get();;
+                } else if (func === 'Abaixo de') {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '<' , filt).get();
+                } else {
+                    var allFiltOrders = await firestoreDB.collection('orders').where(atribute, '==' , filt).get();
+                }
+                if(allFiltOrders.empty){
+                    res.status(426).json({ message: 'Nenhum pedido encontrado' })
+                }
+                else{
+                    const orders = allFiltOrders.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                    }));
+                    res.status(200).json(orders); // Apenas uma resposta aqui}
+                }
+                return next();
             }
-            
-            if(allOrders.empty){
-                res.status(426).json({ message: 'Nenhum pedido encontrado' })
-            }
-            else{
-                const orders = allOrders.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-                }));
-                res.status(200).json(orders); // Apenas uma resposta aqui}
+            else{    
+                type Pedido = {
+                    id: string;
+                    email: string;
+                    item: string;
+                    description: string;
+                    qtd: number;
+                    price: number;
+                    status: string;
+                    date: string;
+                    addr: string;
+                };
+
+                allOrdersSnapshot = await firestoreDB.collection('orders').where('email', '==', email).get();
+
+                const orders = allOrdersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })) as Pedido[];
+
+                // Filtrando em memória pelo segundo critério
+                let filteredOrders : Pedido[];
+                if (func === 'Acima de') {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] > filt);
+                } else if (func === 'Abaixo de') {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] < filt);
+                } else {
+                    filteredOrders = orders.filter(order => order[atribute as keyof Pedido] === filt);
+                }
+                
+                if(filteredOrders.length === 0){
+                    res.status(426).json({ message: 'Nenhum pedido encontrado' })
+                }
+                else{
+                    res.status(200).json(filteredOrders); // Apenas uma resposta aqui}
+                }
             }
             return next();
         }catch (error) {

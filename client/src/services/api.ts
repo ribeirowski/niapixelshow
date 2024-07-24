@@ -1,8 +1,10 @@
 import axios from 'axios';
-import 'dotenv/config';
 
 const api = axios.create({
-    baseURL: `http://localhost:${process.env.SERVER_PORT}`
+    baseURL: 'http://localhost:3001',
+    withCredentials: true,
 });
+
+api.defaults.timeout = 10000;
 
 export default api;

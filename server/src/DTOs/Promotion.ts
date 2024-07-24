@@ -1,16 +1,34 @@
-import { z } from 'zod'
+import { z } from "zod";
+
+const dateValidation = z.
+  string().
+  refine((val) => {
+    const date = val.split("/");
+    return (
+      date.length === 3 &&
+      date[0].length === 2 &&
+      date[1].length === 2 &&
+      date[2].length === 4
+    );
+  });
+
+const discountValidation = z
+  .number()
+  .refine(
+    (val) => !isNaN(Number(val)) && Number(val) >= 1 && Number(val) <= 100,
+    {
+      message: "O desconto deve ser um número de 1 até 100",
+    }
+  )
+  .transform((val) => Number(val));
 
 export const Promotion = z.object({
-    name: z.string({ message: 'O nome não pode ser vazio' }),
-    discount: z
-    .number({ message: 'O desconto deve ser um número'})
-    .int({ message: 'O desconto deve ser um número de 1 até 100'})
-    .min(1, { message: 'O desconto deve ser um número de 1 até 100'})
-    .max(100, { message: 'O desconto deve ser um número de 1 até 100'}),
-    start_date: z.string({ message: 'A data de início não pode ser vazia'}),
-    end_date: z.string({ message: 'A data de término não pode ser vazia'}),
-    active: z.boolean().default(false),
-    product_id: z.string({ message: 'O id do produto não pode ser vazio' }),
-    })
+  name: z.string({ message: "O nome não pode ser vazio" }),
+  discount: discountValidation,
+  start_date: dateValidation,
+  end_date: dateValidation,
+  active: z.boolean().default(true),
+  product_id: z.string({ message: "O id do produto não pode ser vazio" }),
+});
 
 export const UpdatePromotion = Promotion.partial();

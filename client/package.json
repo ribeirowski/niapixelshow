@@ -1,40 +1,60 @@
 {
-  "name": "frontend",
+  "name": "client",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "postinstall": "cypress install"
   },
   "dependencies": {
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@fontsource/poppins": "^5.0.14",
     "@fontsource/roboto": "^5.0.13",
     "@hookform/resolvers": "^3.3.4",
     "@mui/icons-material": "^5.15.17",
-    "@mui/material": "^5.15.17",
+    "@mui/lab": "^5.0.0-alpha.172",
+    "@mui/material": "^5.16.4",
+    "@mui/x-date-pickers": "^7.11.0",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "firebase": "^10.11.1",
     "next": "^14.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.4",
+    "react-slick": "^0.30.2",
+    "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.10",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.1.0",
     "@cucumber/cucumber": "^10.6.0",
     "@playwright/test": "^1.44.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-slick": "^0.23.13",
     "autoprefixer": "^10.4.19",
+    "cypress": "^13.13.1",
+    "cypress-cucumber-preprocessor": "^4.3.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": [
+      "cypress/e2e/steps/[filepath].ts"
+    ]
   }
 }
+
