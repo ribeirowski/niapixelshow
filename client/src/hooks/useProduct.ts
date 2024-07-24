@@ -43,17 +43,15 @@ const useProduct = (): UseProductsInterface<Product> => {
         setLoading(true);
         setError(null);
         try {
-            const response = await apiCall;
-            const data = response.data;
+            const { data } = await apiCall;
             if (data && typeof data === 'object' && 'product' in data) {
                 return data.product;
             } else {
                 return data as T;
             }
         } catch (err: any) {
-            const errorMessage = err.response?.data.message || 'Ocorreu um erro inesperado';
-            setError(errorMessage);
-            throw new Error(errorMessage);
+            setError(err.response?.data.message || 'Ocorreu um erro inesperado');
+            throw new Error(err.response?.data.message || 'Ocorreu um erro inesperado');
         } finally {
             setLoading(false);
         }
@@ -61,9 +59,7 @@ const useProduct = (): UseProductsInterface<Product> => {
 
     const fetchPromotion = async (promotionId: string) => {
         try {
-            const response = await api.get(`/promotion/${promotionId}`);
-            console.log(`Fetched promotion: ${JSON.stringify(response.data)}`);
-            return response.data;
+            return (await api.get(`/promotion/${promotionId}`)).data;
         } catch (err) {
             console.error(`Failed to fetch promotion with ID: ${promotionId}`, err);
             return null;
@@ -81,8 +77,7 @@ const useProduct = (): UseProductsInterface<Product> => {
     const getProductById = useCallback(async (productId: string) => {
         const response = await handleApiCall<Product>(api.get(`/product/${productId}`));
         if (response.promotionId) {
-            const promotion = await fetchPromotion(response.promotionId);
-            response.promotion = promotion;
+            response.promotion = await fetchPromotion(response.promotionId);
         }
         setProductData(response);
     }, []);
@@ -95,8 +90,7 @@ const useProduct = (): UseProductsInterface<Product> => {
         const response = await handleApiCall<Product[]>(api.get('/product/'));
         const productsWithPromotions = await Promise.all(response.map(async (product) => {
             if (product.promotionId) {
-                const promotion = await fetchPromotion(product.promotionId);
-                product.promotion = promotion;
+                product.promotion = await fetchPromotion(product.promotionId);
             }
             return product;
         }));
@@ -124,6 +118,3 @@ const useProduct = (): UseProductsInterface<Product> => {
 
 export default useProduct;
 export type { Product };
-function getAllPromotions() {
-  throw new Error("Function not implemented.");
-}
